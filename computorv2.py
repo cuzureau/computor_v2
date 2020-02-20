@@ -5,8 +5,7 @@ from parser import parser
 
 while True:
     s = raw_input('> ')
-    if len(s):
-
+    if s:
 
         # lexer.input(s)
         # while True:

@@ -72,17 +72,23 @@ def p_execute_command(t):
         print("    - !p = print all variables")
         print("    - !q = quit the computor")
     elif letter == 'p':
-        prGreen("Variables:")
-        for key,value in variables.items():
-            print("     {} = {}".format(key, value))
-        # else:
-        #     print("     There are no variables")
+        if variables:
+            prGreen("Variables:")
+            for key,value in variables.items():
+                print("     {} = {}".format(key, value))
+        else:
+            prRed("Variables:")
+            print("     There are no variables")
     elif letter == 'q':
         prGreen("Bye bye!")
         exit()
 
 
 def p_error(t):
-    print("Syntax error at '%s'" % t.value)
+    if t:
+        print("Syntax error at '%s'" % t.value)  
+    else:
+        print("Syntax error!")
+
 
 parser = yacc.yacc()
