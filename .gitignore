@@ -2,4 +2,5 @@ parser.out
 parsetab.py
 parser.pyc
 lexer.pyc
+parsetab.pyc
 global_variables.pyc

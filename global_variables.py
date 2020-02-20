@@ -11,6 +11,7 @@ tokens = (
     'RPAREN',
     'POWER',
     'QUESTION',
+    'IMAGINE',
     'COMMAND',
 )
 

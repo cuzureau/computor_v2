@@ -11,7 +11,7 @@ while True:
         # while True:
         #     tok = lexer.token()
         #     if not tok: 
-        #         break      # No more input
+        #         break
         #     print(tok)
 
         parser.parse(s)
