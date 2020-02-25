@@ -4,7 +4,7 @@ from parser import parser
 
 
 while True:
-    s = input('> ')
+    s = raw_input('> ')
     if s:
 
         # lexer.input(s)

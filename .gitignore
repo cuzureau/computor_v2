@@ -4,3 +4,4 @@ parser.pyc
 lexer.pyc
 parsetab.pyc
 global_variables.pyc
+__pycache__/
