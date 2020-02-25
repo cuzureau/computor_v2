@@ -28,6 +28,26 @@ def p_expression_imaginary(t):
                   | IMAGINE NUMBER'''
     t[0] = t[1] * t[2]
 
+
+
+
+# def p_test(t):
+#     '''primary : constant
+#                | LPAREN expr RPAREN'''
+#     print("yo")
+#     t[0] = 1
+
+
+# def p_expression_matrice(t):
+#     '''expr : primary 
+#             | primary '+' primary'''
+#     matrix = {}
+#     print('hey----->')
+#     print(t)
+#     print('---------')
+#     t[0] = 1
+
+
 def p_expression_binop(t):
     '''expression : expression PLUS expression
                   | expression MINUS expression
