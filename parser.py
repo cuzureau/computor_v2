@@ -14,13 +14,22 @@ precedence = (
 
 def p_statement_assign(t):
     'statement : NAME EQUALS expression'
-    assignation  = str(t[3]).replace('j', 'i')
+    if 'i' in str(t[3]) : 
+        assignation  = str(t[3]).replace('j', 'i')
+    else:
+        assignation = t[3]
     variables[t[1].lower()] = assignation
     print(assignation)
 
 def p_statement_expr(t):
     '''statement : expression
                  | expression EQUALS QUESTION'''
+    print('heyyyyy')
+    # try:
+    #     for i in t[1]:
+    #         print(i)
+    # except:
+    #     print(str(t[1]).replace('j', 'i'))
     print(str(t[1]).replace('j', 'i'))
 
 def p_expression_imaginary(t):
@@ -29,24 +38,34 @@ def p_expression_imaginary(t):
     t[0] = t[1] * t[2]
 
 
+def p_test3(t):
+    '''expression : expression SEMICOLON expression'''
+    t[0] = []
+    print(type(t[1][0]))
+    print(type(t[3][0 ]))
+    print("t[1]= {} t[3]= {}".format(t[1], t[3]))
+    # t[0].append(t[1])
+    # try:
+    #     for i in t[3]:
+    #         t[0].append(i)
+    # except:
+    #     t[0].append(t[3])
+
+def p_test2(t):
+    '''expression : LBRACK expression RBRACK'''
+    t[0] = t[2]
 
 
-# def p_test(t):
-#     '''primary : constant
-#                | LPAREN expr RPAREN'''
-#     print("yo")
-#     t[0] = 1
-
-
-# def p_expression_matrice(t):
-#     '''expr : primary 
-#             | primary '+' primary'''
-#     matrix = {}
-#     print('hey----->')
-#     print(t)
-#     print('---------')
-#     t[0] = 1
-
+def p_test(t):
+    '''expression : expression COMMA expression'''
+    # print("t[1]= {} t[3]= {}".format(t[1], t[3]))
+    t[0] = [] 
+    t[0].append(t[1])
+    try:
+        for i in t[3]:
+            t[0].append(i)
+    except:
+        t[0].append(t[3])
 
 def p_expression_binop(t):
     '''expression : expression PLUS expression
@@ -56,19 +75,30 @@ def p_expression_binop(t):
                   | expression POWER expression
                   | expression MODULO expression'''
 
-    if 'i' in str(t[1]) : t[1]  = complex(str(t[1]).replace('i', 'j'))
-    if 'i' in str(t[3]) : t[3]  = complex(str(t[3]).replace('i', 'j'))
+    if type(t[1]) == list:
+        if type(t[3]) == int:
+            if t[2] == '+'      : t[0]  = [i + t[3] for i in t[1]]
+            # elif t[2] == '-'    : t[0]  = t[1] - t[3]
+            # elif t[2] == '*'    : t[0]  = t[1] * t[3]
+            # elif t[2] == '%'    : t[0]  = t[1] % t[3]
+            # elif t[2] == '^'    : t[0]  = t[1] ** t[3]
+            # elif t[2] == '/'    : t[0]  = t[1] / t[3]
 
-    if t[2] == '+'      : t[0]  = t[1] + t[3]
-    elif t[2] == '-'    : t[0]  = t[1] - t[3]
-    elif t[2] == '*'    : t[0]  = t[1] * t[3]
-    elif t[2] == '%'    : t[0]  = t[1] % t[3]
-    elif t[2] == '^'    : t[0]  = t[1] ** t[3]
-    elif t[2] == '/'    : t[0]  = t[1] / t[3]
+        
+    else:
+        if 'i' in str(t[1]) : t[1]  = complex(str(t[1]).replace('i', 'j'))
+        if 'i' in str(t[3]) : t[3]  = complex(str(t[3]).replace('i', 'j'))
 
-    if 'j' in str(t[0]) : t[0]  = str(t[0]).replace('j', 'i')
-    elif t[0] % 1 == 0  : t[0]  = int(t[0])
-    else                : t[0]  = float(t[0])
+        if t[2] == '+'      : t[0]  = t[1] + t[3]
+        elif t[2] == '-'    : t[0]  = t[1] - t[3]
+        elif t[2] == '*'    : t[0]  = t[1] * t[3]
+        elif t[2] == '%'    : t[0]  = t[1] % t[3]
+        elif t[2] == '^'    : t[0]  = t[1] ** t[3]
+        elif t[2] == '/'    : t[0]  = t[1] / t[3]
+
+        if 'j' in str(t[0]) : t[0]  = str(t[0]).replace('j', 'i')
+        elif t[0] % 1 == 0  : t[0]  = int(t[0])
+        else                : t[0]  = float(t[0])
 
 
 def p_expression_uminus(t):
