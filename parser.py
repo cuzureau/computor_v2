@@ -24,7 +24,6 @@ def p_statement_assign(t):
 def p_statement_expr(t):
     '''statement : expression
                  | expression EQUALS QUESTION'''
-    print('heyyyyy')
     # try:
     #     for i in t[1]:
     #         print(i)
@@ -41,10 +40,15 @@ def p_expression_imaginary(t):
 def p_test3(t):
     '''expression : expression SEMICOLON expression'''
     t[0] = []
-    print(type(t[1][0]))
-    print(type(t[3][0 ]))
+    # print("t[1]= {}({}) t[3]= {}({})".format(t[1], len(t[1]), t[3], len(t[3])))
     print("t[1]= {} t[3]= {}".format(t[1], t[3]))
-    # t[0].append(t[1])
+
+    t[0].append(t[1])
+    if type(t[3]) == list and type(t[3][0]) == list:
+        for i in t[3]:
+            t[0].append(i)
+    else:
+        t[0].append(t[3])
     # try:
     #     for i in t[3]:
     #         t[0].append(i)
