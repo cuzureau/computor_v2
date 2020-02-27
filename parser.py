@@ -59,7 +59,7 @@ def p_test2(t):
 
 def p_test(t):
 	'''expression : expression COMMA expression'''
-	# print("t[1]= {} t[3]= {}".format(t[1], t[3]))
+	print("t[1]= {} t[3]= {}".format(t[1], t[3]))
 	t[0] = [] 
 	t[0].append(t[1])
 	try:
