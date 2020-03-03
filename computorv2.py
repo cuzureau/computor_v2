@@ -1,6 +1,7 @@
 from global_variables import tokens
 from lexer import lexer
 from parser import parser
+from builtins import input
 
 
 while True:

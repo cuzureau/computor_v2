@@ -14,13 +14,16 @@ precedence = (
 
 def p_statement_assign(t):
 	'statement : NAME EQUALS expression'
+	# try:
+	# 	variables[t[1].lower()] = t[3][0]
+	# 	print(t[3][0])
+	# except:
 	if 'i' in str(t[3]) : 
 		assignation  = str(t[3]).replace('j', 'i')
 	else:
 		assignation = t[3]
 	variables[t[1].lower()] = assignation
-	print(assignation)
-
+	
 def p_statement_expr(t):
 	'''statement : expression
 				 | expression EQUALS QUESTION'''
@@ -29,6 +32,10 @@ def p_statement_expr(t):
 	#         print(i)
 	# except:
 	#     print(str(t[1]).replace('j', 'i'))
+	
+	# try:
+	# 	print(t[1][0])
+	# except:
 	print(str(t[1]).replace('j', 'i'))
 
 def p_expression_imaginary(t):
@@ -40,9 +47,7 @@ def p_expression_imaginary(t):
 def p_test3(t):
 	'''expression : expression SEMICOLON expression'''
 	t[0] = []
-	# print("t[1]= {}({}) t[3]= {}({})".format(t[1], len(t[1]), t[3], len(t[3])))
-	print("t[1]= {} t[3]= {}".format(t[1], t[3]))
-
+	# print("t[1]= {} t[3]= {}".format(t[1], t[3]))
 	if type(t[1]) == int : t[1] = [t[1]]
 	t[0].append(t[1])
 	if type(t[3]) == list and type(t[3][0]) == list:
@@ -54,19 +59,29 @@ def p_test3(t):
 
 def p_test2(t):
 	'''expression : LBRACK expression RBRACK'''
-	t[0] = t[2]
+	t[0] = [t[2]]
 
 
 def p_test(t):
 	'''expression : expression COMMA expression'''
-	print("t[1]= {} t[3]= {}".format(t[1], t[3]))
 	t[0] = [] 
-	t[0].append(t[1])
+	print("{} + {}		{}".format(t[1], t[3], t[0]))
 	try:
-		for i in t[3]:
-			t[0].append(i)
+		t[0].append(t[1][0][0])
+		print("t[1] = {}".format(t[1])) #To be continued folks ! Pb with complex numbers at this point
 	except:
-		t[0].append(t[3])
+		t[0].append(t[1])
+	try:
+		t[0].append(t[3][0][0])
+	except:
+		try:
+			for i in t[3]:
+				t[0].append(i)
+		except:
+			t[0].append(t[3])
+
+
+
 
 def p_expression_binop(t):
 	'''expression : expression PLUS expression
