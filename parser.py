@@ -19,11 +19,6 @@ def p_statement_assign(t):
 	# 	variables[t[1].lower()] = t[3][0]
 	# 	print(t[3][0])
 	# except:
-
-	########################## delete to store complex numbers in real format with j letter
-	# if 'j' in str(t[3]) :
-	# 	assignation  = str(t[3]).replace('j', 'i')
-	# else:
 	
 	assignation = t[3]
 	variables[t[1].lower()] = assignation
@@ -52,40 +47,33 @@ def p_expression_imaginary(t):
 
 def p_test3(t):
 	'''expression : expression SEMICOLON expression'''
-	t[0] = []
-	# print("t[1]= {} t[3]= {}".format(t[1], t[3]))
-	if type(t[1]) == int : t[1] = [t[1]]
-	t[0].append(t[1])
-	if type(t[3]) == list and type(t[3][0]) == list:
-		for i in t[3]:
-			t[0].append(i)
-	else:
-		if type(t[3]) == int : t[3] = [t[3]]
-		t[0].append(t[3])
+	t[0] = (t[1],) + (t[3],)
+	# print("{} + {}		{}".format(t[1], t[3], t[0]))
+
 
 def p_test2(t):
 	'''expression : LBRACK expression RBRACK'''
-	t[0] = [t[2]]
+	try:
+		t[0] = list(t[2])
+	except:
+		t[0] = [t[2]]
 
 
 def p_test(t):
 	'''expression : expression COMMA expression'''
-	t[0] = [] 
-	# print("{} + {}		{}".format(t[1], t[3], t[0]))
-	try:
-		t[0].append(t[1][0][0])
-	except:
-		t[0].append(t[1])
-	try:
-		t[0].append(t[3][0][0])
-	except:
-		try:
-			for i in t[3]:
-				t[0].append(i)
-		except:
-			t[0].append(t[3])
+	# print("{}({}) + {}({})".format(t[1], type(t[1]), t[3], type(t[3])))
+	while type(t[1]) == list:
+		t[1] = t[1][0]
+	t[0] = (t[1],)
 
-
+	if type(t[3]) == int:
+		t[0] += (t[3],)
+	elif type(t[3]) == tuple:
+		for num in t[3]:
+			t[0] += (num,)
+	elif type(t[3]) == list:
+		t[0] += (t[3][0],)
+	# print("========={}".format(t[0]))
 
 
 def p_expression_binop(t):
@@ -107,9 +95,6 @@ def p_expression_binop(t):
 
 		
 	else:
-		# if 'i' in str(t[1]) : t[1]  = complex(str(t[1]).replace('i', 'j'))
-		# if 'i' in str(t[3]) : t[3]  = complex(str(t[3]).replace('i', 'j'))
-
 		if t[2] == '+'      : t[0]  = t[1] + t[3]
 		elif t[2] == '-'    : t[0]  = t[1] - t[3]
 		elif t[2] == '*'    : t[0]  = t[1] * t[3]
@@ -117,9 +102,9 @@ def p_expression_binop(t):
 		elif t[2] == '^'    : t[0]  = t[1] ** t[3]
 		elif t[2] == '/'    : t[0]  = t[1] / t[3]
 
-		# if 'j' in str(t[0]) : t[0]  = str(t[0]).replace('j', 'i')
-		elif t[0] % 1 == 0  : t[0]  = int(t[0])
-		else                : t[0]  = float(t[0])
+		if type(t[0]) != complex:
+			if t[0] % 1 == 0  	: t[0]  = int(t[0])
+			else                : t[0]  = float(t[0])
 
 
 def p_expression_uminus(t):
