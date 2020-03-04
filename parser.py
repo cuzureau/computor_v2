@@ -14,14 +14,18 @@ precedence = (
 
 def p_statement_assign(t):
 	'statement : NAME EQUALS expression'
+	########################## to store list variables
 	# try:
 	# 	variables[t[1].lower()] = t[3][0]
 	# 	print(t[3][0])
 	# except:
-	if 'i' in str(t[3]) : 
-		assignation  = str(t[3]).replace('j', 'i')
-	else:
-		assignation = t[3]
+
+	########################## delete to store complex numbers in real format with j letter
+	# if 'j' in str(t[3]) :
+	# 	assignation  = str(t[3]).replace('j', 'i')
+	# else:
+	
+	assignation = t[3]
 	variables[t[1].lower()] = assignation
 	
 def p_statement_expr(t):
@@ -36,7 +40,9 @@ def p_statement_expr(t):
 	# try:
 	# 	print(t[1][0])
 	# except:
-	print(str(t[1]).replace('j', 'i'))
+	
+	t[1] = str(t[1]).replace('j', 'i').replace('(', '').replace(')', '')
+	print(t[1])
 
 def p_expression_imaginary(t):
 	'''expression : NUMBER IMAGINE
@@ -65,10 +71,9 @@ def p_test2(t):
 def p_test(t):
 	'''expression : expression COMMA expression'''
 	t[0] = [] 
-	print("{} + {}		{}".format(t[1], t[3], t[0]))
+	# print("{} + {}		{}".format(t[1], t[3], t[0]))
 	try:
 		t[0].append(t[1][0][0])
-		print("t[1] = {}".format(t[1])) #To be continued folks ! Pb with complex numbers at this point
 	except:
 		t[0].append(t[1])
 	try:
@@ -102,8 +107,8 @@ def p_expression_binop(t):
 
 		
 	else:
-		if 'i' in str(t[1]) : t[1]  = complex(str(t[1]).replace('i', 'j'))
-		if 'i' in str(t[3]) : t[3]  = complex(str(t[3]).replace('i', 'j'))
+		# if 'i' in str(t[1]) : t[1]  = complex(str(t[1]).replace('i', 'j'))
+		# if 'i' in str(t[3]) : t[3]  = complex(str(t[3]).replace('i', 'j'))
 
 		if t[2] == '+'      : t[0]  = t[1] + t[3]
 		elif t[2] == '-'    : t[0]  = t[1] - t[3]
@@ -112,7 +117,7 @@ def p_expression_binop(t):
 		elif t[2] == '^'    : t[0]  = t[1] ** t[3]
 		elif t[2] == '/'    : t[0]  = t[1] / t[3]
 
-		if 'j' in str(t[0]) : t[0]  = str(t[0]).replace('j', 'i')
+		# if 'j' in str(t[0]) : t[0]  = str(t[0]).replace('j', 'i')
 		elif t[0] % 1 == 0  : t[0]  = int(t[0])
 		else                : t[0]  = float(t[0])
 
@@ -150,6 +155,7 @@ def p_execute_command(t):
 		if variables:
 			prGreen("Variables:")
 			for key,value in variables.items():
+				value = str(value).replace('j', 'i').replace('(', '').replace(')', '')
 				print("     {} = {}".format(key, value))
 		else:
 			prRed("Variables:")
