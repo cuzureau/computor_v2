@@ -3,7 +3,10 @@ from lexer import lexer
 from parser import parser
 
 while True:
-    s = raw_input('> ')
+    try:
+    	s = raw_input('> ')
+    except:
+    	s = input('> ')
     if s:
 
         # lexer.input(s)
