@@ -2,21 +2,28 @@ from global_variables import tokens
 from lexer import lexer
 from parser import parser
 
+
+
+
+
+
 while True:
-    try:
-    	s = raw_input('> ')
-    except:
-    	s = input('> ')
-    if s:
+	try:
+		s = raw_input('> ')
+	except:
+		s = input('> ')
+	if s:
 
-        # lexer.input(s)
-        # while True:
-        #     tok = lexer.token()
-        #     if not tok: 
-        #         break
-        #     print(tok)
+		# lexer.input(s)
+		# while True:
+		#     tok = lexer.token()
+		#     if not tok: 
+		#         break
+		#     print(tok)
 
-        parser.parse(s)
+
+
+		parser.parse(s)
 
 # [[1];[3];[5];[7];[9]]
 # [[1,2];[3,4];[5,6];[7,8];[9,0]]
