@@ -12,50 +12,105 @@ class Complex(object):
 		self.imag = imag
 
 	def __add__(self, other):
+		# if isinstance(other, (float,int)):
+		# 	other = Complex(other)
 		return Complex(self.real + other.real,
 					   self.imag + other.imag)
 
 	def __radd__(self, other):
 		return self.__add__(other) 
 
-	def __sub__(self, other):
-		return Complex(self.real - other.real,
-					   self.imag - other.imag)
-
-	def __rsub__(self, other):
-		return self.__sub__(other)
-
 	def __mul__(self, other):
+		# if isinstance(other, (float,int)):
+		# 	other = Complex(other)
 		return Complex(self.real*other.real - self.imag*other.imag,
 					   self.imag*other.real + self.real*other.imag)
 
 	def __rmul__(self, other):
 		return self.__mul__(other)
 
+	def __sub__(self, other):
+		if isinstance(other, (float,int)):
+			other = Complex(other)
+		return Complex(self.real - other.real,
+					   self.imag - other.imag)
+
+	def __rsub__(self, other):
+		if isinstance(other, (float,int)):
+			other = Complex(other)
+		return other.__sub__(self)
+
 	def __div__(self, other):
-		sr, si, o1, o2 = self.real, self.imag, other.real, other.imag
+		if isinstance(other, (float,int)):
+			other = Complex(other)
+		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
 		r = float(o1**2 + o2**2)
-		return Complex((sr*o1+si*o2)/r, (si*o1-sr*o2)/r)
+		try: 
+			return Complex((s1*o1+s2*o2)/r, (s2*o1-s1*o2)/r)
+		except ZeroDivisionError as e:
+			print e
+			return None
 
-	######################### To be continued folks !
-	# def __rdiv__(self, other):
-	# 	sr, si, o1, o2 = self.real, self.imag, other.real, other.imag
-	# 	r = float(o1**2 + o2**2)
-	# 	return Complex((sr*o1+si*o2)/r, (si*o1-sr*o2)/r)
+	def __rdiv__(self, other):
+		if isinstance(other, (float,int)):
+			other = Complex(other)
+		return other.__div__(other)
+
+	def __floordiv__(self, other):
+		if isinstance(other, (float,int)):
+			other = Complex(other)
+		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
+		r = float(o1**2 + o2**2)
+		try: 
+			return Complex((s1*o1+s2*o2)//r, (s2*o1-s1*o2)//r)
+		except ZeroDivisionError as e:
+			print e
+			return None
+
+	def __mod__(self, other):
+		if isinstance(other, (float,int)):
+			other = Complex(other)
+		try:
+			return self - self.__floordiv__(other) * other
+		except ZeroDivisionError as e:
+			print e
+			return None
+
+	def __rmod__(self, other):
+		if isinstance(other, (float,int)):
+			other = Complex(other)
+		return other.__mod__(other)
+
+
+	def __pow__(self, power):
+		if power == 0:
+			return 1
+		elif power == 1:
+			return self
+		for i in range(power - 1):
+			self.real *= power
+			self.imag *= power
+		return self
+
+
+	
 
 
 
 
 
 
-	def __abs__(self):
-		return sqrt(self.real**2 + self.imag**2)
+
+	# def __abs__(self):
+	# 	return sqrt(self.real**2 + self.imag**2)
+
+
 
 	def __neg__(self):   # defines -c (c is Complex)
 		return Complex(-self.real, -self.imag)
 
-	def __eq__(self, other):
-		return self.real == other.real and self.imag == other.imag
+	# def __eq__(self, other):
+	# 	return self.real == other.real and self.imag == other.imag
 
 	def __ne__(self, other):
 		return not self.__eq__(other)
@@ -77,8 +132,7 @@ class Complex(object):
 	def __repr__(self):
 		return 'Complex' + str(self)
 
-	def __pow__(self, power):
-		raise NotImplementedError('self**power is not yet impl. for Complex')
+	
 
 	def _illegal(self, op):
 		print 'illegal operation "%s" for complex numbers' % op
@@ -87,7 +141,7 @@ class Complex(object):
 
 precedence = (
 	('left','PLUS','MINUS'),
-	('left','TIMES','DIVIDE'),
+	('left','TIMES','DIVIDE','POWER'),
 	('right','UMINUS'),
 	)
 
@@ -161,6 +215,7 @@ def p_expression_binop(t):
 				  | expression MINUS expression
 				  | expression TIMES expression
 				  | expression DIVIDE expression
+				  | expression FLOORDIV expression
 				  | expression POWER expression
 				  | expression MODULO expression'''
 
@@ -179,8 +234,13 @@ def p_expression_binop(t):
 		elif t[2] == '-'    : t[0]  = t[1] - t[3]
 		elif t[2] == '*'    : t[0]  = t[1] * t[3]
 		elif t[2] == '%'    : t[0]  = t[1] % t[3]
-		elif t[2] == '^'    : t[0]  = t[1] ** t[3]
+		elif t[2] == '^'    : 
+			if type(t[3]) == int and t[3] >= 0:
+				t[0]  = t[1] ** t[3]
+			else:
+				prRed("eroooooor")
 		elif t[2] == '/'    : t[0]  = t[1] / t[3]
+		elif t[2] == '//'   : t[0]  = t[1] // t[3]
 
 		# if type(t[0]) != complex:
 		# 	if t[0] % 1 == 0  	: t[0]  = int(t[0])

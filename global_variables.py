@@ -5,6 +5,7 @@ tokens = (
     'MINUS',
     'TIMES',
     'DIVIDE',
+    'FLOORDIV',
     'MODULO',
     'EQUALS',
     'LPAREN',
