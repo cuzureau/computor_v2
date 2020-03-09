@@ -7,7 +7,7 @@ import ply.yacc as yacc
 
 
 class Complex(object):
-	def __init__(self, real=0, imag=0):
+	def __init__(self, real , imag=0):
 		self.real = real
 		self.imag = imag
 
@@ -54,32 +54,33 @@ class Complex(object):
 	def __rdiv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
-		return other.__div__(other)
+		return other.__div__(-self)
 
 	def __floordiv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
 		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
-		r = float(o1**2 + o2**2)
+		r = o1**2 + o2**2
 		try: 
 			return Complex((s1*o1+s2*o2)//r, (s2*o1-s1*o2)//r)
 		except ZeroDivisionError as e:
 			print e
 			return None
 
+	def __rfloordiv__(self, other):
+		if isinstance(other, (float,int)):
+			other = Complex(other)
+		return other.__floordiv__(-self)
+
 	def __mod__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
-		try:
-			return self - self.__floordiv__(other) * other
-		except ZeroDivisionError as e:
-			print e
-			return None
+		return self - self.__floordiv__(other) * other
 
 	def __rmod__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
-		return other.__mod__(other)
+		return other.__mod__(-self)
 
 
 	def __pow__(self, power):
@@ -141,7 +142,7 @@ class Complex(object):
 
 precedence = (
 	('left','PLUS','MINUS'),
-	('left','TIMES','DIVIDE','POWER'),
+	('left','TIMES','DIVIDE','POWER','FLOORDIV','MODULO'),
 	('right','UMINUS'),
 	)
 
@@ -169,7 +170,6 @@ def p_expression_imaginary(t):
 	'''expression : NUMBER IMAGINE
 				  | IMAGINE NUMBER'''
 	t[0] = Complex(t[1]) * t[2]
-	# compy = compy * 
 
 def p_test3(t):
 	'''expression : expression SEMICOLON expression'''

@@ -2,53 +2,46 @@ from global_variables import tokens
 from lexer import lexer
 from parser import parser
 
+from test import add_test # to be deleted
+from test import add_answer # to be deleted
+from test import sub_test # to be deleted
+from test import sub_answer # to be deleted
+from test import mul_test # to be deleted
+from test import mul_answer # to be deleted
+from test import div_test # to be deleted
+from test import div_answer # to be deleted
+from test import floordiv_test # to be deleted
+from test import floordiv_answer # to be deleted
+from test import modulo_test # to be deleted
+from test import modulo_answer # to be deleted
+from global_variables import prLightPurple # to be deleted
+from global_variables import prGreen # to be deleted
 
 
 
 
+for test,answer in zip(modulo_test.split(";"), modulo_answer.split(";")):
+	prLightPurple(test)
+	parser.parse(test)
+	prGreen(answer)
+	print("")
 
-while True:
-	try:
-		s = raw_input('> ')
-	except:
-		s = input('> ')
-	if s:
+# while True:
+# 	try:
+# 		s = raw_input('> ')
+# 	except:
+# 		s = input('> ')
+# 	if s:
 
-		# lexer.input(s)
-		# while True:
-		#     tok = lexer.token()
-		#     if not tok: 
-		#         break
-		#     print(tok)
-
-
-
-		parser.parse(s)
-
-# [[1];[3];[5];[7];[9]]
-# [[1,2];[3,4];[5,6];[7,8];[9,0]]
-# [[1,2,1];[3,4,1];[5,6,1];[7,8,1];[9,0,1]]
+# 		# lexer.input(s)
+# 		# while True:
+# 		#     tok = lexer.token()
+# 		#     if not tok: 
+# 		#         break
+# 		#     print(tok)
 
 
-# [[1];[2,2];[3,3,3];[4,4,4,4]]
-# [[4,4,4,4];[3,3,3];[2,2];[1]]
-
-# [[4,[1,2,3],4,4];[3,3,3];[2,2];[1]]
-# [[4,4,4,4];[3,3,3];[2,2];[1,[1,2,[0,0,0],3]]]
-
-#Error
-#[1,[1,2,[0,0,0]]]
+# 		parser.parse(s)
 
 
-# 1
-# [1]
-# 1,2
-# [1,2]
-# 1,2,3,4,5
-# [1,2,3,4,5]
-# 1,2,[0,0,0],4,5
-# [1,2,[0,0,0],4,5]
-# [0,0,0],4,5,6
-# [1,2,3,[0,0,0]]
-# 1,2,3,[0,0,0]
 
