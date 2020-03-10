@@ -40,7 +40,7 @@ class Complex(object):
 			other = Complex(other)
 		return other.__sub__(self)
 
-	def __truediv__(self, other):
+	def __div__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
 		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
@@ -51,10 +51,10 @@ class Complex(object):
 			print (e)
 			return None
 
-	def __rtruediv__(self, other):
+	def __rdiv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
-		return other.__truediv__(-self)
+		return other.__div__(-self)
 
 	def __floordiv__(self, other):
 		if isinstance(other, (float,int)):
@@ -83,18 +83,32 @@ class Complex(object):
 		return other.__mod__(-self)
 
 
+	# def __pow__(self, power):
+	# 	if power == 0:
+	# 		return 1
+	# 	elif power == 1:
+	# 		return self
+	# 	for i in range(power - 1):
+	# 		self.real *= power
+	# 		self.imag *= power
+	# 	return self
+
 	def __pow__(self, power):
-		if power == 0:
-			return 1
-		elif power == 1:
-			return self
-		for i in range(power - 1):
-			self.real *= power
-			self.imag *= power
+		modulo = power % 4
+		print("moduloooo=", modulo)
+		if self.real == 0:
+			if modulo == 0:
+				return Complex(self.imag, 0)
+			elif modulo == 1:
+				return Complex(0, self.imag)
+			elif modulo == 2:
+				return Complex(-self.imag, 0)
+			elif modulo == 3:
+				return Complex(0, -self.imag)
+		else:
+			for i in range(power - 1):
+				self = self.__mul__(self)
 		return self
-
-
-	
 
 
 
@@ -142,7 +156,8 @@ class Complex(object):
 
 precedence = (
 	('left','PLUS','MINUS'),
-	('left','TIMES','DIVIDE','POWER','FLOORDIV','MODULO'),
+	('left','TIMES','DIVIDE','FLOORDIV','MODULO'),
+	('left','POWER'),
 	('right','UMINUS'),
 	)
 
@@ -234,11 +249,7 @@ def p_expression_binop(t):
 		elif t[2] == '-'    : t[0]  = t[1] - t[3]
 		elif t[2] == '*'    : t[0]  = t[1] * t[3]
 		elif t[2] == '%'    : t[0]  = t[1] % t[3]
-		elif t[2] == '^'    : 
-			if type(t[3]) == int and t[3] >= 0:
-				t[0]  = t[1] ** t[3]
-			else:
-				prRed("eroooooor")
+		elif t[2] == '^'    : t[0]  = t[1] ** t[3]
 		elif t[2] == '/'    : t[0]  = t[1] / t[3]
 		elif t[2] == '//'   : t[0]  = t[1] // t[3]
 

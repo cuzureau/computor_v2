@@ -177,6 +177,41 @@ floordiv_test = "4 // 42i;\
 (42i % 4) // 4;\
 (42i ^ 4) // 4;"
 
+floordiv_test_online = "Quotient[4,42i];\
+\
+Quotient[4,42i] + 4;\
+Quotient[4,42i] - 4;\
+Quotient[4,42i] * 4;\
+Quotient[4,42i] / 4;\
+Quotient[Quotient[4,42i],4];\
+Quotient[4,42i] % 4;\
+Quotient[4,42i] ^ 4;\
+\
+Quotient[4,(42i + 4)];\
+Quotient[4,(42i - 4)];\
+Quotient[4,(42i * 4)];\
+Quotient[4,(42i / 4)];\
+Quotient[4,(42i // 4)];\
+Quotient[4,(42i % 4)];\
+Quotient[4,(42i ^ 4)];\
+\
+Quotient[42i,4];\
+Quotient[42i,4] + 4;\
+Quotient[42i,4] - 4;\
+Quotient[42i,4] * 4;\
+Quotient[42i,4] / 4;\
+Quotient[Quotient[42i,4],4];\
+Quotient[42i,4] % 4;\
+Quotient[42i,4] ^ 4;\
+\
+Quotient[(42i + 4),4];\
+Quotient[(42i - 4),4];\
+Quotient[(42i * 4),4];\
+Quotient[(42i / 4),4];\
+Quotient[(42i // 4),4];\
+Quotient[(42i % 4),4];\
+Quotient[(42i ^ 4),4];"
+
 
 modulo_test = "4 % 42i;\
 \
