@@ -40,7 +40,7 @@ class Complex(object):
 			other = Complex(other)
 		return other.__sub__(self)
 
-	def __div__(self, other):
+	def __truediv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
 		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
@@ -48,13 +48,13 @@ class Complex(object):
 		try: 
 			return Complex((s1*o1+s2*o2)/r, (s2*o1-s1*o2)/r)
 		except ZeroDivisionError as e:
-			print e
+			print (e)
 			return None
 
-	def __rdiv__(self, other):
+	def __rtruediv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
-		return other.__div__(-self)
+		return other.__truediv__(-self)
 
 	def __floordiv__(self, other):
 		if isinstance(other, (float,int)):
@@ -64,7 +64,7 @@ class Complex(object):
 		try: 
 			return Complex((s1*o1+s2*o2)//r, (s2*o1-s1*o2)//r)
 		except ZeroDivisionError as e:
-			print e
+			print (e)
 			return None
 
 	def __rfloordiv__(self, other):
@@ -136,7 +136,7 @@ class Complex(object):
 	
 
 	def _illegal(self, op):
-		print 'illegal operation "%s" for complex numbers' % op
+		print ('illegal operation "%s" for complex numbers' % op)
 
 
 
