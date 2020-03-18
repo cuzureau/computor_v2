@@ -82,34 +82,28 @@ class Complex(object):
 			other = Complex(other)
 		return other.__mod__(-self)
 
-
-	# def __pow__(self, power):
-	# 	if power == 0:
-	# 		return 1
-	# 	elif power == 1:
-	# 		return self
-	# 	for i in range(power - 1):
-	# 		self.real *= power
-	# 		self.imag *= power
-	# 	return self
-
-	def __pow__(self, power):
+	def power(self, power):
 		modulo = power % 4
-		print("moduloooo=", modulo)
-		if self.real == 0:
-			if modulo == 0:
-				return Complex(self.imag, 0)
-			elif modulo == 1:
-				return Complex(0, self.imag)
-			elif modulo == 2:
-				return Complex(-self.imag, 0)
-			elif modulo == 3:
-				return Complex(0, -self.imag)
-		else:
-			for i in range(power - 1):
-				self = self.__mul__(self)
-		return self
+		if modulo == 0:
+			return Complex(self.imag, 0)
+		elif modulo == 1:
+			return Complex(0, self.imag)
+		elif modulo == 2:
+			return Complex(-self.imag, 0)
+		elif modulo == 3:
+			return Complex(0, -self.imag)
 
+	def power_parentheses(self, power):
+		answer = 1
+		if power >= 0:
+			for i in range(1, power + 1): 
+			    answer = self.__mul__(answer)
+			return answer
+		else:
+			ret = Complex(0, 1).power(power)
+			for i in range(1, abs(power) + 1): 
+			    answer = self.__mul__(answer)
+			return (ret.__div__(answer))
 
 
 
@@ -141,7 +135,10 @@ class Complex(object):
 				string += ' + ' if self.imag > 0 else ' - '
 			else:
 				string += '' if self.imag > 0 else '-'
-			string += str(abs(self.imag)) + 'i'
+			if abs(self.imag) != 1:
+				string += str(abs(self.imag)) + 'i'
+			else:
+				string += 'i'
 		return string or '0'
 
 	def __repr__(self):
@@ -225,18 +222,38 @@ def p_test(t):
 	# print("========={}".format(t[0]))
 
 
+def p_power(t):
+	'''expression : expression POWER expression'''
+
+	# errors need to be written for negative power
+	if type(t[1]) == Complex:
+		t[0] = t[1].power(t[3])
+	else:
+		t[0] = t[1] ** t[3]
+
+def p_power_with_parentheses(t):
+	'''expression : LPAREN expression RPAREN POWER expression'''
+
+	# errors need to be written for negative power
+	if type(t[2]) == Complex:
+		print("complex with parentheses")
+		t[0] = t[2].power_parentheses(t[5])
+	else:
+		t[0] = t[2] ** t[5]
+
+
+
 def p_expression_binop(t):
 	'''expression : expression PLUS expression
 				  | expression MINUS expression
 				  | expression TIMES expression
 				  | expression DIVIDE expression
 				  | expression FLOORDIV expression
-				  | expression POWER expression
 				  | expression MODULO expression'''
 
-	if type(t[1]) == list:
-		if type(t[3]) == int:
-			if t[2] == '+'      : t[0]  = [i + t[3] for i in t[1]]
+	# if type(t[1]) == list:
+	# 	if type(t[3]) == int:
+	# 		if t[2] == '+'      : t[0]  = [i + t[3] for i in t[1]]
 			# elif t[2] == '-'    : t[0]  = t[1] - t[3]
 			# elif t[2] == '*'    : t[0]  = t[1] * t[3]
 			# elif t[2] == '%'    : t[0]  = t[1] % t[3]
@@ -244,18 +261,15 @@ def p_expression_binop(t):
 			# elif t[2] == '/'    : t[0]  = t[1] / t[3]
 
 		
-	else:
-		if t[2] == '+'      : t[0]  = t[1] + t[3]
-		elif t[2] == '-'    : t[0]  = t[1] - t[3]
-		elif t[2] == '*'    : t[0]  = t[1] * t[3]
-		elif t[2] == '%'    : t[0]  = t[1] % t[3]
-		elif t[2] == '^'    : t[0]  = t[1] ** t[3]
-		elif t[2] == '/'    : t[0]  = t[1] / t[3]
-		elif t[2] == '//'   : t[0]  = t[1] // t[3]
+	# else:
+	if t[2] == '+'      : t[0]  = t[1] + t[3]
+	elif t[2] == '-'    : t[0]  = t[1] - t[3]
+	elif t[2] == '*'    : t[0]  = t[1] * t[3]
+	elif t[2] == '%'    : t[0]  = t[1] % t[3]
+	# elif t[2] == '^'    : t[0]  = t[1] ** t[3]
+	elif t[2] == '/'    : t[0]  = t[1] / t[3]
+	elif t[2] == '//'   : t[0]  = t[1] // t[3]
 
-		# if type(t[0]) != complex:
-		# 	if t[0] % 1 == 0  	: t[0]  = int(t[0])
-		# 	else                : t[0]  = float(t[0])
 
 
 def p_expression_uminus(t):

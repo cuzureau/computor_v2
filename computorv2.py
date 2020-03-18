@@ -11,6 +11,7 @@ from test import floordiv_test_online # to be deleted
 from test import modulo_test # to be deleted
 from global_variables import prLightPurple # to be deleted
 from global_variables import prGreen # to be deleted
+from global_variables import prRed # to be deleted
 import requests # to be deleted
 
 
@@ -69,10 +70,11 @@ while True:
 
 		query = s.replace('%', 'mod').replace('+', '%2B').replace('42i // 4', 'Quotient[42i,4]').replace('4 // 42i', 'Quotient[4,42i]').replace('4 // 4', 'Quotient[4,4]').replace(' ', '+')
 		response = requests.get("http://api.wolframalpha.com/v2/query?appid=4Y4WJV-P38KAYTHV8&input=" +  query + "&includepodid=Result&format=plaintext")
+		print(response.text)
 		try:
 			prGreen(str(response.text).split("<plaintext>")[1].split("</plaintext>")[0])
 		except:
-			print("something went wrong")
+			prRed("something went wrong")
 
 
 
