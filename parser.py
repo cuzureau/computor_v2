@@ -83,27 +83,34 @@ class Complex(object):
 		return other.__mod__(-self)
 
 	def power(self, power):
-		modulo = power % 4
-		if modulo == 0:
-			return Complex(self.imag, 0)
-		elif modulo == 1:
-			return Complex(0, self.imag)
-		elif modulo == 2:
-			return Complex(-self.imag, 0)
-		elif modulo == 3:
-			return Complex(0, -self.imag)
+		if type(power) != Complex:
+			modulo = power % 4
+			print(modulo)
+			if modulo == 0:
+				return self.imag
+			elif modulo == 1:
+				return Complex(0, self.imag)
+			elif modulo == 2:
+				return -self.imag
+			elif modulo == 3:
+				return Complex(0, -self.imag)
+		else:
+			print("complex power left to be done")
 
 	def power_parentheses(self, power):
 		answer = 1
-		if power >= 0:
-			for i in range(1, power + 1): 
-			    answer = self.__mul__(answer)
-			return answer
+		if type(power) != Complex:
+			if power >= 0:
+				for i in range(1, power + 1): 
+				    answer = self.__mul__(answer)
+				return answer
+			else:
+				ret = Complex(0, 1).power(power)
+				for i in range(1, abs(power) + 1): 
+				    answer = self.__mul__(answer)
+				return (ret.__div__(answer))
 		else:
-			ret = Complex(0, 1).power(power)
-			for i in range(1, abs(power) + 1): 
-			    answer = self.__mul__(answer)
-			return (ret.__div__(answer))
+			print("complex power left to be done")
 
 
 
