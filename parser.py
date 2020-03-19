@@ -7,13 +7,11 @@ import ply.yacc as yacc
 
 
 class Complex(object):
-	def __init__(self, real , imag=0):
+	def __init__(self, real, imag=0):
 		self.real = real
 		self.imag = imag
 
 	def __add__(self, other):
-		# if isinstance(other, (float,int)):
-		# 	other = Complex(other)
 		return Complex(self.real + other.real,
 					   self.imag + other.imag)
 
@@ -21,10 +19,8 @@ class Complex(object):
 		return self.__add__(other) 
 
 	def __mul__(self, other):
-		# if isinstance(other, (float,int)):
-		# 	other = Complex(other)
-		return Complex(self.real*other.real - self.imag*other.imag,
-					   self.imag*other.real + self.real*other.imag)
+		return Complex(self.real * other.real - self.imag * other.imag,
+					   self.imag * other.real + self.real * other.imag)
 
 	def __rmul__(self, other):
 		return self.__mul__(other)
@@ -40,29 +36,29 @@ class Complex(object):
 			other = Complex(other)
 		return other.__sub__(self)
 
-	def __div__(self, other):
+	def __truediv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
 		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
-		r = float(o1**2 + o2**2)
+		r = float(o1 ** 2 + o2 ** 2)
 		try: 
-			return Complex((s1*o1+s2*o2)/r, (s2*o1-s1*o2)/r)
+			return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
 		except ZeroDivisionError as e:
 			print (e)
 			return None
 
-	def __rdiv__(self, other):
+	def __rtruediv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
-		return other.__div__(-self)
+		return other.__truediv__(-self)
 
 	def __floordiv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
 		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
-		r = o1**2 + o2**2
+		r = o1 ** 2 + o2 ** 2
 		try: 
-			return Complex((s1*o1+s2*o2)//r, (s2*o1-s1*o2)//r)
+			return Complex((s1 * o1 + s2 * o2)//r, (s2 * o1 - s1 * o2) // r)
 		except ZeroDivisionError as e:
 			print (e)
 			return None
@@ -82,35 +78,24 @@ class Complex(object):
 			other = Complex(other)
 		return other.__mod__(-self)
 
-	def power(self, power):
-		if type(power) != Complex:
-			modulo = power % 4
-			print(modulo)
-			if modulo == 0:
-				return self.imag
-			elif modulo == 1:
-				return Complex(0, self.imag)
-			elif modulo == 2:
-				return -self.imag
-			elif modulo == 3:
-				return Complex(0, -self.imag)
-		else:
-			print("complex power left to be done")
+	def power_one(self, power):
+		modulo = power % 4
+		if modulo == 0: return self.imag
+		if modulo == 1: return Complex(0, self.imag)
+		if modulo == 2: return -self.imag
+		if modulo == 3: return Complex(0, -self.imag)
 
-	def power_parentheses(self, power):
+	def power_all(self, power):
 		answer = 1
-		if type(power) != Complex:
-			if power >= 0:
-				for i in range(1, power + 1): 
-				    answer = self.__mul__(answer)
-				return answer
-			else:
-				ret = Complex(0, 1).power(power)
-				for i in range(1, abs(power) + 1): 
-				    answer = self.__mul__(answer)
-				return (ret.__div__(answer))
+		if power >= 0:
+			for i in range(1, power + 1): 
+				answer = self.__mul__(answer)
+			return answer
 		else:
-			print("complex power left to be done")
+			ret = Complex(0, 1).power_one(power)
+			for i in range(1, abs(power) + 1): 
+				answer = self.__mul__(answer)
+			return (ret.__div__(answer))
 
 
 
@@ -128,8 +113,8 @@ class Complex(object):
 	# def __eq__(self, other):
 	# 	return self.real == other.real and self.imag == other.imag
 
-	def __ne__(self, other):
-		return not self.__eq__(other)
+	# def __ne__(self, other):
+	# 	return not self.__eq__(other)
 
 	def __str__(self):
 		string = ''
@@ -148,13 +133,13 @@ class Complex(object):
 				string += 'i'
 		return string or '0'
 
-	def __repr__(self):
-		return 'Complex' + str(self)
+	# def __repr__(self):
+	# 	return 'Complex' + str(self)
 
 	
 
 	def _illegal(self, op):
-		print ('illegal operation "%s" for complex numbers' % op)
+		print ('illegal operation "{}" for complex numbers'.format(op))
 
 
 
@@ -229,24 +214,26 @@ def p_test(t):
 	# print("========={}".format(t[0]))
 
 
-def p_power(t):
+def p_power_one(t):
 	'''expression : expression POWER expression'''
-
-	# errors need to be written for negative power
-	if type(t[1]) == Complex:
-		t[0] = t[1].power(t[3])
+	if isinstance(t[3], (float,int)):
+		if type(t[1]) == Complex:
+			t[0] = t[1].power_one(t[3])
+		else:
+			t[0] = t[1] ** t[3]
 	else:
-		t[0] = t[1] ** t[3]
+		prRed("Power should be a real number, not {}".format(type(t[3])))
 
-def p_power_with_parentheses(t):
+
+def p_power_all(t):
 	'''expression : LPAREN expression RPAREN POWER expression'''
-
-	# errors need to be written for negative power
-	if type(t[2]) == Complex:
-		print("complex with parentheses")
-		t[0] = t[2].power_parentheses(t[5])
+	if isinstance(t[5], (float,int)):
+		if type(t[2]) == Complex:
+			t[0] = t[2].power_all(t[5])
+		else:
+			t[0] = t[2] ** t[5]
 	else:
-		t[0] = t[2] ** t[5]
+		prRed("Power should be a real number, not {}".format(type(t[3])))
 
 
 
