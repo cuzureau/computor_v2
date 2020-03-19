@@ -68,7 +68,7 @@ while True:
 
 		parser.parse(s)
 
-		query = s.replace('%', 'mod').replace('+', '%2B').replace('42i // 4', 'Quotient[42i,4]').replace('4 // 42i', 'Quotient[4,42i]').replace('4 // 4', 'Quotient[4,4]').replace(' ', '+')
+		query = s.replace('%', '%25').replace('+', '%2B').replace('42i // 4', 'Quotient[42i,4]').replace('4 // 42i', 'Quotient[4,42i]').replace('4 // 4', 'Quotient[4,4]').replace(' ', '+')
 		response = requests.get("http://api.wolframalpha.com/v2/query?appid=4Y4WJV-P38KAYTHV8&input=" +  query + "&includepodid=Result&format=plaintext")
 		try:
 			prGreen(str(response.text).split("<plaintext>")[1].split("</plaintext>")[0])

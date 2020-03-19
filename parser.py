@@ -36,21 +36,23 @@ class Complex(object):
 			other = Complex(other)
 		return other.__sub__(self)
 
-	def __truediv__(self, other):
-		if isinstance(other, (float,int)):
-			other = Complex(other)
-		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
-		r = float(o1 ** 2 + o2 ** 2)
-		try: 
-			return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
-		except ZeroDivisionError as e:
-			print (e)
-			return None
+	# def __truediv__(self, other):
+	# 	print("divide")
+	# 	if isinstance(other, (float,int)):
+	# 		other = Complex(other)
+	# 	s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
+	# 	r = float(o1 ** 2 + o2 ** 2)
+	# 	try: 
+	# 		return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
+	# 	except ZeroDivisionError as e:
+	# 		print (e)
+	# 		return None
 
-	def __rtruediv__(self, other):
-		if isinstance(other, (float,int)):
-			other = Complex(other)
-		return other.__truediv__(-self)
+	# def __rtruediv__(self, other):
+	# 	print("reverse_divide")
+	# 	if isinstance(other, (float,int)):
+	# 		other = Complex(other)
+	# 	return other.__truediv__(-self)
 
 	def __floordiv__(self, other):
 		if isinstance(other, (float,int)):
@@ -97,6 +99,36 @@ class Complex(object):
 				answer = self.__mul__(answer)
 			return (ret.__div__(answer))
 
+
+	def divide_one(self, other):
+		if isinstance(other, (float,int)):
+			other = Complex(other)
+		new = self.imag
+		self.real = 0
+		self.imag = 1
+		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
+		r = float(o1 ** 2 + o2 ** 2)
+		try: 
+			return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r).__mul__(new)
+		except ZeroDivisionError as e:
+			print (e)
+			return None
+
+	def divide_all(self, other):
+		if isinstance(other, (float,int)):
+			other = Complex(other)
+		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
+		r = float(o1 ** 2 + o2 ** 2)
+		try: 
+			return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
+		except ZeroDivisionError as e:
+			print (e)
+			return None
+
+	# def rdivide_one(self, other):
+	# 	if isinstance(other, (float,int)):
+	# 		other = Complex(other)
+	# 	return other.divide_one(self)
 
 
 
@@ -224,7 +256,6 @@ def p_power_one(t):
 	else:
 		prRed("Power should be a real number, not {}".format(type(t[3])))
 
-
 def p_power_all(t):
 	'''expression : LPAREN expression RPAREN POWER expression'''
 	if isinstance(t[5], (float,int)):
@@ -237,11 +268,28 @@ def p_power_all(t):
 
 
 
+def p_divide_one(t):
+	'''expression : expression DIVIDE expression'''
+	if type(t[1]) == Complex:
+		t[0] = t[1].divide_one(t[3])
+	# elif type(t[3]) == Complex:
+	# 	t[0] = t[3].rdivide_one(t[1])
+	else:
+		t[0] = t[1] / t[3]
+
+def p_divide_all(t):
+	'''expression : LPAREN expression RPAREN DIVIDE expression'''
+	if type(t[2]) == Complex:
+		t[0] = t[2].divide_all(t[5])
+	else:
+		t[0] = t[2] / t[5]
+
+
+
 def p_expression_binop(t):
 	'''expression : expression PLUS expression
 				  | expression MINUS expression
 				  | expression TIMES expression
-				  | expression DIVIDE expression
 				  | expression FLOORDIV expression
 				  | expression MODULO expression'''
 
@@ -261,7 +309,7 @@ def p_expression_binop(t):
 	elif t[2] == '*'    : t[0]  = t[1] * t[3]
 	elif t[2] == '%'    : t[0]  = t[1] % t[3]
 	# elif t[2] == '^'    : t[0]  = t[1] ** t[3]
-	elif t[2] == '/'    : t[0]  = t[1] / t[3]
+	# elif t[2] == '/'    : t[0]  = t[1] / t[3]
 	elif t[2] == '//'   : t[0]  = t[1] // t[3]
 
 
