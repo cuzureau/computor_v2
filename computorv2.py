@@ -14,6 +14,7 @@ from global_variables import prGreen # to be deleted
 from global_variables import prRed # to be deleted
 import requests # to be deleted
 
+import sys
 
 
 
@@ -50,30 +51,26 @@ import requests # to be deleted
 # 	print("")
 
 
-
-
 while True:
 	try:
 		s = raw_input('> ')
 	except:
 		s = input('> ')
-	if s:
+	
+	try:
+		print(parser.parse(s))
+	except EOFError:
+		break
+	except:
+		print(sys.exc_info()[1])
 
-		# lexer.input(s)
-		# while True:
-		#     tok = lexer.token()
-		#     if not tok: 
-		#         break
-		#     print(tok)
 
-		parser.parse(s)
-
-		query = s.replace('%', '%25').replace('+', '%2B').replace('42i // 4', 'Quotient[42i,4]').replace('4 // 42i', 'Quotient[4,42i]').replace('4 // 4', 'Quotient[4,4]').replace(' ', '+')
-		response = requests.get("http://api.wolframalpha.com/v2/query?appid=4Y4WJV-P38KAYTHV8&input=" +  query + "&includepodid=Result&format=plaintext")
-		try:
-			prGreen(str(response.text).split("<plaintext>")[1].split("</plaintext>")[0])
-		except:
-			prRed("something went wrong")
+	query = s.replace('%', '%25').replace('+', '%2B').replace('42i // 4', 'Quotient[42i,4]').replace('4 // 42i', 'Quotient[4,42i]').replace('4 // 4', 'Quotient[4,4]').replace(' ', '+')
+	response = requests.get("http://api.wolframalpha.com/v2/query?appid=4Y4WJV-P38KAYTHV8&input=" +  query + "&includepodid=Result&format=plaintext")
+	try:
+		prGreen(str(response.text).split("<plaintext>")[1].split("</plaintext>")[0])
+	except:
+		prRed("something went wrong")
 
 
 
