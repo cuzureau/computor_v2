@@ -2,27 +2,13 @@ from global_variables import tokens
 import ply.lex as lex
 from complex import Complex
 
-# t_PLUS      = r'\+'
-# t_MINUS     = r'\-'
-# t_TIMES     = r'\*'
-# t_DIVIDE    = r'\/'
+
 t_FLOORDIV  = r'\/\/'
-t_MODULO    = r'\%'
-t_EQUALS    = r'\='
-# t_LPAREN    = r'\('
-# t_RPAREN    = r'\)'
-t_LBRACK    = r'\['
-t_RBRACK    = r'\]'
-t_SEMICOLON = r'\;'
-t_COMMA    	= r'\,'
-# t_POWER     = r'\^'
-t_QUESTION  = r'\?'
 t_NAME      = r'[a-zA-Z]{2,}|[a-hj-zA-HJ-Z]'    # all words (only letters) except the word 'i' alone
-t_COMMAND   = r'![\x00-\x7F]*'                  # all unicode characters after '!' 
+t_COMMAND   = r'![\x00-\x7F]*'                  # all unicode characters after '!'
 
-
-
-literals = '+-*/^()'
+literals = '+-*/^()[]%=;,?'
+t_ignore = " \t"
 
 
 def t_RATIONAL(t):
@@ -37,8 +23,6 @@ def t_IMAGINE(t):
 	r'i'
 	t.value = Complex(0, 1)
 	return t
-
-t_ignore = " \t"
 
 def t_error(t):
 	print("Illegal character '%s'" % t.value[0])

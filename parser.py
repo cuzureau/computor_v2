@@ -38,13 +38,20 @@ def p_divide(p):
 	""" fourth : fourth '/' third """
 	p[0] = p[1] / p[3]
 
+def p_modulo(p):
+	""" fourth : fourth '%' third """
+	p[0] = p[1] % p[3]
+
+def p_floor_divide(p):
+	""" fourth : fourth FLOORDIV third """
+	p[0] = p[1] // p[3]
+
 def p_unary_minus(p):
-	""" third : '-' second """
+	""" third : '-' third """
 	p[0] = -p[2]
 
 def p_power(p):
-	""" second : first '^' second """
-	print(p[1], p[2], p[3])
+	""" second : first '^' third """
 	p[0] = p[1] ** p[3]
 
 def p_paren(p):
@@ -68,17 +75,9 @@ def p_paren(p):
 
 
 
-# def p_statement_assign(t):
-# 	'''statement : NAME EQUALS expression'''
-# 	if type(t[3]) == tuple:
-# 		t[3] = list(t[3])
-# 	variables[t[1].lower()] = t[3]
-	
-# 	if type(t[3]) == list and type(t[3][0]) == list:
-# 		for r in t[3]:
-# 			print(str(r).replace('j', 'i'))
-# 	else:
-# 		print(str(t[3]).replace('j', 'i'))
+def p_statement_assign(t):
+	'''expression : NAME '=' expression'''
+	variables[t[1].lower()] = t[3]
 	
 
 # def p_statement_expr(t):
@@ -96,28 +95,27 @@ def p_paren(p):
 # 		prRed("Undefined name '%s'" % t[1])
 # 		t[0] = 0
 
-# def p_execute_command(t):
-# 	'''statement : expression
-# 	expression : COMMAND'''
-# 	letter = t[1].split('!')[1]
-# 	if letter == 'h':
-# 		prGreen("Help:")
-# 		print("    - !p = print all variables")
-# 		print("    - !q = quit the computor")
-# 	elif letter == 'p':
-# 		if variables:
-# 			prGreen("Variables:")
-# 			for key,value in variables.items():
-# 				value = str(value).replace('j', 'i')
-# 				print("     {} = {}".format(key, value))
-# 		else:
-# 			prRed("Variables:")
-# 			print("     There are no variables")
-# 	elif letter == 'q':
-# 		prGreen("Bye bye!")
-# 		exit()
-# 	else:
-# 		print("Type '!h' for help.")
+def p_execute_command(t):
+	''' expression : COMMAND '''
+	letter = t[1].split('!')[1]
+	if letter == 'h':
+		prGreen("Help:")
+		print("    - !p = print all variables")
+		print("    - !q = quit the computor")
+	elif letter == 'p':
+		if variables:
+			prGreen("Variables:")
+			for key,value in variables.items():
+				value = str(value).replace('j', 'i')
+				print("     {} = {}".format(key, value))
+		else:
+			prRed("Variables:")
+			print("     There are no variables")
+	elif letter == 'q':
+		prGreen("Bye bye!")
+		exit()
+	else:
+		print("Type '!h' for help.")
 
 def p_error(t):
 	if t:

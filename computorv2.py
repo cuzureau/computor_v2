@@ -58,7 +58,9 @@ while True:
 		s = input('> ')
 	
 	try:
-		print(parser.parse(s))
+		answer = parser.parse(s)
+		if answer is not None:
+			print (answer)
 	except EOFError:
 		break
 	except:
