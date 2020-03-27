@@ -1,3 +1,5 @@
+from global_variables import prRed
+
 class Complex(object):
 	def __init__(self, real, imag=0):
 		self.real = real
@@ -20,12 +22,11 @@ class Complex(object):
 				string += 'i'
 		return string or '0'
 
-	# def __repr__(self):
-	# 	return 'Complex' + str(self)
-
+	def __repr__(self):
+		return 'Complex' + str(self)
 
 	def _illegal(self, op):
-		print ('illegal operation "{}" for complex numbers'.format(op))
+		prRed('Illegal operation "{}" for complex numbers'.format(op))
 
 ######################### COMMUTATIVE OPERATIONS #########################
 
@@ -42,19 +43,6 @@ class Complex(object):
 
 	def __rmul__(self, other):
 		return self.__mul__(other)
-
-	def __pow__(self, power):
-		print(self, power)
-		answer = 1
-		if power >= 0:
-			for i in range(1, power + 1): 
-			    answer = self.__mul__(answer)
-			return answer
-		else:
-			ret = Complex(0, 1).__pow__(power)
-			for i in range(1, abs(power) + 1): 
-			    answer = self.__mul__(answer)
-			return (ret.__div__(answer))
 
 ####################### NON COMMUTATIVE OPERATIONS #######################
 
@@ -73,17 +61,16 @@ class Complex(object):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
 		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
-		r = float(o1 ** 2 + o2 ** 2)
+		r = o1 ** 2 + o2 ** 2
 		try: 
 			return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
 		except ZeroDivisionError as e:
-			print (e)
-			return None
+			prRed(e)
 
 	def __rtruediv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
-		return other.__truediv__(-self)
+		return other.__truediv__(self)
 
 	def __floordiv__(self, other):
 		if isinstance(other, (float,int)):
@@ -93,13 +80,12 @@ class Complex(object):
 		try: 
 			return Complex((s1 * o1 + s2 * o2)//r, (s2 * o1 - s1 * o2) // r)
 		except ZeroDivisionError as e:
-			print (e)
-			return None
+			prRed(e)
 
 	def __rfloordiv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
-		return other.__floordiv__(-self)
+		return other.__floordiv__(self)
 
 	def __mod__(self, other):
 		if isinstance(other, (float,int)):
@@ -109,4 +95,13 @@ class Complex(object):
 	def __rmod__(self, other):
 		if isinstance(other, (float,int)):
 			other = Complex(other)
-		return other.__mod__(-self)
+		return other.__mod__(self)
+
+	def __pow__(self, power):
+		answer = 1
+		for i in range(1, abs(power) + 1): 
+			answer = self.__mul__(answer)
+		if power >= 0:
+			return answer
+		else:
+			return 1 / answer

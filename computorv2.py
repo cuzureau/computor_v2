@@ -1,78 +1,83 @@
 from global_variables import tokens
+from global_variables import prGreen
 from lexer import lexer
 from parser import parser
-
-from test import add_test # to be deleted
-from test import sub_test # to be deleted
-from test import mul_test # to be deleted
-from test import div_test # to be deleted
-from test import floordiv_test # to be deleted
-from test import floordiv_test_online # to be deleted
-from test import modulo_test # to be deleted
-from global_variables import prLightPurple # to be deleted
-from global_variables import prGreen # to be deleted
-from global_variables import prRed # to be deleted
-import requests # to be deleted
-
 import sys
+import global_variables
+import wolframalpha
 
 
+app_id = "9T72LH-QWT7RJHW4W"
+client = wolframalpha.Client(app_id)
 
-# test = modulo_test
-# for t in test.split(";"):
-# 	prLightPurple(t)
-# 	parser.parse(t)
-
-# 	query = t.replace('%', 'mod').replace('+', '%2B').replace('42i // 4', 'Quotient[42i,4]').replace('4 // 42i', 'Quotient[4,42i]').replace('4 // 4', 'Quotient[4,4]').replace(' ', '+')
-# 	prGreen(query)
-# 	response = requests.get("http://api.wolframalpha.com/v2/query?appid=4Y4WJV-P38KAYTHV8&input=" +  query + "&includepodid=Result&format=plaintext")
-# 	# print(response.status_code)
-# 	# print(response.text)
-# 	try:
-# 		print(str(response.text).split("<plaintext>")[1].split("</plaintext>")[0])
-# 	except:
-# 		print("something went wrong")
-# 	print("")
-
-
-# for test,online in zip(floordiv_test.split(";"), floordiv_test_online.split(";")):
-# 	prLightPurple(test)
-# 	parser.parse(test)
-
-# 	query = online.replace('%', 'mod').replace('+', '%2B').replace('42i // 4', 'Quotient[42i,4]').replace('4 // 42i', 'Quotient[4,42i]').replace('4 // 4', 'Quotient[4,4]').replace(' ', '+')
-# 	prGreen(query)
-# 	response = requests.get("http://api.wolframalpha.com/v2/query?appid=4Y4WJV-P38KAYTHV8&input=" +  query + "&includepodid=Result&format=plaintext")
-# 	# print(response.status_code)
-# 	# print(response.text)
-# 	try:
-# 		print(str(response.text).split("<plaintext>")[1].split("</plaintext>")[0])
-# 	except:
-# 		print("something went wrong")
-# 	print("")
-
-
+print("ComputorV2 (default, 03.2020)")
+print("Type \"!h\" for help.")
 while True:
 	try:
-		s = raw_input('> ')
+		question = raw_input('>>> ')
 	except:
-		s = input('> ')
+		question = input('>>> ')
 	
+	if global_variables.wolframalpha is True:
+		res = client.query(question)
+		try:
+			online_answer = res.details
+			if 'Result' in online_answer:
+				prGreen(res.details['Result'])
+			elif 'Exact result' in online_answer:
+				prGreen(res.details['Exact result'])
+			elif 'Input' in online_answer:
+				prGreen(res.details['Input'])
+		except:
+			prRed("no result")
+
 	try:
-		answer = parser.parse(s)
+		answer = parser.parse(question)
 		if answer is not None:
 			print (answer)
 	except EOFError:
 		break
-	except:
-		print(sys.exc_info()[1])
 
 
-	query = s.replace('%', '%25').replace('+', '%2B').replace('42i // 4', 'Quotient[42i,4]').replace('4 // 42i', 'Quotient[4,42i]').replace('4 // 4', 'Quotient[4,4]').replace(' ', '+')
-	response = requests.get("http://api.wolframalpha.com/v2/query?appid=4Y4WJV-P38KAYTHV8&input=" +  query + "&includepodid=Result&format=plaintext")
-	try:
-		prGreen(str(response.text).split("<plaintext>")[1].split("</plaintext>")[0])
-	except:
-		prRed("something went wrong")
+
+# from test import basic_tests
+# from global_variables import prLightPurple
+# from global_variables import prRed
+# import random
+
+
+# tests_count = 0
+
+# for operator in "+-*/":
+# 	for test in basic_tests:
+# 		A = random.randint(0,1000)
+# 		B = random.randint(0,1000)
+# 		for first in [A, -A]:
+# 			for second in [B, -B]:
+# 					t = test.replace('@', operator).replace('A', str(first)).replace('B', str(second))
+# 					res = client.query(t)
+# 					try:
+# 						online_answer = res.details
+# 						if 'Decimal approximation' in online_answer:
+# 							online_answer = res.details['Decimal approximation']
+# 						elif 'Result' in online_answer:
+# 							online_answer = res.details['Result']
+# 						elif 'Exact result' in online_answer:
+# 							online_answer = res.details['Exact result']
+# 						elif 'Input' in online_answer:
+# 							online_answer = res.details['Input']
+# 					except:
+# 						online_answer = "no result"
+
+# 					my_answer = parser.parse(t)
+
+# 					if str(my_answer).replace(' ', '') != str(online_answer).replace(' ', ''):
+# 						prRed(">>> " + t)
+# 						print(my_answer)
+# 						prGreen(online_answer)
+# 					tests_count += 1
+# print(tests_count)
+
 
 
 

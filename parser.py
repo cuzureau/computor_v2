@@ -5,6 +5,7 @@ from global_variables import prGreen
 from global_variables import prLightPurple
 import ply.yacc as yacc
 from complex import Complex
+import global_variables
 
 
 def p_operations(p): 
@@ -48,7 +49,10 @@ def p_floor_divide(p):
 
 def p_unary_minus(p):
 	""" third : '-' third """
-	p[0] = -p[2]
+	if type(p[2]) == Complex:
+		p[0] = Complex(-p[2].real, -p[2].imag)
+	else:
+		p[0] = -p[2]
 
 def p_power(p):
 	""" second : first '^' third """
@@ -102,11 +106,11 @@ def p_execute_command(t):
 		prGreen("Help:")
 		print("    - !p = print all variables")
 		print("    - !q = quit the computor")
+		print("    - !c = activate/deactivate online solver [https://www.wolframalpha.com/]")
 	elif letter == 'p':
 		if variables:
 			prGreen("Variables:")
 			for key,value in variables.items():
-				value = str(value).replace('j', 'i')
 				print("     {} = {}".format(key, value))
 		else:
 			prRed("Variables:")
@@ -114,6 +118,12 @@ def p_execute_command(t):
 	elif letter == 'q':
 		prGreen("Bye bye!")
 		exit()
+	elif letter == 's':
+		global_variables.wolframalpha = not global_variables.wolframalpha
+		if global_variables.wolframalpha is True:
+			prGreen("Solver activated!")
+		else:
+			prRed("Solver deactivated!")
 	else:
 		print("Type '!h' for help.")
 
