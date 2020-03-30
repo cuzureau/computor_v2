@@ -1,5 +1,6 @@
 from global_variables import tokens
 from global_variables import prGreen
+from global_variables import prRed
 from lexer import lexer
 from parser import parser
 import sys
@@ -10,7 +11,7 @@ import wolframalpha
 app_id = "9T72LH-QWT7RJHW4W"
 client = wolframalpha.Client(app_id)
 
-print("ComputorV2 (default, 03.2020)")
+print("ComputorV2 [default, 03/2020]")
 print("Type \"!h\" for help.")
 while True:
 	try:
@@ -19,7 +20,8 @@ while True:
 		question = input('>>> ')
 	
 	if global_variables.wolframalpha is True:
-		res = client.query(question)
+		new = question.replace("%", " mod ")
+		res = client.query(new)
 		try:
 			online_answer = res.details
 			if 'Result' in online_answer:
@@ -29,12 +31,12 @@ while True:
 			elif 'Input' in online_answer:
 				prGreen(res.details['Input'])
 		except:
-			prRed("no result")
+			prRed("No result")
 
 	try:
 		answer = parser.parse(question)
 		if answer is not None:
-			print (answer)
+			print(answer)
 	except EOFError:
 		break
 
@@ -42,7 +44,6 @@ while True:
 
 # from test import basic_tests
 # from global_variables import prLightPurple
-# from global_variables import prRed
 # import random
 
 
