@@ -1,6 +1,7 @@
 from global_variables import tokens
 import ply.lex as lex
 from complex import Complex
+from rational import Rational
 
 
 t_FLOORDIV  = r'\/\/'
@@ -13,10 +14,11 @@ t_ignore = " \t"
 
 def t_RATIONAL(t):
 	r"(?:\d+(?:\.\d*)?|\.\d+)(?:[Ee][+-]?\d+)?"
-	try:
-		t.value = int(t.value)
-	except:
-		t.value = float(t.value)
+	# try:
+	# 	t.value = int(t.value)
+	# except:
+	# 	t.value = float(t.value)
+	t.value = Rational(float(t.value))
 	return t
 
 def t_IMAGINE(t):

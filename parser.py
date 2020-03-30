@@ -124,6 +124,12 @@ def p_execute_command(t):
 			prGreen("Solver activated!")
 		else:
 			prRed("Solver deactivated!")
+	elif letter == 'f':
+		global_variables.irreductible = not global_variables.irreductible
+		if global_variables.irreductible is True:
+			prGreen("Fraction activated!")
+		else:
+			prRed("Fraction deactivated!")
 	else:
 		print("Type '!h' for help.")
 

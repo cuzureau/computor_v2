@@ -1,72 +1,80 @@
 from global_variables import prRed
+import global_variables
 
-class Complex(object):
-	def __init__(self, real, imag=0):
-		self.real = real
-		self.imag = imag
+
+class Rational(object):
+	def __init__(self, numerator=0, denominator=1):
+		self.num = numerator
+		self.den = denominator
 
 	def __str__(self):
 		string = ''
-		if self.real != 0:
-			if self.real % 1 == 0 : self.real = int(self.real)
-			string += str(self.real)
-		if self.imag != 0:
-			if self.imag % 1 == 0 : self.imag = int(self.imag)
-			if self.real != 0:
-				string += ' + ' if self.imag > 0 else ' - '
-			else:
-				string += '' if self.imag > 0 else '-'
-			if abs(self.imag) != 1:
-				string += str(abs(self.imag)) + 'i'
-			else:
-				string += 'i'
-		return string or '0'
+		if global_variables.irreductible == False:
+			if self.num % 1 == 0:
+				self.num = int(self.num)
+			string += str(self.num)
+			if self.den != 1:
+				if self.den % 1 == 0:
+					self.den = int(self.den)
+				string += '/' + str(self.den)
+		else:
+			fraction = round(self.num / self.den, 6)
+			string = str(fraction) 
+		return string
 
 	def __repr__(self):
-		return 'Complex' + str(self)
+		return 'Rational' + str(self)
 
 ######################### COMMUTATIVE OPERATIONS #########################
 
 	def __add__(self, other):
-		return Complex(self.real + other.real,
-					   self.imag + other.imag)
+		if isinstance(other, (int, float)):
+			other = Rational(other)
+		return Rational(self.num * other.den + other.num * self.den, self.den * other.den)
 
 	def __radd__(self, other):
 		return self + other 
 
 	def __mul__(self, other):
-		return Complex(self.real * other.real - self.imag * other.imag,
-					   self.imag * other.real + self.real * other.imag)
+		if isinstance(other, (int, float)):
+			other = Rational(other)
+		return Rational(self.num * other.num, self.den * other.den)
 
 	def __rmul__(self, other):
 		return self * other
 
 ####################### NON COMMUTATIVE OPERATIONS #######################
+	def greatest_common_divisor(self, a, b):
+	    while b:
+	        a, b = b, a % b
+	    return a
 
+	def simplify(self):
+	    gcd = self.greatest_common_divisor(self.num, self.den)
+	    (reduced_num, reduced_den) = (self.num / gcd, self.den / gcd)
+	    return Rational(reduced_num, reduced_den)
+	
 	def __sub__(self, other):
 		if isinstance(other, (float,int)):
-			other = Complex(other)
-		return Complex(self.real - other.real,
-					   self.imag - other.imag)
+			other = Rational(other)
+		return Rational(self.num * other.den - other.num * self.den, self.den * other.den).simplify()
 
 	def __rsub__(self, other):
 		if isinstance(other, (float,int)):
-			other = Complex(other)
+			other = Rational(other)
 		return other - self
 
 	def __truediv__(self, other):
 		if isinstance(other, (float,int)):
-			other = Complex(other)
-		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
-		r = o1 ** 2 + o2 ** 2
-		try: 
-			return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
-		except ZeroDivisionError as e:
-			prRed(str(e).capitalize())
+			other = Rational(other)
+		other.num, other.den = other.den, other.num
+
+		return (self * other).simplify()
+
 
 	def __rtruediv__(self, other):
 		if isinstance(other, (float,int)):
-			other = Complex(other)
+			other = Rational(other)
 		return other / self
 
 	def __floordiv__(self, other):
@@ -76,7 +84,7 @@ class Complex(object):
 		# the result of a division (both real and imaginary parts)
 		# to the closest integer.
 		if isinstance(other, (float,int)):
-			other = Complex(other)
+			other = Rational(other)
 		ret = self / other
 		if ret is not None:
 			ret.real = round(ret.real)
@@ -85,7 +93,7 @@ class Complex(object):
 
 	def __rfloordiv__(self, other):
 		if isinstance(other, (float,int)):
-			other = Complex(other)
+			other = Rational(other)
 		return other // self
 
 	def __mod__(self, other):
@@ -95,7 +103,7 @@ class Complex(object):
 		# the result of a division (both real and imaginary parts)
 		# to 2 decimal places.
 		if isinstance(other, (float,int)):
-			other = Complex(other)
+			other = Rational(other)
 		floor = self // other
 		if floor is not None:
 			ret = self - floor * other
@@ -106,7 +114,7 @@ class Complex(object):
 
 	def __rmod__(self, other):
 		if isinstance(other, (float,int)):
-			other = Complex(other)
+			other = Rational(other)
 		return other % self
 
 	def __pow__(self, power):
@@ -117,3 +125,6 @@ class Complex(object):
 			return answer
 		else:
 			return 1 / answer
+
+
+		
