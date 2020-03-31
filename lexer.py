@@ -14,11 +14,7 @@ t_ignore = " \t"
 
 def t_RATIONAL(t):
 	r"(?:\d+(?:\.\d*)?|\.\d+)(?:[Ee][+-]?\d+)?"
-	# try:
-	# 	t.value = int(t.value)
-	# except:
-	# 	t.value = float(t.value)
-	t.value = Rational(float(t.value))
+	t.value = Rational(t.value)
 	return t
 
 def t_IMAGINE(t):

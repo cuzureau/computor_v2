@@ -5,6 +5,7 @@ from global_variables import prGreen
 from global_variables import prLightPurple
 import ply.yacc as yacc
 from complex import Complex
+from rational import Rational
 import global_variables
 
 
@@ -49,7 +50,9 @@ def p_floor_divide(p):
 
 def p_unary_minus(p):
 	""" third : '-' third """
-	if type(p[2]) == Complex:
+	if type(p[2]) == Rational:
+		p[0] = Rational(-p[2].num, p[2].den)
+	elif type(p[2]) == Complex:
 		p[0] = Complex(-p[2].real, -p[2].imag)
 	else:
 		p[0] = -p[2]
@@ -127,9 +130,9 @@ def p_execute_command(t):
 	elif letter == 'f':
 		global_variables.irreductible = not global_variables.irreductible
 		if global_variables.irreductible is True:
-			prGreen("Fraction activated!")
-		else:
 			prRed("Fraction deactivated!")
+		else:
+			prGreen("Fraction activated!")
 	else:
 		print("Type '!h' for help.")
 

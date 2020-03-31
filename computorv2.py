@@ -11,7 +11,7 @@ import wolframalpha
 app_id = "9T72LH-QWT7RJHW4W"
 client = wolframalpha.Client(app_id)
 
-print("ComputorV2 [default, 03/2020]")
+print("ComputorV2 [42born2code, 03/2020]")
 print("Type \"!h\" for help.")
 while True:
 	try:
