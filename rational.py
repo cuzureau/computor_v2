@@ -3,33 +3,25 @@ import global_variables
 
 class Rational(object):
 	def __init__(self, numerator, denominator=1):
-		if isinstance(numerator, Rational):
-			self = numerator
-		else:
-			try:
-				numerator = int(numerator)
-				self.num, self.den = numerator, denominator
-
-			except:
-				numerator = float(numerator)
-				self.num, self.den = numerator.as_integer_ratio()
-				self = self.limit_denominator()
-		# print('R(', self.num, self.den, ')')
+		try:
+			numerator = int(numerator)
+			self.num, self.den = numerator, denominator
+		except:
+			self.float = numerator
+			numerator = float(numerator)
+			self.num, self.den = numerator.as_integer_ratio()
+			limited = self.limit_denominator()
+			self.num, self.den = limited.num, limited.den
+		print('R(', self.num, self.den, self.float, ')')
 
 	def __str__(self):
 		string = ''
-		print(self.num, self.den)
 		if global_variables.irreductible == False:
 			string += str(self.num)
 			if self.den != 1:
-				string += '/' + str(int(self.den))
+				string += '/' + str(self.den)
 		else:
-			fraction = round(self.num / self.den, 8)
-			if fraction % 1 == 0:
-				fraction = int(fraction)
-			else:
-				fraction = float(fraction)
-			string = str(fraction) 
+			string = str(self.float) 
 		return string
 
 	def __repr__(self):
@@ -46,7 +38,7 @@ class Rational(object):
 
 	def limit_denominator(self, max_denominator=1000000):
 		if self.den <= max_denominator:
-			return Rational(self)
+			return self
 
 		p0, q0, p1, q1 = 0, 1, 1, 0
 		n, d = self.num, self.den
@@ -66,22 +58,6 @@ class Rational(object):
 			return bound2
 		else:
 			return bound1
-
-
-
-
-
-
-	def greatest_common_divisor(self, a, b):
-		while b:
-			a, b = b, a % b
-		return a
-
-	def simplify(self):
-		gcd = self.greatest_common_divisor(self.num, self.den)
-		(reduced_num, reduced_den) = (self.num / gcd, self.den / gcd)
-		return Rational(reduced_num, reduced_den)
-
 	
 
 ######################### COMMUTATIVE OPERATIONS #########################
@@ -107,7 +83,7 @@ class Rational(object):
 	def __sub__(self, other):
 		if isinstance(other, (float,int)):
 			other = Rational(other)
-		return Rational(self.num * other.den - other.num * self.den, self.den * other.den).simplify()
+		return Rational(self.num * other.den - other.num * self.den, self.den * other.den)
 
 	def __rsub__(self, other):
 		if isinstance(other, (float,int)):
@@ -118,9 +94,7 @@ class Rational(object):
 		if isinstance(other, (float,int)):
 			other = Rational(other)
 		other.num, other.den = other.den, other.num
-
-		return (self * other).simplify()
-
+		return (self * other)
 
 	def __rtruediv__(self, other):
 		if isinstance(other, (float,int)):
@@ -128,17 +102,9 @@ class Rational(object):
 		return other / self
 
 	def __floordiv__(self, other):
-		# Python does NOT accept floor division of complex numbers.
-		# 	->	TypeError: can't take floor of complex number.
-		# So I have implemented the Wolframalpha convention : rounding
-		# the result of a division (both real and imaginary parts)
-		# to the closest integer.
 		if isinstance(other, (float,int)):
 			other = Rational(other)
-		ret = self / other
-		if ret is not None:
-			ret.real = round(ret.real)
-			ret.imag = round(ret.imag)
+
 			return ret
 
 	def __rfloordiv__(self, other):
