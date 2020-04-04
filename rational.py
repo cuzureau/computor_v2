@@ -1,27 +1,32 @@
 from global_variables import prRed
-import global_variables
+from global_variables import prGreen
+from global_variables import prLightPurple
+import global_variables as g
+
+import math
 
 class Rational(object):
 	def __init__(self, numerator, denominator=1):
 		try:
 			numerator = int(numerator)
-			self.num, self.den = numerator, denominator
 		except:
-			self.float = numerator
 			numerator = float(numerator)
-			self.num, self.den = numerator.as_integer_ratio()
-			limited = self.limit_denominator()
-			self.num, self.den = limited.num, limited.den
-		print('R(', self.num, self.den, self.float, ')')
+			numerator, denominator = numerator.as_integer_ratio()
+		self.num, self.den = numerator, denominator
+		# print('R(', self.num, self.den, ')')
 
 	def __str__(self):
-		string = ''
-		if global_variables.irreductible == False:
-			string += str(self.num)
+		if g.fraction_form == True:
+			string = str(self.num)
 			if self.den != 1:
+				limit = self.limit_denominator()
 				string += '/' + str(self.den)
-		else:
-			string = str(self.float) 
+				string += ' ≃ ' + str(limit.num) + '/' + str(limit.den)
+		else:           
+			fraction = self.num / self.den
+			if fraction % 1 == 0:
+				fraction = int(fraction)
+			string = str(fraction)
 		return string
 
 	def __repr__(self):
@@ -60,7 +65,7 @@ class Rational(object):
 			return bound1
 	
 
-######################### COMMUTATIVE OPERATIONS #########################
+# ######################### COMMUTATIVE OPERATIONS #########################
 
 	def __add__(self, other):
 		if isinstance(other, (int, float)):
@@ -78,7 +83,7 @@ class Rational(object):
 	def __rmul__(self, other):
 		return self * other
 
-####################### NON COMMUTATIVE OPERATIONS #######################
+# ####################### NON COMMUTATIVE OPERATIONS #######################
 	
 	def __sub__(self, other):
 		if isinstance(other, (float,int)):
@@ -94,7 +99,7 @@ class Rational(object):
 		if isinstance(other, (float,int)):
 			other = Rational(other)
 		other.num, other.den = other.den, other.num
-		return (self * other)
+		return self * other
 
 	def __rtruediv__(self, other):
 		if isinstance(other, (float,int)):
@@ -102,10 +107,15 @@ class Rational(object):
 		return other / self
 
 	def __floordiv__(self, other):
-		if isinstance(other, (float,int)):
-			other = Rational(other)
-
-			return ret
+		# if isinstance(other, (float,int)):
+		#   other = Rational(other)
+		# div = self / other
+		# return div.num // div.den
+		div = self / other
+		if isinstance(div, Rational):
+			return div.num // div.den
+		else:
+			return math.floor(div)
 
 	def __rfloordiv__(self, other):
 		if isinstance(other, (float,int)):
@@ -113,33 +123,23 @@ class Rational(object):
 		return other // self
 
 	def __mod__(self, other):
-		# Python does NOT accept modulo of complex numbers.
-		# 	->	TypeError: can't mod complex numbers.
-		# So I have implemented the Wolframalpha convention : rounding
-		# the result of a division (both real and imaginary parts)
-		# to 2 decimal places.
 		if isinstance(other, (float,int)):
 			other = Rational(other)
-		floor = self // other
-		if floor is not None:
-			ret = self - floor * other
-			if ret is not None:
-				ret.real = round(ret.real, 1)
-				ret.imag = round(ret.imag, 1)
-				return ret
+		div = self // other
+		return self - (div * other)
 
-	def __rmod__(self, other):
-		if isinstance(other, (float,int)):
-			other = Rational(other)
-		return other % self
+	# def __rmod__(self, other):
+	#   if isinstance(other, (float,int)):
+	#       other = Rational(other)
+	#   return other % self
 
-	def __pow__(self, power):
-		answer = 1
-		for i in range(1, abs(power) + 1): 
-			answer = self * answer
-		if power >= 0:
-			return answer
-		else:
-			return 1 / answer
+	# def __pow__(self, power):
+	#   answer = 1
+	#   for i in range(1, abs(power) + 1): 
+	#       answer = self * answer
+	#   if power >= 0:
+	#       return answer
+	#   else:
+	#       return 1 / answer
 
-		
+#       

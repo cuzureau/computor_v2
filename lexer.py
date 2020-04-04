@@ -13,7 +13,7 @@ t_ignore = " \t"
 
 
 def t_RATIONAL(t):
-	r"(?:\d+(?:\.\d*)?|\.\d+)(?:[Ee][+-]?\d+)?"
+	r"(?:\d+(?:\.\d*)?|\.\d+)"
 	t.value = Rational(t.value)
 	return t
 

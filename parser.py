@@ -6,7 +6,7 @@ from global_variables import prLightPurple
 import ply.yacc as yacc
 from complex import Complex
 from rational import Rational
-import global_variables
+import global_variables as g
 
 
 def p_operations(p): 
@@ -122,17 +122,17 @@ def p_execute_command(t):
 		prGreen("Bye bye!")
 		exit()
 	elif letter == 's':
-		global_variables.wolframalpha = not global_variables.wolframalpha
-		if global_variables.wolframalpha is True:
+		g.wolframalpha = not g.wolframalpha
+		if g.wolframalpha is True:
 			prGreen("Solver activated!")
 		else:
 			prRed("Solver deactivated!")
 	elif letter == 'f':
-		global_variables.irreductible = not global_variables.irreductible
-		if global_variables.irreductible is True:
-			prRed("Fraction deactivated!")
-		else:
+		g.fraction_form = not g.fraction_form
+		if g.fraction_form is True:
 			prGreen("Fraction activated!")
+		else:
+			prRed("Fraction deactivated!")
 	else:
 		print("Type '!h' for help.")
 

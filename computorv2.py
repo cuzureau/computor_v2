@@ -4,7 +4,7 @@ from global_variables import prRed
 from lexer import lexer
 from parser import parser
 import sys
-import global_variables
+import global_variables as g
 import wolframalpha
 
 
@@ -19,12 +19,21 @@ while True:
 	except:
 		question = input('>>> ')
 	
-	if global_variables.wolframalpha is True:
+	try:
+		answer = parser.parse(question)
+		if answer is not None:
+			print(answer)
+	except EOFError:
+		break
+
+	if g.wolframalpha is True and question[0] != '!':
 		new = question.replace("%", " mod ")
 		res = client.query(new)
 		try:
 			online_answer = res.details
-			if 'Result' in online_answer:
+			if 'Rational approximation' in online_answer and g.fraction_form == True:
+				prGreen(res.details['Rational approximation'])
+			elif 'Result' in online_answer:
 				prGreen(res.details['Result'])
 			elif 'Exact result' in online_answer:
 				prGreen(res.details['Exact result'])
@@ -32,13 +41,6 @@ while True:
 				prGreen(res.details['Input'])
 		except:
 			prRed("No result")
-
-	try:
-		answer = parser.parse(question)
-		if answer is not None:
-			print(answer)
-	except EOFError:
-		break
 
 
 
