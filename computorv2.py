@@ -31,10 +31,14 @@ while True:
 		res = client.query(new)
 		try:
 			online_answer = res.details
-			if 'Rational approximation' in online_answer and g.fraction_form == True:
+			if 'Rational form' in online_answer and g.fraction_form == True:
+				prGreen(res.details['Rational form'])
+			elif 'Rational approximation' in online_answer and g.fraction_form == True:
 				prGreen(res.details['Rational approximation'])
 			elif 'Result' in online_answer:
 				prGreen(res.details['Result'])
+			elif 'Scientific notation' in online_answer:
+				prGreen(res.details['Scientific notation'])
 			elif 'Exact result' in online_answer:
 				prGreen(res.details['Exact result'])
 			elif 'Input' in online_answer:
@@ -61,14 +65,16 @@ while True:
 # 					res = client.query(t)
 # 					try:
 # 						online_answer = res.details
-# 						if 'Decimal approximation' in online_answer:
-# 							online_answer = res.details['Decimal approximation']
-# 						elif 'Result' in online_answer:
-# 							online_answer = res.details['Result']
-# 						elif 'Exact result' in online_answer:
-# 							online_answer = res.details['Exact result']
-# 						elif 'Input' in online_answer:
-# 							online_answer = res.details['Input']
+						# if 'Rational form' in online_answer and g.fraction_form == True:
+						# 	prGreen(res.details['Rational form'])
+						# elif 'Rational approximation' in online_answer and g.fraction_form == True:
+						# 	prGreen(res.details['Rational approximation'])
+						# elif 'Result' in online_answer:
+						# 	prGreen(res.details['Result'])
+						# elif 'Exact result' in online_answer:
+						# 	prGreen(res.details['Exact result'])
+						# elif 'Input' in online_answer:
+						# 	prGreen(res.details['Input'])
 # 					except:
 # 						online_answer = "no result"
 

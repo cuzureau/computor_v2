@@ -1,9 +1,4 @@
-from global_variables import prRed
-from global_variables import prGreen
-from global_variables import prLightPurple
 import global_variables as g
-
-import math
 
 class Rational(object):
 	def __init__(self, numerator, denominator=1):
@@ -63,7 +58,6 @@ class Rational(object):
 			return bound2
 		else:
 			return bound1
-	
 
 # ######################### COMMUTATIVE OPERATIONS #########################
 
@@ -98,8 +92,8 @@ class Rational(object):
 	def __truediv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Rational(other)
-		other.num, other.den = other.den, other.num
-		return self * other
+		inverse = Rational(other.den, other.num)
+		return self * inverse
 
 	def __rtruediv__(self, other):
 		if isinstance(other, (float,int)):
@@ -107,15 +101,10 @@ class Rational(object):
 		return other / self
 
 	def __floordiv__(self, other):
-		# if isinstance(other, (float,int)):
-		#   other = Rational(other)
-		# div = self / other
-		# return div.num // div.den
+		if isinstance(other, (float,int)):
+		  other = Rational(other)
 		div = self / other
-		if isinstance(div, Rational):
-			return div.num // div.den
-		else:
-			return math.floor(div)
+		return div.num // div.den
 
 	def __rfloordiv__(self, other):
 		if isinstance(other, (float,int)):
@@ -128,18 +117,19 @@ class Rational(object):
 		div = self // other
 		return self - (div * other)
 
-	# def __rmod__(self, other):
-	#   if isinstance(other, (float,int)):
-	#       other = Rational(other)
-	#   return other % self
+	def __rmod__(self, other):
+	  if isinstance(other, (float,int)):
+		  other = Rational(other)
+	  return other % self
 
-	# def __pow__(self, power):
-	#   answer = 1
-	#   for i in range(1, abs(power) + 1): 
-	#       answer = self * answer
-	#   if power >= 0:
-	#       return answer
-	#   else:
-	#       return 1 / answer
-
-#       
+	def __pow__(self, other):
+		if isinstance(other, (float,int)):
+			other = Rational(other)
+		if other.den == 1:
+			power = other.num
+			if power >= 0:
+				return Rational(self.num ** power, self.den ** power)
+			else:
+				return Rational(self.den ** -power, self.num ** -power)
+		else:
+			return (self.num / self.den) ** (other.num / other.den)
