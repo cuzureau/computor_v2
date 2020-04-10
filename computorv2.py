@@ -21,7 +21,10 @@ while True:
 	
 	try:
 		answer = parser.parse(question)
-		if answer is not None:
+		if g.error is not "":
+			g.prRed(g.error)
+			g.error = ""
+		elif answer is not None:
 			print(answer)
 	except EOFError:
 		break
@@ -35,6 +38,10 @@ while True:
 				prGreen(res.details['Rational form'])
 			elif 'Rational approximation' in online_answer and g.fraction_form == True:
 				prGreen(res.details['Rational approximation'])
+			elif 'Decimal form' in online_answer:
+				prGreen(res.details['Decimal form'])
+			elif 'Decimal approximation' in online_answer:
+				prGreen(res.details['Decimal approximation'])
 			elif 'Result' in online_answer:
 				prGreen(res.details['Result'])
 			elif 'Scientific notation' in online_answer:

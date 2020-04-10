@@ -1,14 +1,16 @@
 import global_variables as g
 
 class Rational(object):
-	def __init__(self, numerator, denominator=1):
-		try:
-			numerator = int(numerator)
-		except:
-			numerator = float(numerator)
-			numerator, denominator = numerator.as_integer_ratio()
-		self.num, self.den = numerator, denominator
-		# print('R(', self.num, self.den, ')')
+	def __init__(self, numerator, denominator=1):		
+		if type(numerator) == Rational:
+			self.num, self.den = numerator.num, numerator.den
+		else:
+			try:
+				numerator = int(numerator)
+			except:
+				numerator = float(numerator)
+				numerator, denominator = numerator.as_integer_ratio()
+			self.num, self.den = numerator, denominator
 
 	def __str__(self):
 		if g.fraction_form == True:
@@ -18,10 +20,13 @@ class Rational(object):
 				string += '/' + str(self.den)
 				string += ' ≃ ' + str(limit.num) + '/' + str(limit.den)
 		else:           
-			fraction = self.num / self.den
-			if fraction % 1 == 0:
-				fraction = int(fraction)
-			string = str(fraction)
+			try :
+				fraction = self.num / self.den
+				if fraction % 1 == 0:
+					fraction = int(fraction)
+				string = str(fraction)
+			except ZeroDivisionError as e:
+				string = str(e).capitalize()
 		return string
 
 	def __repr__(self):
@@ -30,20 +35,61 @@ class Rational(object):
 	def __abs__(self):
 		return Rational(abs(self.num), self.den)
 
+	def __lt__(self, other):
+		if isinstance(other, (int, float)):
+			other = Rational(other)
+		if (self.num * other.den) < (self.den * other.num):
+			return True
+		else:
+			return False
+
 	def __le__(self, other):
+		if isinstance(other, (int, float)):
+			other = Rational(other)
 		if (self.num * other.den) <= (self.den * other.num):
 			return True
 		else:
 			return False
 
+	def __gt__(self, other):
+		if isinstance(other, (int, float)):
+			other = Rational(other)
+		if (self.num * other.den) > (self.den * other.num):
+			return True
+		else:
+			return False
+
+	def __ge__(self, other):
+		if isinstance(other, (int, float)):
+			other = Rational(other)
+		if (self.num * other.den) >= (self.den * other.num):
+			return True
+		else:
+			return False
+
+	# def __nonzero__(self):
+	# 	if self.num != 0:
+	# 		print('Diff de 0')
+	# 	else:
+	# 		print('egal a 0')
+	# 	return self.num != 0
+
 	def limit_denominator(self, max_denominator=1000000):
+		# if self.den == 0:
+		# 	g.error = "ZeroDivisionError: integer division or modulo by zero"
+		# 	return 0
 		if self.den <= max_denominator:
 			return self
 
 		p0, q0, p1, q1 = 0, 1, 1, 0
 		n, d = self.num, self.den
 		while True:
-			a = n//d
+			try:
+				a = n//d
+			except ZeroDivisionError as e:
+				g.error = str(e).capitalize()
+				return self
+
 			q2 = q0+a*q1
 			if q2 > max_denominator:
 				break
@@ -59,19 +105,33 @@ class Rational(object):
 		else:
 			return bound1
 
+	# def convert_to_rational(other):
+	# 	from complex import Complex
+	# 	if isinstance(other, (int, float)):
+	# 		other = Rational(other)
+	# 	return other
+
 # ######################### COMMUTATIVE OPERATIONS #########################
 
 	def __add__(self, other):
+		from complex import Complex
 		if isinstance(other, (int, float)):
 			other = Rational(other)
+		elif isinstance(other, Complex):
+			return other + self
+
 		return Rational(self.num * other.den + other.num * self.den, self.den * other.den)
 
 	def __radd__(self, other):
 		return self + other 
 
 	def __mul__(self, other):
+		from complex import Complex
 		if isinstance(other, (int, float)):
 			other = Rational(other)
+		elif isinstance(other, Complex):
+			return other * self
+
 		return Rational(self.num * other.num, self.den * other.den)
 
 	def __rmul__(self, other):
@@ -80,8 +140,11 @@ class Rational(object):
 # ####################### NON COMMUTATIVE OPERATIONS #######################
 	
 	def __sub__(self, other):
-		if isinstance(other, (float,int)):
+		from complex import Complex
+		if isinstance(other, (int, float)):
 			other = Rational(other)
+		elif isinstance(other, Complex):
+			return Complex(self) - other
 		return Rational(self.num * other.den - other.num * self.den, self.den * other.den)
 
 	def __rsub__(self, other):
@@ -90,8 +153,15 @@ class Rational(object):
 		return other - self
 
 	def __truediv__(self, other):
-		if isinstance(other, (float,int)):
+		from complex import Complex
+		if isinstance(other, (int, float)):
 			other = Rational(other)
+		elif isinstance(other, Complex):
+			try:
+				return Complex(self) / other
+			except ZeroDivisionError as e:
+				g.error = str(e).capitalize()
+				return 0
 		inverse = Rational(other.den, other.num)
 		return self * inverse
 
@@ -101,19 +171,35 @@ class Rational(object):
 		return other / self
 
 	def __floordiv__(self, other):
+		from complex import Complex
 		if isinstance(other, (float,int)):
 		  other = Rational(other)
-		div = self / other
-		return div.num // div.den
+		elif isinstance(other, Complex):
+			return Complex(self) // other
+		div = self / other		
+		try:
+			return div.num // div.den
+		except ZeroDivisionError as e:
+			g.error = str(e).capitalize()
+			return 0
 
 	def __rfloordiv__(self, other):
 		if isinstance(other, (float,int)):
 			other = Rational(other)
 		return other // self
 
+
+
+
+
+
+
 	def __mod__(self, other):
+		from complex import Complex
 		if isinstance(other, (float,int)):
 			other = Rational(other)
+		elif isinstance(other, Complex):
+			return Complex(self) % other
 		div = self // other
 		return self - (div * other)
 
@@ -121,6 +207,16 @@ class Rational(object):
 	  if isinstance(other, (float,int)):
 		  other = Rational(other)
 	  return other % self
+
+
+
+
+
+
+
+
+
+
 
 	def __pow__(self, other):
 		if isinstance(other, (float,int)):

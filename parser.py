@@ -67,6 +67,72 @@ def p_paren(p):
 
 
 
+def p_paren(p):
+	""" expression : expression '@' expression """
+	print("Addition")
+	print ('+	', '{}+{} = '.format(p[1], p[1]), p[1] + p[1])
+	print ('+	', '{}+{} = '.format(p[1], p[3]), p[1] + p[3])
+	print ('+	', '{}+{} = '.format(p[3], p[1]), p[3] + p[1])
+	print ('+	', '{}+{} = '.format(p[3], p[3]), p[3] + p[3])
+	print ('+	', '{}+{} = '.format(p[1], 10), p[1] + 10)
+	print ('+	', '{}+{} = '.format(10, p[1]), 10 + p[1])
+	print ('+	', '{}+{} = '.format(p[3], 10), p[3] + 10)
+	print ('+	', '{}+{} = '.format(10, p[3]), 10 + p[3])
+
+	print("Multiplication")
+	print ('*	', '{}*{} = '.format(p[1], p[1]), p[1] * p[1])
+	print ('*	', '{}*{} = '.format(p[1], p[3]), p[1] * p[3])
+	print ('*	', '{}*{} = '.format(p[3], p[1]), p[3] * p[1])
+	print ('*	', '{}*{} = '.format(p[3], p[3]), p[3] * p[3])
+	print ('*	', '{}*{} = '.format(p[1], 10), p[1] * 10)
+	print ('*	', '{}*{} = '.format(10, p[1]), 10 * p[1])
+	print ('*	', '{}*{} = '.format(p[3], 10), p[3] * 10)
+	print ('*	', '{}*{} = '.format(10, p[3]), 10 * p[3])
+
+	print("Substraction")
+	print ('-	', '{}-{} = '.format(p[1], p[1]), p[1] - p[1])
+	print ('-	', '{}-{} = '.format(p[1], p[3]), p[1] - p[3])
+	print ('-	', '{}-{} = '.format(p[3], p[1]), p[3] - p[1])
+	print ('-	', '{}-{} = '.format(p[3], p[3]), p[3] - p[3])
+	print ('-	', '{}-{} = '.format(p[1], 10), p[1] - 10)
+	print ('-	', '{}-{} = '.format(10, p[1]), 10 - p[1])
+	print ('-	', '{}-{} = '.format(p[3], 10), p[3] - 10)
+	print ('-	', '{}-{} = '.format(10, p[3]), 10 - p[3])
+
+	print("Division")
+	print ('/	', '{}/{} = '.format(p[1], p[1]), p[1] / p[1])
+	print ('/	', '{}/{} = '.format(p[1], p[3]), p[1] / p[3])
+	print ('/	', '{}/{} = '.format(p[3], p[1]), p[3] / p[1])
+	print ('/	', '{}/{} = '.format(p[3], p[3]), p[3] / p[3])
+	print ('/	', '{}/{} = '.format(p[1], 10), p[1] / 10)
+	print ('/	', '{}/{} = '.format(10, p[1]), 10 / p[1])
+	print ('/	', '{}/{} = '.format(p[3], 10), p[3] / 10)
+	print ('/	', '{}/{} = '.format(10, p[3]), 10 / p[3])
+
+	print("Floor Division")
+	print ('//	', '{}//{} = '.format(p[1], p[1]), p[1] // p[1])
+	print ('//	', '{}//{} = '.format(p[1], p[3]), p[1] // p[3])
+	print ('//	', '{}//{} = '.format(p[3], p[1]), p[3] // p[1])
+	print ('//	', '{}//{} = '.format(p[3], p[3]), p[3] // p[3])
+	print ('//	', '{}//{} = '.format(p[1], 10), p[1] // 10)
+	print ('//	', '{}//{} = '.format(10, p[1]), 10 // p[1])
+	print ('//	', '{}//{} = '.format(p[3], 10), p[3] // 10)
+	print ('//	', '{}//{} = '.format(10, p[3]), 10 // p[3])
+
+	print("Modulo")
+	print ('%	', '{}%{} = '.format(p[1], p[1]), p[1] % p[1])
+	print ('%	', '{}%{} = '.format(p[1], p[3]), p[1] % p[3])
+	print ('%	', '{}%{} = '.format(p[3], p[1]), p[3] % p[1])
+	print ('%	', '{}%{} = '.format(p[3], p[3]), p[3] % p[3])
+	print ('%	', '{}%{} = '.format(p[1], 10), p[1] % 10)
+	print ('%	', '{}%{} = '.format(10, p[1]), 10 % p[1])
+	print ('%	', '{}%{} = '.format(p[3], 10), p[3] % 10)
+	print ('%	', '{}%{} = '.format(10, p[3]), 10 % p[3])
+
+
+
+
+
 
 
 

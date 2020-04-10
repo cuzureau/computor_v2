@@ -8,7 +8,7 @@ t_FLOORDIV  = r'\/\/'
 t_NAME      = r'[a-zA-Z]{2,}|[a-hj-zA-HJ-Z]'    # all words (only letters) except the word 'i' alone
 t_COMMAND   = r'![\x00-\x7F]*'                  # all unicode characters after '!'
 
-literals = '+-*/^()[]%=;,?'
+literals = '+-*/^()[]%=;,?@'
 t_ignore = " \t"
 
 
