@@ -1,19 +1,20 @@
-import global_variables as g
+from decimal import Decimal
+import Number
 
 class Complex(object):
 	def __init__(self, real, imag=0):
-		# from rational import Rational
-		self.real = real
-		self.imag = imag
+		self.real = Number.Number(real)
+		self.imag = Number.Number(imag)
 
 	def __str__(self):
 		string = ''
-		if self.real != 0:
+		if self.real:
+			print(type(self.real), self.real)
 			if self.real % 1 == 0 : self.real = int(self.real)
 			string += str(self.real)
-		if self.imag != 0:
+		if self.imag:
 			if self.imag % 1 == 0 : self.imag = int(self.imag)
-			if self.real != 0:
+			if self.real:
 				string += ' + ' if self.imag > 0 else ' - '
 			else:
 				string += '' if self.imag > 0 else '-'
@@ -22,40 +23,49 @@ class Complex(object):
 			else:
 				string += 'i'
 		return string or '0'
-		# return (str(self.real) + ' + ' + str(self.imag) + 'i')
 
 	def __repr__(self):
 		return 'Complex' + str(self)
 
-	# def __gt__(self, other):
-	# 	if isinstance(other, (int, float)):
-	# 		other = Complex(other)
-	# 	if self.real > other.real:
-	# 		return True
-	# 	else:
-	# 		return False
-
 	def __abs__(self):
-		return (self.real ** 2 + self.imag ** 2) ** 0.5
+		return Complex(self.real ** 2 + self.imag ** 2) ** 0.5
+
+	def __gt__(self, other):
+		self._illegal('>')
+
+	def __ge__(self, other):
+		self._illegal('>=')
+
+	def __lt__(self, other):
+		self._illegal('<')
+
+	def __le__(self, other):
+		self._illegal('<=')
+
+	def _illegal(self, op):
+		print ('illegal operation "{}" for complex numbers'.format(op))
 
 ######################### COMMUTATIVE OPERATIONS #########################
 
 	def __add__(self, other):
-		from rational import Rational
-		if isinstance(other, (int, float, Rational)):
+		if isinstance(other, (int,float,Decimal,Number.Number)):
 			other = Complex(other)
-		return Complex(self.real + other.real,
-					   self.imag + other.imag)
+		if isinstance(other, Complex):
+			return Complex(self.real + other.real, self.imag + other.imag)
+		else:
+			return None
 
 	def __radd__(self, other):
 		return self + other 
 
 	def __mul__(self, other):
-		from rational import Rational
-		if isinstance(other, (int, float, Rational)):
+		if isinstance(other, (int,float,Decimal,Number.Number)):
 			other = Complex(other)
-		return Complex(self.real * other.real - self.imag * other.imag,
-					   self.imag * other.real + self.real * other.imag)
+		if isinstance(other, Complex):
+			return Complex(self.real * other.real - self.imag * other.imag,
+						   self.imag * other.real + self.real * other.imag)
+		else:
+			return None
 
 	def __rmul__(self, other):
 		return self * other
@@ -63,117 +73,110 @@ class Complex(object):
 ####################### NON COMMUTATIVE OPERATIONS #######################
 
 	def __sub__(self, other):
-		from rational import Rational
-		if isinstance(other, (int, float, Rational)):
+		if isinstance(other, (int,float,Decimal,Number.Number)):
 			other = Complex(other)
-		return Complex(self.real - other.real,
-					   self.imag - other.imag)
+		if isinstance(other, Complex):
+			return Complex(self.real - other.real, self.imag - other.imag)
+		else:
+			return None
 
 	def __rsub__(self, other):
-		# print(self, type(self), other, type(other))
-		if isinstance(other, (float,int)):
-			other = Complex(other)
-		return other - self
+		return Complex(other) - self
 
 	def __truediv__(self, other):
-		from rational import Rational
-		if isinstance(other, (int, float, Rational)):
+		if isinstance(other, (int,float,Decimal,Number.Number)):
 			other = Complex(other)
-		s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
-		r = o1 ** 2 + o2 ** 2
-		try: 
-			return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
-		except ZeroDivisionError as error:
-			g.error = str(e).capitalize()
-			return 0
+		if isinstance(other, Complex):
+			s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
+			r = o1 ** 2 + o2 ** 2
+			try: 
+				return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
+			except ZeroDivisionError as error:
+				g.error = str(e).capitalize()
+				return None
+		else:
+			return None
 
 	def __rtruediv__(self, other):
-		if isinstance(other, (float,int)):
-			other = Complex(other)
-		return other / self
+		return Complex(other) / self
 
 	def __floordiv__(self, other):
-		from rational import Rational
 		# Python does NOT accept floor division of complex numbers.
 		# 	->	TypeError: can't take floor of complex number.
 		# So I have implemented the Wolframalpha convention : rounding
 		# the result of a division (both real and imaginary parts)
 		# to the closest integer.
-		if isinstance(other, (float,int,Rational)):
+		if isinstance(other, (int,float,Decimal,Number.Number)):
 			other = Complex(other)
-		ret = self / other
-		if ret is None:
-			return 0
+		if isinstance(other, Complex):
+			div = self / other
+			if isinstance(div, Complex):
+				if isinstance(div.real, Number.Number):
+					div.real = round(div.real.value)
+				else:
+					div.real = round(div.real)
+				if isinstance(div.imag, Number.Number):
+					div.imag = round(div.imag.value)
+				else:
+					div.imag = round(div.imag)
+				return div
+			else:
+				return None	
 		else:
-			if type(ret.real) == Rational:
-				ret.real = round(ret.real.num / ret.real.den)
-			else:
-				ret.real = round(ret.real)
-			if type(ret.imag) == Rational:
-				ret.imag = round(ret.imag.num / ret.imag.den)
-			else:
-				ret.imag = round(ret.imag)
-			return ret
+			return None
 
 	def __rfloordiv__(self, other):
-		if isinstance(other, (float,int)):
-			other = Complex(other)
-		return other // self
+		return Complex(other) // self
 
 
 
 
 
 	def __mod__(self, other):
-		from rational import Rational
 		# Python does NOT accept modulo of complex numbers.
 		# 	->	TypeError: can't mod complex numbers.
 		# So I have implemented the Wolframalpha convention : rounding
 		# the result of a division (both real and imaginary parts)
 		# to 2 decimal places.
-		if isinstance(other, (float,int,Rational)):
+		if isinstance(other, (int,float,Decimal,Number.Number)):
 			other = Complex(other)
-		floor = self // other
-		if floor is not None:
-			ret = self - floor * other
-			# if ret is not None:
-			# 	ret.real = round(ret.real, 1)
-			# 	ret.imag = round(ret.imag, 1)
-			# 	return ret
-			if ret is None:
-				return 0
+		if isinstance(other, Complex):
+			floor = self // other
+			if isinstance(floor, Complex):
+				ret = self - floor * other
+				if isinstance(ret, Complex):
+					if isinstance(ret.real, Number.Number):
+						ret.real = round(ret.real.value, 1)
+					else:
+						ret.real = round(ret.real, 1)
+					if isinstance(ret.imag, Number.Number):
+						ret.imag = round(ret.imag.value, 1)
+					else:
+						ret.imag = round(ret.imag, 1)
+					return ret
+				else:
+					return None
 			else:
-				if type(ret.real) == Rational:
-					ret.real = round(ret.real.num / ret.real.den, 1)
-				else:
-					ret.real = round(ret.real, 1)
-				if type(ret.imag) == Rational:
-					ret.imag = round(ret.imag.num / ret.imag.den, 1)
-				else:
-					ret.imag = round(ret.imag, 1)
-				return ret
-
+				return None
+		else:
+			return None
 
 	def __rmod__(self, other):
-		if isinstance(other, (float,int)):
-			other = Complex(other)
-		return other % self
+		return Complex(other) % self
 
-
-
-
-
-
-
-
-
-
-	def __pow__(self, power):
-		answer = 1
-		# print('abs', abs(power))
-		for i in range(1, abs(power) + 1): 
-			answer = self * answer
-		if power >= 0:
-			return answer
+	def __pow__(self, other):
+		if isinstance(other, (int,float,Decimal)):
+			other = Number.Number(other)
+		if isinstance(other, Number.Number):
+			answer = 1
+			for i in range(1, int(abs(other)) + 1): 
+				answer = self * answer
+			if other >= 0:
+				return answer
+			else:
+				return 1 / answer
 		else:
-			return 1 / answer
+			return None
+
+	def __rpow__(self, other):
+		return Number.Number(other) ** self

@@ -4,8 +4,8 @@ from global_variables import prRed
 from global_variables import prGreen
 from global_variables import prLightPurple
 import ply.yacc as yacc
-from complex import Complex
-from rational import Rational
+import Complex
+import Number
 import global_variables as g
 
 
@@ -50,10 +50,10 @@ def p_floor_divide(p):
 
 def p_unary_minus(p):
 	""" third : '-' third """
-	if type(p[2]) == Rational:
-		p[0] = Rational(-p[2].num, p[2].den)
-	elif type(p[2]) == Complex:
-		p[0] = Complex(-p[2].real, -p[2].imag)
+	if type(p[2]) == Number.Number:
+		p[0] = Number.Number(-p[2].value)
+	elif type(p[2]) == Complex.Complex:
+		p[0] = Complex.Complex(-p[2].real, -p[2].imag)
 	else:
 		p[0] = -p[2]
 
@@ -67,15 +67,14 @@ def p_paren(p):
 
 
 
-def p_paren(p):
+def p_test(p):
 	""" expression : expression '@' expression """
+	
 	print("Addition")
 	print ('+	', '{}+{} = '.format(p[1], p[1]), p[1] + p[1])
 	print ('+	', '{}+{} = '.format(p[1], p[3]), p[1] + p[3])
 	print ('+	', '{}+{} = '.format(p[3], p[1]), p[3] + p[1])
 	print ('+	', '{}+{} = '.format(p[3], p[3]), p[3] + p[3])
-	print ('+	', '{}+{} = '.format(p[1], 10), p[1] + 10)
-	print ('+	', '{}+{} = '.format(10, p[1]), 10 + p[1])
 	print ('+	', '{}+{} = '.format(p[3], 10), p[3] + 10)
 	print ('+	', '{}+{} = '.format(10, p[3]), 10 + p[3])
 
@@ -129,7 +128,23 @@ def p_paren(p):
 	print ('%	', '{}%{} = '.format(p[3], 10), p[3] % 10)
 	print ('%	', '{}%{} = '.format(10, p[3]), 10 % p[3])
 
+	print("Power")
+	print ('**	', '{}**{} = '.format(p[1], p[1]), (p[1] ** p[1]))
+	print ('**	', '{}**{} = '.format(p[1], p[3]), (p[1] ** p[3]))
+	print ('**	', '{}**{} = '.format(p[3], p[1]), (p[3] ** p[1]))
+	# print ('**	', '{}**{} = '.format(p[3], p[3]), (p[3] ** p[3]))
+	print ('**	', '{}**{} = '.format(p[1], 10), (p[1] ** 10))
+	print ('**	', '{}**{} = '.format(10, p[1]), (10 ** p[1]))
+	print ('**	', '{}**{} = '.format(p[3], 10), (p[3] ** 10))
+	print ('**	', '{}**{} = '.format(10, p[3]), (10 ** p[3]))
 
+	print("Greater than")
+	print ('>	', '{}>{} = '.format(p[1], p[1]), p[1] > p[1])
+	print ('>	', '{}>{} = '.format(p[1], p[3]), p[1] > p[3])
+	print ('>	', '{}>{} = '.format(p[3], p[1]), p[3] > p[1])
+	print ('>	', '{}>{} = '.format(p[3], p[3]), p[3] > p[3])
+	print ('>	', '{}>{} = '.format(p[3], 10), p[3] > 10)
+	print ('>	', '{}>{} = '.format(10, p[3]), 10 > p[3])
 
 
 

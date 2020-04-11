@@ -1,7 +1,7 @@
 from global_variables import tokens
 import ply.lex as lex
-from complex import Complex
-from rational import Rational
+import Complex
+import Number
 
 
 t_FLOORDIV  = r'\/\/'
@@ -14,12 +14,13 @@ t_ignore = " \t"
 
 def t_RATIONAL(t):
 	r"(?:\d+(?:\.\d*)?|\.\d+)"
-	t.value = Rational(t.value)
+	# t.value = Rational(t.value)
+	t.value = Number.Number(t.value)
 	return t
 
 def t_IMAGINE(t):
 	r'i'
-	t.value = Complex(0, 1)
+	t.value = Complex.Complex(0, 1)
 	return t
 
 def t_error(t):

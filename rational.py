@@ -111,7 +111,7 @@ class Rational(object):
 	# 		other = Rational(other)
 	# 	return other
 
-# ######################### COMMUTATIVE OPERATIONS #########################
+######################### COMMUTATIVE OPERATIONS #########################
 
 	def __add__(self, other):
 		from complex import Complex
@@ -137,7 +137,7 @@ class Rational(object):
 	def __rmul__(self, other):
 		return self * other
 
-# ####################### NON COMMUTATIVE OPERATIONS #######################
+####################### NON COMMUTATIVE OPERATIONS #######################
 	
 	def __sub__(self, other):
 		from complex import Complex
