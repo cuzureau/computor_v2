@@ -6,8 +6,8 @@ from global_variables import prLightPurple
 import ply.yacc as yacc
 import Complex
 import Number
+import Error
 import global_variables as g
-
 
 def p_operations(p): 
 	""" expression : fifth
@@ -15,7 +15,7 @@ def p_operations(p):
 	fourth : third
 	third : second
 	second : first
-	first : RATIONAL
+	first : NUMBER
 	first : IMAGINE
 	"""
 	p[0] = p[1]
@@ -219,9 +219,9 @@ def p_execute_command(t):
 
 def p_error(t):
 	if t:
-		print("Syntax error at '%s'" % t.value)  
+		g.prRed("Syntax error at '%s'" % t.value)  
 	else:
-		print("Syntax error!")
+		g.prRed("Syntax error!")
 
 
 parser = yacc.yacc()

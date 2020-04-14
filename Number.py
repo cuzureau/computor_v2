@@ -1,10 +1,11 @@
 import global_variables as g
 from decimal import Decimal
 import Complex
+import Error
 
 class Number:
 	def __init__(self, number):
-		if type(number) == Number:
+		if isinstance(number, Number):
 			self.value = number.value
 		else:
 			self.value = Decimal(number)
@@ -17,6 +18,9 @@ class Number:
 
 	def __abs__(self):
 		return Number(abs(self.value))
+
+	def __int__(self):
+		return int(self.value)
 
 	def __bool__(self):
 		if self.value == 0:
@@ -53,6 +57,14 @@ class Number:
 			return self.value >= other
 		elif isinstance(other, Number):
 			return self.value >= other.value
+		else:
+			return None
+
+	def __eq__(self, other):
+		if isinstance(other, (int,float,Decimal)):
+			return self.value == other
+		elif isinstance(other, Number):
+			return (self.value == other.value)
 		else:
 			return None
 
@@ -103,13 +115,15 @@ class Number:
 		if isinstance(other, (int,float,Decimal)):
 			other = Number(other)
 		if isinstance(other, Number):
-			if other.value != 0:
+			try:
 				return Number(self.value / other.value)
-			else:
-				g.error = "Error : Division by Zero"
-				return None
+			except:
+				raise Error.Error("ZeroDivisionError: division by zero")
 		elif isinstance(other, Complex.Complex):
-			return Complex.Complex(self) / other
+			try:
+				return Complex.Complex(self) / other
+			except:
+				raise Error.Error("ZeroDivisionError: division by zero")
 		else:
 			return None
 
@@ -120,13 +134,15 @@ class Number:
 		if isinstance(other, (int,float,Decimal)):
 			other = Number(other)
 		if isinstance(other, Number):
-			if other.value != 0:
+			try:
 				return Number(self.value // other.value)
-			else:
-				g.error = "Error : Division by Zero"
-				return None
+			except:
+				raise Error.Error("ZeroDivisionError: integer division or modulo by zero")
 		elif isinstance(other, Complex.Complex):
-			return Complex.Complex(self) // other
+			try:
+				return Complex.Complex(self) // other
+			except:
+				raise Error.Error("ZeroDivisionError: integer division or modulo by zero")
 		else:
 			return None
 
@@ -137,13 +153,15 @@ class Number:
 		if isinstance(other, (int,float,Decimal)):
 			other = Number(other)
 		if isinstance(other, Number):
-			if other.value != 0:
+			try:
 				return Number(self.value % other.value)
-			else:
-				g.error = "Error : Division by Zero"
-				return None
+			except:
+				raise Error.Error("ZeroDivisionError: integer division or modulo by zero")
 		elif isinstance(other, Complex.Complex):
-			return Complex.Complex(self) % other
+			try:
+				return Complex.Complex(self) % other
+			except:
+				raise Error.Error("ZeroDivisionError: integer division or modulo by zero")
 		else:
 			return None
 

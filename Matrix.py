@@ -1,9 +1,7 @@
-from decimal import Decimal
 import Number
-import Error
 import global_variables as g
 
-class Complex(object):
+class Matrix(object):
 	def __init__(self, real, imag=0):
 		self.real = Number.Number(real)
 		self.imag = Number.Number(imag)
@@ -33,16 +31,19 @@ class Complex(object):
 		return Complex(self.real ** 2 + self.imag ** 2) ** 0.5
 
 	def __gt__(self, other):
-		raise Error.Error("TypeError: '>' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
+		self._illegal('>')
 
 	def __ge__(self, other):
-		raise Error.Error("TypeError: '>=' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
+		self._illegal('>=')
 
 	def __lt__(self, other):
-		raise Error.Error("TypeError: '<' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
+		self._illegal('<')
 
 	def __le__(self, other):
-		raise Error.Error("TypeError: '<=' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
+		self._illegal('<=')
+
+	def _illegal(self, operator):
+		g.prRed('Illegal operation "{}" for complex numbers'.format(operator))
 
 ######################### COMMUTATIVE OPERATIONS #########################
 
@@ -90,8 +91,9 @@ class Complex(object):
 			r = o1 ** 2 + o2 ** 2
 			try: 
 				return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
-			except:
-				raise Error.Error("ZeroDivisionError: complex division by zero")
+			except ZeroDivisionError as error:
+				g.error = str(e).capitalize()
+				return None
 		else:
 			return None
 
@@ -107,24 +109,28 @@ class Complex(object):
 		if isinstance(other, (int,float,Decimal,Number.Number)):
 			other = Complex(other)
 		if isinstance(other, Complex):
-			try:
-				div = self / other
-			except:
-				raise Error.Error("ZeroDivisionError: integer division or modulo by zero")
-			if isinstance(div.real, Number.Number):
-				div.real = round(div.real.value)
+			div = self / other
+			if isinstance(div, Complex):
+				if isinstance(div.real, Number.Number):
+					div.real = round(div.real.value)
+				else:
+					div.real = round(div.real)
+				if isinstance(div.imag, Number.Number):
+					div.imag = round(div.imag.value)
+				else:
+					div.imag = round(div.imag)
+				return div
 			else:
-				div.real = round(div.real)
-			if isinstance(div.imag, Number.Number):
-				div.imag = round(div.imag.value)
-			else:
-				div.imag = round(div.imag)
-			return div
+				return None	
 		else:
 			return None
 
 	def __rfloordiv__(self, other):
 		return Complex(other) // self
+
+
+
+
 
 	def __mod__(self, other):
 		# Python does NOT accept modulo of complex numbers.
@@ -136,17 +142,20 @@ class Complex(object):
 			other = Complex(other)
 		if isinstance(other, Complex):
 			floor = self // other
-			ret = self - floor * other
-			if isinstance(ret, Complex):
-				if isinstance(ret.real, Number.Number):
-					ret.real = round(ret.real.value, 1)
+			if isinstance(floor, Complex):
+				ret = self - floor * other
+				if isinstance(ret, Complex):
+					if isinstance(ret.real, Number.Number):
+						ret.real = round(ret.real.value, 1)
+					else:
+						ret.real = round(ret.real, 1)
+					if isinstance(ret.imag, Number.Number):
+						ret.imag = round(ret.imag.value, 1)
+					else:
+						ret.imag = round(ret.imag, 1)
+					return ret
 				else:
-					ret.real = round(ret.real, 1)
-				if isinstance(ret.imag, Number.Number):
-					ret.imag = round(ret.imag.value, 1)
-				else:
-					ret.imag = round(ret.imag, 1)
-				return ret
+					return None
 			else:
 				return None
 		else:

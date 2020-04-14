@@ -1,57 +1,56 @@
 from global_variables import tokens
-from global_variables import prGreen
-from global_variables import prRed
 from lexer import lexer
 from parser import parser
-import sys
 import global_variables as g
 import wolframalpha
-
+import readline
+import Error
 
 app_id = "9T72LH-QWT7RJHW4W"
 client = wolframalpha.Client(app_id)
 
 print("ComputorV2 [42born2code, 03/2020]")
 print("Type \"!h\" for help.")
-while True:
-	try:
-		question = raw_input('>>> ')
-	except:
-		question = input('>>> ')
-	
-	try:
-		answer = parser.parse(question)
-		if g.error is not "":
-			g.prRed(g.error)
-			g.error = ""
-		elif answer is not None:
-			print(answer)
-	except EOFError:
-		break
-
-	if g.wolframalpha is True and question[0] != '!':
-		new = question.replace("%", " mod ")
-		res = client.query(new)
+try:
+	while True:
 		try:
-			online_answer = res.details
-			if 'Rational form' in online_answer and g.fraction_form == True:
-				prGreen(res.details['Rational form'])
-			elif 'Rational approximation' in online_answer and g.fraction_form == True:
-				prGreen(res.details['Rational approximation'])
-			elif 'Decimal form' in online_answer:
-				prGreen(res.details['Decimal form'])
-			elif 'Decimal approximation' in online_answer:
-				prGreen(res.details['Decimal approximation'])
-			elif 'Result' in online_answer:
-				prGreen(res.details['Result'])
-			elif 'Scientific notation' in online_answer:
-				prGreen(res.details['Scientific notation'])
-			elif 'Exact result' in online_answer:
-				prGreen(res.details['Exact result'])
-			elif 'Input' in online_answer:
-				prGreen(res.details['Input'])
+			question = raw_input('>>> ')
 		except:
-			prRed("No result")
+			question = input('>>> ')
+		
+		try:
+			answer = parser.parse(question)
+			if answer is not None:
+				print(answer)
+		except Error.Error as e:
+			g.prRed(e.message)
+
+		if g.wolframalpha is True and question[0] != '!':
+			new = question.replace("%", " mod ")
+			res = client.query(new)
+			try:
+				online_answer = res.details
+				if 'Rational form' in online_answer and g.fraction_form == True:
+					g.prGreen(res.details['Rational form'])
+				elif 'Rational approximation' in online_answer and g.fraction_form == True:
+					g.prGreen(res.details['Rational approximation'])
+				elif 'Decimal form' in online_answer:
+					g.prGreen(res.details['Decimal form'])
+				elif 'Decimal approximation' in online_answer:
+					g.prGreen(res.details['Decimal approximation'])
+				elif 'Result' in online_answer:
+					g.prGreen(res.details['Result'])
+				elif 'Scientific notation' in online_answer:
+					g.prGreen(res.details['Scientific notation'])
+				elif 'Exact result' in online_answer:
+					g.prGreen(res.details['Exact result'])
+				elif 'Input' in online_answer:
+					g.prGreen(res.details['Input'])
+			except:
+				g.prRed("No result")
+
+except EOFError:
+	print()
 
 
 
@@ -73,24 +72,24 @@ while True:
 # 					try:
 # 						online_answer = res.details
 						# if 'Rational form' in online_answer and g.fraction_form == True:
-						# 	prGreen(res.details['Rational form'])
+						# 	g.prGreen(res.details['Rational form'])
 						# elif 'Rational approximation' in online_answer and g.fraction_form == True:
-						# 	prGreen(res.details['Rational approximation'])
+						# 	g.prGreen(res.details['Rational approximation'])
 						# elif 'Result' in online_answer:
-						# 	prGreen(res.details['Result'])
+						# 	g.prGreen(res.details['Result'])
 						# elif 'Exact result' in online_answer:
-						# 	prGreen(res.details['Exact result'])
+						# 	g.prGreen(res.details['Exact result'])
 						# elif 'Input' in online_answer:
-						# 	prGreen(res.details['Input'])
+						# 	g.prGreen(res.details['Input'])
 # 					except:
 # 						online_answer = "no result"
 
 # 					my_answer = parser.parse(t)
 
 # 					if str(my_answer).replace(' ', '') != str(online_answer).replace(' ', ''):
-# 						prRed(">>> " + t)
+# 						g.prRed(">>> " + t)
 # 						print(my_answer)
-# 						prGreen(online_answer)
+# 						g.prGreen(online_answer)
 # 					tests_count += 1
 # print(tests_count)
 
