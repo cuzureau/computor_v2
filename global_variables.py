@@ -4,7 +4,6 @@ tokens = (
     'FLOORDIV',
     'IMAGINE',
     'COMMAND',
-    'MATRIX',
 )
 
 variables = {}

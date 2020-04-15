@@ -6,11 +6,13 @@ from global_variables import prLightPurple
 import ply.yacc as yacc
 import Complex
 import Number
+import Matrix
 import Error
 import global_variables as g
 
 def p_operations(p): 
-	""" expression : fifth
+	""" expression : sixth
+	sixth : fifth
 	fifth : fourth
 	fourth : third
 	third : second
@@ -19,6 +21,22 @@ def p_operations(p):
 	first : IMAGINE
 	"""
 	p[0] = p[1]
+
+def p_comma(p):
+	""" sixth : sixth ',' fifth """
+	if isinstance(p[1], list):
+		p[1].append(p[3])
+		p[0] = p[1]
+	else:
+		p[0] = [p[1],p[3]]
+
+def p_semicolon(p):
+	""" sixth : sixth ';' fifth """
+	if isinstance(p[1], list):
+		p[1].append(p[3])
+		p[0] = p[1]
+	else:
+		p[0] = [p[1],p[3]]
 
 def p_plus(p):
 	""" fifth : fifth '+' fourth """
@@ -65,86 +83,98 @@ def p_paren(p):
 	""" first : '(' expression ')' """
 	p[0] = p[2]
 
+def p_brack(p):
+	""" first : '[' expression ']' """
+	if type(p[2][0]) == Matrix.Matrix:
+		# print('Matrix')
+		p[0] = Matrix.Matrix(p[2])
+	else:
+		# print('Vector')
+		p[0] = [p[2]]
 
 
-def p_test(p):
-	""" expression : expression '@' expression """
+
+
+
+
+# def p_test(p):
+# 	""" expression : expression '@' expression """
 	
-	print("Addition")
-	print ('+	', '{}+{} = '.format(p[1], p[1]), p[1] + p[1])
-	print ('+	', '{}+{} = '.format(p[1], p[3]), p[1] + p[3])
-	print ('+	', '{}+{} = '.format(p[3], p[1]), p[3] + p[1])
-	print ('+	', '{}+{} = '.format(p[3], p[3]), p[3] + p[3])
-	print ('+	', '{}+{} = '.format(p[3], 10), p[3] + 10)
-	print ('+	', '{}+{} = '.format(10, p[3]), 10 + p[3])
+# 	print("Addition")
+# 	print ('+	', '{}+{} = '.format(p[1], p[1]), p[1] + p[1])
+# 	print ('+	', '{}+{} = '.format(p[1], p[3]), p[1] + p[3])
+# 	print ('+	', '{}+{} = '.format(p[3], p[1]), p[3] + p[1])
+# 	print ('+	', '{}+{} = '.format(p[3], p[3]), p[3] + p[3])
+# 	print ('+	', '{}+{} = '.format(p[3], 10), p[3] + 10)
+# 	print ('+	', '{}+{} = '.format(10, p[3]), 10 + p[3])
 
-	print("Multiplication")
-	print ('*	', '{}*{} = '.format(p[1], p[1]), p[1] * p[1])
-	print ('*	', '{}*{} = '.format(p[1], p[3]), p[1] * p[3])
-	print ('*	', '{}*{} = '.format(p[3], p[1]), p[3] * p[1])
-	print ('*	', '{}*{} = '.format(p[3], p[3]), p[3] * p[3])
-	print ('*	', '{}*{} = '.format(p[1], 10), p[1] * 10)
-	print ('*	', '{}*{} = '.format(10, p[1]), 10 * p[1])
-	print ('*	', '{}*{} = '.format(p[3], 10), p[3] * 10)
-	print ('*	', '{}*{} = '.format(10, p[3]), 10 * p[3])
+# 	print("Multiplication")
+# 	print ('*	', '{}*{} = '.format(p[1], p[1]), p[1] * p[1])
+# 	print ('*	', '{}*{} = '.format(p[1], p[3]), p[1] * p[3])
+# 	print ('*	', '{}*{} = '.format(p[3], p[1]), p[3] * p[1])
+# 	print ('*	', '{}*{} = '.format(p[3], p[3]), p[3] * p[3])
+# 	print ('*	', '{}*{} = '.format(p[1], 10), p[1] * 10)
+# 	print ('*	', '{}*{} = '.format(10, p[1]), 10 * p[1])
+# 	print ('*	', '{}*{} = '.format(p[3], 10), p[3] * 10)
+# 	print ('*	', '{}*{} = '.format(10, p[3]), 10 * p[3])
 
-	print("Substraction")
-	print ('-	', '{}-{} = '.format(p[1], p[1]), p[1] - p[1])
-	print ('-	', '{}-{} = '.format(p[1], p[3]), p[1] - p[3])
-	print ('-	', '{}-{} = '.format(p[3], p[1]), p[3] - p[1])
-	print ('-	', '{}-{} = '.format(p[3], p[3]), p[3] - p[3])
-	print ('-	', '{}-{} = '.format(p[1], 10), p[1] - 10)
-	print ('-	', '{}-{} = '.format(10, p[1]), 10 - p[1])
-	print ('-	', '{}-{} = '.format(p[3], 10), p[3] - 10)
-	print ('-	', '{}-{} = '.format(10, p[3]), 10 - p[3])
+# 	print("Substraction")
+# 	print ('-	', '{}-{} = '.format(p[1], p[1]), p[1] - p[1])
+# 	print ('-	', '{}-{} = '.format(p[1], p[3]), p[1] - p[3])
+# 	print ('-	', '{}-{} = '.format(p[3], p[1]), p[3] - p[1])
+# 	print ('-	', '{}-{} = '.format(p[3], p[3]), p[3] - p[3])
+# 	print ('-	', '{}-{} = '.format(p[1], 10), p[1] - 10)
+# 	print ('-	', '{}-{} = '.format(10, p[1]), 10 - p[1])
+# 	print ('-	', '{}-{} = '.format(p[3], 10), p[3] - 10)
+# 	print ('-	', '{}-{} = '.format(10, p[3]), 10 - p[3])
 
-	print("Division")
-	print ('/	', '{}/{} = '.format(p[1], p[1]), p[1] / p[1])
-	print ('/	', '{}/{} = '.format(p[1], p[3]), p[1] / p[3])
-	print ('/	', '{}/{} = '.format(p[3], p[1]), p[3] / p[1])
-	print ('/	', '{}/{} = '.format(p[3], p[3]), p[3] / p[3])
-	print ('/	', '{}/{} = '.format(p[1], 10), p[1] / 10)
-	print ('/	', '{}/{} = '.format(10, p[1]), 10 / p[1])
-	print ('/	', '{}/{} = '.format(p[3], 10), p[3] / 10)
-	print ('/	', '{}/{} = '.format(10, p[3]), 10 / p[3])
+# 	print("Division")
+# 	print ('/	', '{}/{} = '.format(p[1], p[1]), p[1] / p[1])
+# 	print ('/	', '{}/{} = '.format(p[1], p[3]), p[1] / p[3])
+# 	print ('/	', '{}/{} = '.format(p[3], p[1]), p[3] / p[1])
+# 	print ('/	', '{}/{} = '.format(p[3], p[3]), p[3] / p[3])
+# 	print ('/	', '{}/{} = '.format(p[1], 10), p[1] / 10)
+# 	print ('/	', '{}/{} = '.format(10, p[1]), 10 / p[1])
+# 	print ('/	', '{}/{} = '.format(p[3], 10), p[3] / 10)
+# 	print ('/	', '{}/{} = '.format(10, p[3]), 10 / p[3])
 
-	print("Floor Division")
-	print ('//	', '{}//{} = '.format(p[1], p[1]), p[1] // p[1])
-	print ('//	', '{}//{} = '.format(p[1], p[3]), p[1] // p[3])
-	print ('//	', '{}//{} = '.format(p[3], p[1]), p[3] // p[1])
-	print ('//	', '{}//{} = '.format(p[3], p[3]), p[3] // p[3])
-	print ('//	', '{}//{} = '.format(p[1], 10), p[1] // 10)
-	print ('//	', '{}//{} = '.format(10, p[1]), 10 // p[1])
-	print ('//	', '{}//{} = '.format(p[3], 10), p[3] // 10)
-	print ('//	', '{}//{} = '.format(10, p[3]), 10 // p[3])
+# 	print("Floor Division")
+# 	print ('//	', '{}//{} = '.format(p[1], p[1]), p[1] // p[1])
+# 	print ('//	', '{}//{} = '.format(p[1], p[3]), p[1] // p[3])
+# 	print ('//	', '{}//{} = '.format(p[3], p[1]), p[3] // p[1])
+# 	print ('//	', '{}//{} = '.format(p[3], p[3]), p[3] // p[3])
+# 	print ('//	', '{}//{} = '.format(p[1], 10), p[1] // 10)
+# 	print ('//	', '{}//{} = '.format(10, p[1]), 10 // p[1])
+# 	print ('//	', '{}//{} = '.format(p[3], 10), p[3] // 10)
+# 	print ('//	', '{}//{} = '.format(10, p[3]), 10 // p[3])
 
-	print("Modulo")
-	print ('%	', '{}%{} = '.format(p[1], p[1]), p[1] % p[1])
-	print ('%	', '{}%{} = '.format(p[1], p[3]), p[1] % p[3])
-	print ('%	', '{}%{} = '.format(p[3], p[1]), p[3] % p[1])
-	print ('%	', '{}%{} = '.format(p[3], p[3]), p[3] % p[3])
-	print ('%	', '{}%{} = '.format(p[1], 10), p[1] % 10)
-	print ('%	', '{}%{} = '.format(10, p[1]), 10 % p[1])
-	print ('%	', '{}%{} = '.format(p[3], 10), p[3] % 10)
-	print ('%	', '{}%{} = '.format(10, p[3]), 10 % p[3])
+# 	print("Modulo")
+# 	print ('%	', '{}%{} = '.format(p[1], p[1]), p[1] % p[1])
+# 	print ('%	', '{}%{} = '.format(p[1], p[3]), p[1] % p[3])
+# 	print ('%	', '{}%{} = '.format(p[3], p[1]), p[3] % p[1])
+# 	print ('%	', '{}%{} = '.format(p[3], p[3]), p[3] % p[3])
+# 	print ('%	', '{}%{} = '.format(p[1], 10), p[1] % 10)
+# 	print ('%	', '{}%{} = '.format(10, p[1]), 10 % p[1])
+# 	print ('%	', '{}%{} = '.format(p[3], 10), p[3] % 10)
+# 	print ('%	', '{}%{} = '.format(10, p[3]), 10 % p[3])
 
-	print("Power")
-	print ('**	', '{}**{} = '.format(p[1], p[1]), (p[1] ** p[1]))
-	print ('**	', '{}**{} = '.format(p[1], p[3]), (p[1] ** p[3]))
-	print ('**	', '{}**{} = '.format(p[3], p[1]), (p[3] ** p[1]))
-	# print ('**	', '{}**{} = '.format(p[3], p[3]), (p[3] ** p[3]))
-	print ('**	', '{}**{} = '.format(p[1], 10), (p[1] ** 10))
-	print ('**	', '{}**{} = '.format(10, p[1]), (10 ** p[1]))
-	print ('**	', '{}**{} = '.format(p[3], 10), (p[3] ** 10))
-	print ('**	', '{}**{} = '.format(10, p[3]), (10 ** p[3]))
+# 	print("Power")
+# 	print ('**	', '{}**{} = '.format(p[1], p[1]), (p[1] ** p[1]))
+# 	print ('**	', '{}**{} = '.format(p[1], p[3]), (p[1] ** p[3]))
+# 	print ('**	', '{}**{} = '.format(p[3], p[1]), (p[3] ** p[1]))
+# 	# print ('**	', '{}**{} = '.format(p[3], p[3]), (p[3] ** p[3]))
+# 	print ('**	', '{}**{} = '.format(p[1], 10), (p[1] ** 10))
+# 	print ('**	', '{}**{} = '.format(10, p[1]), (10 ** p[1]))
+# 	print ('**	', '{}**{} = '.format(p[3], 10), (p[3] ** 10))
+# 	print ('**	', '{}**{} = '.format(10, p[3]), (10 ** p[3]))
 
-	print("Greater than")
-	print ('>	', '{}>{} = '.format(p[1], p[1]), p[1] > p[1])
-	print ('>	', '{}>{} = '.format(p[1], p[3]), p[1] > p[3])
-	print ('>	', '{}>{} = '.format(p[3], p[1]), p[3] > p[1])
-	print ('>	', '{}>{} = '.format(p[3], p[3]), p[3] > p[3])
-	print ('>	', '{}>{} = '.format(p[3], 10), p[3] > 10)
-	print ('>	', '{}>{} = '.format(10, p[3]), 10 > p[3])
+# 	print("Greater than")
+# 	print ('>	', '{}>{} = '.format(p[1], p[1]), p[1] > p[1])
+# 	print ('>	', '{}>{} = '.format(p[1], p[3]), p[1] > p[3])
+# 	print ('>	', '{}>{} = '.format(p[3], p[1]), p[3] > p[1])
+# 	print ('>	', '{}>{} = '.format(p[3], p[3]), p[3] > p[3])
+# 	print ('>	', '{}>{} = '.format(p[3], 10), p[3] > 10)
+# 	print ('>	', '{}>{} = '.format(10, p[3]), 10 > p[3])
 
 
 

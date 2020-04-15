@@ -27,7 +27,7 @@ class Complex(object):
 		return string or '0'
 
 	def __repr__(self):
-		return 'Complex' + str(self)
+		return str(self)
 
 	def __abs__(self):
 		return Complex(self.real ** 2 + self.imag ** 2) ** 0.5

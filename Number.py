@@ -14,7 +14,7 @@ class Number:
 		return str(self.value)
 
 	def __repr__(self):
-		return 'Number' + str(self)
+		return str(self)
 
 	def __abs__(self):
 		return Number(abs(self.value))
