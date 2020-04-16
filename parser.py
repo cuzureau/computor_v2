@@ -19,55 +19,40 @@ def p_operations(p):
 	second : first
 	first : NUMBER
 	first : IMAGINE
+	first : matrix
 	"""
 	p[0] = p[1]
 
-def p_comma(p):
-	""" sixth : sixth ',' fifth """
-	if isinstance(p[1], list):
-		p[1].append(p[3])
-		p[0] = p[1]
-	else:
-		p[0] = [p[1],p[3]]
-
-def p_semicolon(p):
-	""" sixth : sixth ';' fifth """
-	if isinstance(p[1], list):
-		p[1].append(p[3])
-		p[0] = p[1]
-	else:
-		p[0] = [p[1],p[3]]
-
 def p_plus(p):
-	""" fifth : fifth '+' fourth """
+	""" fifth 		: fifth '+' fourth """
 	p[0] = p[1] + p[3]
 
 def p_minus(p):
-	""" fifth : fifth '-' fourth """
+	""" fifth 		: fifth '-' fourth """
 	p[0] = p[1] - p[3]
 
 def p_implicit_times(p):
-	""" fourth : fourth second """
+	""" fourth 		: fourth second """
 	p[0] = p[1] * p[2]
 
 def p_times(p):
-	""" fourth : fourth '*' third """
+	""" fourth 		: fourth '*' third """
 	p[0] = p[1] * p[3]
 
 def p_divide(p):
-	""" fourth : fourth '/' third """
+	""" fourth 		: fourth '/' third """
 	p[0] = p[1] / p[3]
 
 def p_modulo(p):
-	""" fourth : fourth '%' third """
+	""" fourth 		: fourth '%' third """
 	p[0] = p[1] % p[3]
 
 def p_floor_divide(p):
-	""" fourth : fourth FLOORDIV third """
+	""" fourth 		: fourth FLOORDIV third """
 	p[0] = p[1] // p[3]
 
 def p_unary_minus(p):
-	""" third : '-' third """
+	""" third 		: '-' third """
 	if type(p[2]) == Number.Number:
 		p[0] = Number.Number(-p[2].value)
 	elif type(p[2]) == Complex.Complex:
@@ -76,21 +61,33 @@ def p_unary_minus(p):
 		p[0] = -p[2]
 
 def p_power(p):
-	""" second : first '^' third """
+	""" second 		: first '^' third """
 	p[0] = p[1] ** p[3]
 
 def p_paren(p):
-	""" first : '(' expression ')' """
+	""" first 		: '(' expression ')' """
 	p[0] = p[2]
 
-def p_brack(p):
-	""" first : '[' expression ']' """
-	if type(p[2][0]) == Matrix.Matrix:
-		# print('Matrix')
-		p[0] = Matrix.Matrix(p[2])
-	else:
-		# print('Vector')
-		p[0] = [p[2]]
+def p_list(p):
+    """value_list 	: expression
+       vector_list  : vector
+    """
+    p[0] = [p[1]]
+
+def p_list_extend(p):
+    """value_list	: value_list ','  expression
+       vector_list	: vector_list ';' vector
+    """
+    p[0] = p[1]
+    p[0].append(p[3])
+
+def p_vector(p):
+    """vector       : '[' value_list ']' """
+    p[0] = p[2]
+
+def p_matrix(p):
+    """matrix    	: '[' vector_list ']' """
+    p[0] = Matrix.Matrix(p[2])
 
 
 

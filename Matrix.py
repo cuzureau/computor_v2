@@ -3,17 +3,14 @@ import global_variables as g
 
 class Matrix:
 	def __init__(self, value):
-		# print("BIGMATRIX= ", matrix)
+		# print("BIGMATRIX= ", value)
 		self.value = value
 
 	def __str__(self):
-		# string = ''
-		# print('yoo')
-		# for v in self.value:
-		# 	string += str(v)
-		# 	string += '\n'
-		# return string
-		return str(self.value)
+		string = ''
+		for v in self.value:
+			string += str(v).replace('[', '[ ').replace(']', ' ]') + '\n'
+		return string
 
 	def __repr__(self):
 		return str(self)
@@ -38,13 +35,13 @@ class Matrix:
 
 # ######################### COMMUTATIVE OPERATIONS #########################
 
-# 	def __add__(self, other):
-# 		if isinstance(other, (int,float,Decimal,Number.Number)):
-# 			other = Complex(other)
-# 		if isinstance(other, Complex):
-# 			return Complex(self.real + other.real, self.imag + other.imag)
-# 		else:
-# 			return None
+	def __add__(self, other):
+		if isinstance(other, (int,float,Decimal,Number.Number)):
+			other = Complex(other)
+		if isinstance(other, Complex):
+			return Complex(self.real + other.real, self.imag + other.imag)
+		else:
+			return None
 
 # 	def __radd__(self, other):
 # 		return self + other 

@@ -11,7 +11,7 @@ class Complex(object):
 	def __str__(self):
 		string = ''
 		if self.real:
-			print(type(self.real), self.real)
+			# print(type(self.real), self.real)
 			if self.real % 1 == 0 : self.real = int(self.real)
 			string += str(self.real)
 		if self.imag:
