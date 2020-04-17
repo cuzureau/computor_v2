@@ -1,6 +1,7 @@
 import global_variables as g
 from decimal import Decimal
 import Complex
+import Matrix
 import Error
 
 class Number:
@@ -77,6 +78,8 @@ class Number:
 			return Number(self.value + other.value)
 		elif isinstance(other, Complex.Complex):
 			return Complex.Complex(self) + other
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) + other
 		else:
 			return None
 
@@ -90,6 +93,8 @@ class Number:
 			return Number(self.value * other.value)
 		elif isinstance(other, Complex.Complex):
 			return Complex.Complex(self) * other
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) * other
 		else:
 			return None
 
@@ -105,6 +110,8 @@ class Number:
 			return Number(self.value - other.value)
 		elif isinstance(other, Complex.Complex):
 			return Complex.Complex(self) - other
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) - other
 		else:
 			return None
 

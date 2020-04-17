@@ -27,6 +27,9 @@ try:
 
 		if g.wolframalpha is True and question[0] != '!':
 			new = question.replace("%", " mod ")
+			new = new.replace(";", ",")
+			new = new.replace("[", "{")
+			new = new.replace("]", "}")
 			res = client.query(new)
 			try:
 				online_answer = res.details

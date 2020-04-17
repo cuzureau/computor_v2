@@ -1,5 +1,6 @@
 from decimal import Decimal
 import Number
+import Matrix
 import Error
 import global_variables as g
 
@@ -51,6 +52,8 @@ class Complex(object):
 			other = Complex(other)
 		if isinstance(other, Complex):
 			return Complex(self.real + other.real, self.imag + other.imag)
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) + other
 		else:
 			return None
 
@@ -63,6 +66,8 @@ class Complex(object):
 		if isinstance(other, Complex):
 			return Complex(self.real * other.real - self.imag * other.imag,
 						   self.imag * other.real + self.real * other.imag)
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) * other
 		else:
 			return None
 
@@ -76,6 +81,8 @@ class Complex(object):
 			other = Complex(other)
 		if isinstance(other, Complex):
 			return Complex(self.real - other.real, self.imag - other.imag)
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) - other
 		else:
 			return None
 

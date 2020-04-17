@@ -1,15 +1,31 @@
+from decimal import Decimal
 import Number
+import Complex
+import Error
 import global_variables as g
 
 class Matrix:
-	def __init__(self, value):
-		# print("BIGMATRIX= ", value)
-		self.value = value
+	def __init__(self, value, rows=1, columns=1):
+		if isinstance(value, list):
+			self.columns = len(value[0])
+			self.rows = 0
+			for v in value:
+				if len(v) != self.columns:
+					raise Error.Error("DimensionError: invalid matrix dimensions")
+				self.rows += 1
+			self.value = value
+		else:
+			self.columns = columns
+			self.rows = rows
+			self.value = []
+			for i in range(0, rows):
+				self.value.append([value for j in range(0, columns)])
+		self.dimensions = (self.rows, self.columns)
 
 	def __str__(self):
 		string = ''
-		for v in self.value:
-			string += str(v).replace('[', '[ ').replace(']', ' ]') + '\n'
+		for row in self.value:
+			string += str(row).replace('[', '[ ').replace(']', ' ]') + '\n'
 		return string
 
 	def __repr__(self):
@@ -36,40 +52,72 @@ class Matrix:
 # ######################### COMMUTATIVE OPERATIONS #########################
 
 	def __add__(self, other):
-		if isinstance(other, (int,float,Decimal,Number.Number)):
-			other = Complex(other)
-		if isinstance(other, Complex):
-			return Complex(self.real + other.real, self.imag + other.imag)
+		new = []
+		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
+			for row in self.value:
+				new.append([elem + other for elem in row])
+			return Matrix(new)
+		elif isinstance(other, Matrix):
+			if self.dimensions != other.dimensions:
+				raise Error.Error("DimensionError: different matrixes dimensions")
+			for sv,ov in zip(self.value, other.value):
+				new.append([s + o for s,o in zip(sv, ov)])
+			return Matrix(new)
 		else:
 			return None
 
-# 	def __radd__(self, other):
-# 		return self + other 
+	def __radd__(self, other):
+		return self + other 
 
-# 	def __mul__(self, other):
-# 		if isinstance(other, (int,float,Decimal,Number.Number)):
-# 			other = Complex(other)
-# 		if isinstance(other, Complex):
-# 			return Complex(self.real * other.real - self.imag * other.imag,
-# 						   self.imag * other.real + self.real * other.imag)
-# 		else:
-# 			return None
-
-# 	def __rmul__(self, other):
-# 		return self * other
+	def __mul__(self, other):
+		new = []
+		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
+			for row in self.value:
+				new.append([elem * other for elem in row])
+			return Matrix(new)
+		elif isinstance(other, Matrix):
+			if self.dimensions != other.dimensions:
+				raise Error.Error("DimensionError: different matrixes dimensions")
+			for sv,ov in zip(self.value, other.value):
+				new.append([s * o for s,o in zip(sv, ov)])
+			return Matrix(new)
+		else:
+			return None
+		
+	def __rmul__(self, other):
+		return self * other
 
 # ####################### NON COMMUTATIVE OPERATIONS #######################
 
-# 	def __sub__(self, other):
-# 		if isinstance(other, (int,float,Decimal,Number.Number)):
-# 			other = Complex(other)
-# 		if isinstance(other, Complex):
-# 			return Complex(self.real - other.real, self.imag - other.imag)
-# 		else:
-# 			return None
+	def dot(self, other):
+		if self.dimensions == other.dimensions[::-1]:
+			new = []
+			for sv,i in zip(self.value, range(self.columns)):
+				for s in sv:
+					
+				
+			return Matrix(new)
+		else:
+			raise Error.Error("DimensionError: different matrixes dimensions")
+			
 
-# 	def __rsub__(self, other):
-# 		return Complex(other) - self
+	def __sub__(self, other):
+		new = []
+		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
+			for row in self.value:
+				new.append([elem - other for elem in row])
+			return Matrix(new)
+		elif isinstance(other, Matrix):
+			if self.dimensions != other.dimensions:
+				raise Error.Error("DimensionError: different matrixes dimensions")
+			for sv,ov in zip(self.value, other.value):
+				new.append([s - o for s,o in zip(sv, ov)])
+			return Matrix(new)
+		else:
+			return None
+
+	def __rsub__(self, other):
+		return Matrix(other, self.rows, self.columns) - self
 
 # 	def __truediv__(self, other):
 # 		if isinstance(other, (int,float,Decimal,Number.Number)):
