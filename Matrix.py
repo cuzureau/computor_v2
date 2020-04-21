@@ -8,11 +8,10 @@ class Matrix:
 	def __init__(self, value, rows=1, columns=1):
 		if isinstance(value, list):
 			self.columns = len(value[0])
-			self.rows = 0
 			for v in value:
 				if len(v) != self.columns:
-					raise Error.Error("DimensionError: invalid matrix dimensions")
-				self.rows += 1
+					raise Error.Error('Error: invalid matrix dimensions')
+			self.rows = len(value)
 			self.value = value
 		else:
 			self.columns = columns
@@ -28,27 +27,6 @@ class Matrix:
 			string += str(row).replace('[', '[ ').replace(']', ' ]') + '\n'
 		return string
 
-	def __repr__(self):
-		return str(self)
-
-# 	def __abs__(self):
-# 		return Complex(self.real ** 2 + self.imag ** 2) ** 0.5
-
-# 	def __gt__(self, other):
-# 		self._illegal('>')
-
-# 	def __ge__(self, other):
-# 		self._illegal('>=')
-
-# 	def __lt__(self, other):
-# 		self._illegal('<')
-
-# 	def __le__(self, other):
-# 		self._illegal('<=')
-
-# 	def _illegal(self, operator):
-# 		g.prRed('Illegal operation "{}" for complex numbers'.format(operator))
-
 # ######################### COMMUTATIVE OPERATIONS #########################
 
 	def __add__(self, other):
@@ -59,12 +37,12 @@ class Matrix:
 			return Matrix(new)
 		elif isinstance(other, Matrix):
 			if self.dimensions != other.dimensions:
-				raise Error.Error("DimensionError: different matrixes dimensions")
+				raise Error.Error('Error: Incompatible matrixes dimensions')
 			for sv,ov in zip(self.value, other.value):
 				new.append([s + o for s,o in zip(sv, ov)])
 			return Matrix(new)
 		else:
-			return None
+			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
 
 	def __radd__(self, other):
 		return self + other 
@@ -77,29 +55,32 @@ class Matrix:
 			return Matrix(new)
 		elif isinstance(other, Matrix):
 			if self.dimensions != other.dimensions:
-				raise Error.Error("DimensionError: different matrixes dimensions")
+				raise Error.Error('Error: Incompatible matrixes dimensions')
 			for sv,ov in zip(self.value, other.value):
 				new.append([s * o for s,o in zip(sv, ov)])
 			return Matrix(new)
 		else:
-			return None
+			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
 		
 	def __rmul__(self, other):
 		return self * other
 
 # ####################### NON COMMUTATIVE OPERATIONS #######################
 
-	def dot(self, other):
-		if self.dimensions == other.dimensions[::-1]:
-			new = []
-			for sv,i in zip(self.value, range(self.columns)):
-				for s in sv:
-					
-				
-			return Matrix(new)
+	def dot_product(self, other):
+		if isinstance(other, Matrix):
+			if self.dimensions == other.dimensions:
+				new = []
+				for sv in self.value:
+					sub = []
+					for i in range(other.columns):
+						sub.append(sum([v * ov[i] for v,ov in zip(sv, other.value)]))
+					new.append(sub)
+				return Matrix(new)
+			else:
+				raise Error.Error('Error: Incompatible matrixes dimensions')
 		else:
-			raise Error.Error("DimensionError: different matrixes dimensions")
-			
+			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
 
 	def __sub__(self, other):
 		new = []
@@ -109,110 +90,123 @@ class Matrix:
 			return Matrix(new)
 		elif isinstance(other, Matrix):
 			if self.dimensions != other.dimensions:
-				raise Error.Error("DimensionError: different matrixes dimensions")
+				raise Error.Error('Error: Incompatible matrixes dimensions')
 			for sv,ov in zip(self.value, other.value):
 				new.append([s - o for s,o in zip(sv, ov)])
 			return Matrix(new)
 		else:
-			return None
+			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
 
 	def __rsub__(self, other):
 		return Matrix(other, self.rows, self.columns) - self
 
-# 	def __truediv__(self, other):
-# 		if isinstance(other, (int,float,Decimal,Number.Number)):
-# 			other = Complex(other)
-# 		if isinstance(other, Complex):
-# 			s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
-# 			r = o1 ** 2 + o2 ** 2
-# 			try: 
-# 				return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
-# 			except ZeroDivisionError as error:
-# 				g.error = str(e).capitalize()
-# 				return None
-# 		else:
-# 			return None
+	def check_squareness(self):
+		if self.rows != self.columns:
+			raise Error.Error('Error: Matrix must be square to inverse')
 
-# 	def __rtruediv__(self, other):
-# 		return Complex(other) / self
+	def determinant(self, value, total=0):
+		V = value
+		indices = list(range(len(V)))
+		if len(V) == 2 and len(V[0]) == 2:
+			val = V[0][0] * V[1][1] - V[1][0] * V[0][1]
+			return val
+		for fc in indices:
+			V2 = V
+			V2 = V2[1:]
+			height = len(V2)
+			builder = 0
+			for i in range(height):
+				V2[i] = V2[i][0:fc] + V2[i][fc+1:]
+			sign = (-1) ** (fc % 2)
+			sub_det = self.determinant(V2)
+			total += V[0][fc] * sign * sub_det
+		return total
 
-# 	def __floordiv__(self, other):
-# 		# Python does NOT accept floor division of complex numbers.
-# 		# 	->	TypeError: can't take floor of complex number.
-# 		# So I have implemented the Wolframalpha convention : rounding
-# 		# the result of a division (both real and imaginary parts)
-# 		# to the closest integer.
-# 		if isinstance(other, (int,float,Decimal,Number.Number)):
-# 			other = Complex(other)
-# 		if isinstance(other, Complex):
-# 			div = self / other
-# 			if isinstance(div, Complex):
-# 				if isinstance(div.real, Number.Number):
-# 					div.real = round(div.real.value)
-# 				else:
-# 					div.real = round(div.real)
-# 				if isinstance(div.imag, Number.Number):
-# 					div.imag = round(div.imag.value)
-# 				else:
-# 					div.imag = round(div.imag)
-# 				return div
-# 			else:
-# 				return None	
-# 		else:
-# 			return None
+	def check_non_singular(self):
+		det = self.determinant(self.value)
+		if det != 0:
+			return det
+		else:
+			raise Error.Error('Error: Singular Matrix')
 
-# 	def __rfloordiv__(self, other):
-# 		return Complex(other) // self
+	def identity_matrix(self, n):
+		new = Matrix(0, n, n)
+		for i in range(n):
+			new.value[i][i] = 1
+		return new.value
+
+	def invert(self):
+		self.check_squareness()
+		self.check_non_singular()
+		AM = self.value
+		n = len(AM)
+		IM = self.identity_matrix(n)
+		indices = list(range(n))
+		for fd in range(n):
+			fdScaler = 1 / AM[fd][fd]
+			for j in range(n):
+				AM[fd][j] *= fdScaler
+				IM[fd][j] *= fdScaler
+			for i in indices[0:fd] + indices[fd+1:]: 
+				crScaler = AM[i][fd]
+				for j in range(n): 
+					AM[i][j] = AM[i][j] - crScaler * AM[fd][j]
+					IM[i][j] = IM[i][j] - crScaler * IM[fd][j]
+		return Matrix(IM)
+
+	def __truediv__(self, other):
+		new = []
+		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
+			for row in self.value:
+				new.append([elem / other for elem in row])
+			return Matrix(new)
+		elif isinstance(other, Matrix):
+			new = other.invert()
+			return self.dot_product(new)
+		else:
+			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
+
+	def __rtruediv__(self, other):
+		return Matrix(other, self.rows, self.columns) / self
+
+	def __floordiv__(self, other):
+		new = []
+		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
+			for row in self.value:
+				new.append([elem // other for elem in row])
+			return Matrix(new)
+		else:
+			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
+
+	def __rfloordiv__(self, other):
+		return Matrix(other, self.rows, self.columns) // self
 
 
+	def __mod__(self, other):
+		new = []
+		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
+			for row in self.value:
+				new.append([elem % other for elem in row])
+			return Matrix(new)
+		else:
+			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
 
+	def __rmod__(self, other):
+		return Matrix(other, self.rows, self.columns) // self
 
-
-# 	def __mod__(self, other):
-# 		# Python does NOT accept modulo of complex numbers.
-# 		# 	->	TypeError: can't mod complex numbers.
-# 		# So I have implemented the Wolframalpha convention : rounding
-# 		# the result of a division (both real and imaginary parts)
-# 		# to 2 decimal places.
-# 		if isinstance(other, (int,float,Decimal,Number.Number)):
-# 			other = Complex(other)
-# 		if isinstance(other, Complex):
-# 			floor = self // other
-# 			if isinstance(floor, Complex):
-# 				ret = self - floor * other
-# 				if isinstance(ret, Complex):
-# 					if isinstance(ret.real, Number.Number):
-# 						ret.real = round(ret.real.value, 1)
-# 					else:
-# 						ret.real = round(ret.real, 1)
-# 					if isinstance(ret.imag, Number.Number):
-# 						ret.imag = round(ret.imag.value, 1)
-# 					else:
-# 						ret.imag = round(ret.imag, 1)
-# 					return ret
-# 				else:
-# 					return None
-# 			else:
-# 				return None
-# 		else:
-# 			return None
-
-# 	def __rmod__(self, other):
-# 		return Complex(other) % self
-
-# 	def __pow__(self, other):
-# 		if isinstance(other, (int,float,Decimal)):
-# 			other = Number.Number(other)
-# 		if isinstance(other, Number.Number):
-# 			answer = 1
-# 			for i in range(1, int(abs(other)) + 1): 
-# 				answer = self * answer
-# 			if other >= 0:
-# 				return answer
-# 			else:
-# 				return 1 / answer
-# 		else:
-# 			return None
-
-# 	def __rpow__(self, other):
-# 		return Number.Number(other) ** self
+	def __pow__(self, other):
+		if isinstance(other, (int,float,Decimal)):
+			other = Number.Number(other)
+		if isinstance(other, Number.Number):
+			if other > 0:
+				answer = self
+				for i in range(1, int(abs(other))):
+					answer = self.dot_product(answer)
+				return answer
+			else:
+				raise Error.Error('Error: Exponent is not a positive integer Number')
+		else:
+			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
+			
+	def __rpow__(self, other):
+		return Matrix(other, self.rows, self.columns) ** self

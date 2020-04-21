@@ -1,17 +1,20 @@
 import global_variables as g
-from decimal import Decimal
+from decimal import *
 import Complex
 import Matrix
 import Error
 
 class Number:
 	def __init__(self, number):
+		getcontext().traps[Overflow]=None
+		getcontext().traps[InvalidOperation]=None
 		if isinstance(number, Number):
 			self.value = number.value
 		else:
 			self.value = Decimal(number)
 
 	def __str__(self):
+		# return str(self.value.normalize())
 		return str(self.value)
 
 	def __repr__(self):
@@ -84,7 +87,7 @@ class Number:
 			return None
 
 	def __radd__(self, other):
-		return self + other 
+		return self + other
 
 	def __mul__(self, other):
 		if isinstance(other, (int,float,Decimal)):
@@ -122,15 +125,14 @@ class Number:
 		if isinstance(other, (int,float,Decimal)):
 			other = Number(other)
 		if isinstance(other, Number):
-			try:
+			if other.value:
 				return Number(self.value / other.value)
-			except:
-				raise Error.Error("ZeroDivisionError: division by zero")
+			else:
+				raise Error.Error("Division by zero")
 		elif isinstance(other, Complex.Complex):
-			try:
-				return Complex.Complex(self) / other
-			except:
-				raise Error.Error("ZeroDivisionError: division by zero")
+			return Complex.Complex(self) / other
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) / other
 		else:
 			return None
 
@@ -141,15 +143,14 @@ class Number:
 		if isinstance(other, (int,float,Decimal)):
 			other = Number(other)
 		if isinstance(other, Number):
-			try:
+			if other.value:
 				return Number(self.value // other.value)
-			except:
-				raise Error.Error("ZeroDivisionError: integer division or modulo by zero")
+			else:
+				raise Error.Error("Division by zero")
 		elif isinstance(other, Complex.Complex):
-			try:
-				return Complex.Complex(self) // other
-			except:
-				raise Error.Error("ZeroDivisionError: integer division or modulo by zero")
+			return Complex.Complex(self) // other
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) // other
 		else:
 			return None
 
@@ -160,15 +161,14 @@ class Number:
 		if isinstance(other, (int,float,Decimal)):
 			other = Number(other)
 		if isinstance(other, Number):
-			try:
+			if other.value:
 				return Number(self.value % other.value)
-			except:
-				raise Error.Error("ZeroDivisionError: integer division or modulo by zero")
+			else:
+				raise Error.Error("Division by zero")
 		elif isinstance(other, Complex.Complex):
-			try:
-				return Complex.Complex(self) % other
-			except:
-				raise Error.Error("ZeroDivisionError: integer division or modulo by zero")
+			return Complex.Complex(self) % other
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) % other
 		else:
 			return None
 
@@ -181,8 +181,7 @@ class Number:
 		if isinstance(other, Number):
 			return Number(self.value ** other.value)
 		else:
-			return None
+			raise Error.Error('Illegal operation between Number and {}'.format(type(other).__name__))
 
 	def __rpow__(self, other):
 		return Number(other) ** self
-

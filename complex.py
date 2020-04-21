@@ -4,7 +4,7 @@ import Matrix
 import Error
 import global_variables as g
 
-class Complex(object):
+class Complex:
 	def __init__(self, real, imag=0):
 		self.real = Number.Number(real)
 		self.imag = Number.Number(imag)
@@ -95,10 +95,12 @@ class Complex(object):
 		if isinstance(other, Complex):
 			s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
 			r = o1 ** 2 + o2 ** 2
-			try: 
+			if r:
 				return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
-			except:
-				raise Error.Error("ZeroDivisionError: complex division by zero")
+			else:
+				raise Error.Error("Division by zero")
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) / other
 		else:
 			return None
 
@@ -114,10 +116,7 @@ class Complex(object):
 		if isinstance(other, (int,float,Decimal,Number.Number)):
 			other = Complex(other)
 		if isinstance(other, Complex):
-			try:
-				div = self / other
-			except:
-				raise Error.Error("ZeroDivisionError: integer division or modulo by zero")
+			div = self / other
 			if isinstance(div.real, Number.Number):
 				div.real = round(div.real.value)
 			else:
@@ -127,6 +126,8 @@ class Complex(object):
 			else:
 				div.imag = round(div.imag)
 			return div
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) // other
 		else:
 			return None
 
@@ -144,18 +145,17 @@ class Complex(object):
 		if isinstance(other, Complex):
 			floor = self // other
 			ret = self - floor * other
-			if isinstance(ret, Complex):
-				if isinstance(ret.real, Number.Number):
-					ret.real = round(ret.real.value, 1)
-				else:
-					ret.real = round(ret.real, 1)
-				if isinstance(ret.imag, Number.Number):
-					ret.imag = round(ret.imag.value, 1)
-				else:
-					ret.imag = round(ret.imag, 1)
-				return ret
+			if isinstance(ret.real, Number.Number):
+				ret.real = round(ret.real.value, 1)
 			else:
-				return None
+				ret.real = round(ret.real, 1)
+			if isinstance(ret.imag, Number.Number):
+				ret.imag = round(ret.imag.value, 1)
+			else:
+				ret.imag = round(ret.imag, 1)
+			return ret
+		elif isinstance(other, Matrix.Matrix):
+			return Matrix.Matrix(self, other.rows, other.columns) % other
 		else:
 			return None
 
@@ -174,7 +174,7 @@ class Complex(object):
 			else:
 				return 1 / answer
 		else:
-			return None
+			raise Error.Error('Illegal operation between Complex and {}'.format(type(other).__name__))
 
 	def __rpow__(self, other):
 		return Number.Number(other) ** self

@@ -24,12 +24,6 @@ def t_IMAGINE(t):
 	t.value = Complex.Complex(0, 1)
 	return t
 
-# def t_MATRIX(t):
-# 	r'\[{2}(-?(?:\d+(?:\.\d*)?)|,|(\];\[))+\]{2}'
-# 	# r'(?<=\[{2})(-?(?:\d+(?:\.\d*)?)|,|(\];\[))+(?=\]{2})'
-# 	t.value = Matrix.Matrix(t.value)
-# 	return t
-
 def t_error(t):
 	g.prRed('Illegal character \'{}\''.format(t.value[0]))
 	t.lexer.skip(1)
