@@ -1,14 +1,11 @@
-from global_variables import tokens
-from global_variables import variables
-from global_variables import prRed
-from global_variables import prGreen
-from global_variables import prLightPurple
+from Global import tokens
+from Global import variables
 import ply.yacc as yacc
 import Complex
 import Number
 import Matrix
 import Error
-import global_variables as g
+import Global as G
 
 def p_operations(p): 
 	""" expression : sixth
@@ -99,80 +96,138 @@ def p_test(p):
 	""" expression : expression '@' expression """
 	
 	print("Addition")
-	print ('+	', '{}+{} = '.format(p[1], p[1]), p[1] + p[1])
-	print ('+	', '{}+{} = '.format(p[1], p[3]), p[1] + p[3])
-	print ('+	', '{}+{} = '.format(p[3], p[1]), p[3] + p[1])
-	print ('+	', '{}+{} = '.format(p[3], p[3]), p[3] + p[3])
-	print ('+	', '{}+{} = '.format(p[3], 10), p[3] + 10)
-	print ('+	', '{}+{} = '.format(10, p[3]), 10 + p[3])
+	print ('{}+{} = '.format(p[1], p[1]))
+	G.prGreen('	' + str(p[1] + p[1]))
+
+	print ('{}+{} = '.format(p[1], p[3]))
+	G.prGreen('	' + str(p[1] + p[3]))
+
+	print ('{}+{} = '.format(p[3], p[1]))
+	G.prGreen('	' + str(p[3] + p[1]))
+
+	print ('{}+{} = '.format(p[3], p[3]))
+	G.prGreen('	' + str(p[3] + p[3]))
+
+
 
 	print("Multiplication")
-	print ('*	', '{}*{} = '.format(p[1], p[1]), p[1] * p[1])
-	print ('*	', '{}*{} = '.format(p[1], p[3]), p[1] * p[3])
-	print ('*	', '{}*{} = '.format(p[3], p[1]), p[3] * p[1])
-	print ('*	', '{}*{} = '.format(p[3], p[3]), p[3] * p[3])
-	print ('*	', '{}*{} = '.format(p[1], 10), p[1] * 10)
-	print ('*	', '{}*{} = '.format(10, p[1]), 10 * p[1])
-	print ('*	', '{}*{} = '.format(p[3], 10), p[3] * 10)
-	print ('*	', '{}*{} = '.format(10, p[3]), 10 * p[3])
+	print ('{}*{} = '.format(p[1], p[1]))
+	G.prGreen('	' + str(p[1] * p[1]))
+
+	print ('{}*{} = '.format(p[1], p[3]))
+	G.prGreen('	' + str(p[1] * p[3]))
+
+	print ('{}*{} = '.format(p[3], p[1]))
+	G.prGreen('	' + str(p[3] * p[1]))
+
+	print ('{}*{} = '.format(p[3], p[3]))
+	G.prGreen('	' + str(p[3] * p[3]))
+
+
 
 	print("Substraction")
-	print ('-	', '{}-{} = '.format(p[1], p[1]), p[1] - p[1])
-	print ('-	', '{}-{} = '.format(p[1], p[3]), p[1] - p[3])
-	print ('-	', '{}-{} = '.format(p[3], p[1]), p[3] - p[1])
-	print ('-	', '{}-{} = '.format(p[3], p[3]), p[3] - p[3])
-	print ('-	', '{}-{} = '.format(p[1], 10), p[1] - 10)
-	print ('-	', '{}-{} = '.format(10, p[1]), 10 - p[1])
-	print ('-	', '{}-{} = '.format(p[3], 10), p[3] - 10)
-	print ('-	', '{}-{} = '.format(10, p[3]), 10 - p[3])
+	print ('{}-{} = '.format(p[1], p[1]))
+	G.prGreen('	' + str(p[1] - p[1]))
+
+	print ('{}-{} = '.format(p[1], p[3]))
+	G.prGreen('	' + str(p[1] - p[3]))
+
+	print ('{}-{} = '.format(p[3], p[1]))
+	G.prGreen('	' + str(p[3] - p[1]))
+
+	print ('{}-{} = '.format(p[3], p[3]))
+	G.prGreen('	' + str(p[3] - p[3]))
+
+
 
 	print("Division")
-	print ('/	', '{}/{} = '.format(p[1], p[1]), p[1] / p[1])
-	print ('/	', '{}/{} = '.format(p[1], p[3]), p[1] / p[3])
-	print ('/	', '{}/{} = '.format(p[3], p[1]), p[3] / p[1])
-	print ('/	', '{}/{} = '.format(p[3], p[3]), p[3] / p[3])
-	print ('/	', '{}/{} = '.format(p[1], 10), p[1] / 10)
-	print ('/	', '{}/{} = '.format(10, p[1]), 10 / p[1])
-	print ('/	', '{}/{} = '.format(p[3], 10), p[3] / 10)
-	print ('/	', '{}/{} = '.format(10, p[3]), 10 / p[3])
+	print ('{}/{} = '.format(p[1], p[1]))
+	G.prGreen('	' + str(p[1] / p[1]))
+
+	print ('{}/{} = '.format(p[1], p[3]))
+	G.prGreen('	' + str(p[1] / p[3]))
+
+	print ('{}/{} = '.format(p[3], p[1]))
+	G.prGreen('	' + str(p[3] / p[1]))
+
+	print ('{}/{} = '.format(p[3], p[3]))
+	G.prGreen('	' + str(p[3] / p[3]))
+
+
 
 	print("Floor Division")
-	print ('//	', '{}//{} = '.format(p[1], p[1]), p[1] // p[1])
-	print ('//	', '{}//{} = '.format(p[1], p[3]), p[1] // p[3])
-	print ('//	', '{}//{} = '.format(p[3], p[1]), p[3] // p[1])
-	print ('//	', '{}//{} = '.format(p[3], p[3]), p[3] // p[3])
-	print ('//	', '{}//{} = '.format(p[1], 10), p[1] // 10)
-	print ('//	', '{}//{} = '.format(10, p[1]), 10 // p[1])
-	print ('//	', '{}//{} = '.format(p[3], 10), p[3] // 10)
-	print ('//	', '{}//{} = '.format(10, p[3]), 10 // p[3])
+	print ('{}//{} = '.format(p[1], p[1]))
+	G.prGreen('	' + str(p[1] // p[1]))
+
+	print ('{}//{} = '.format(p[1], p[3]))
+	G.prGreen('	' + str(p[1] // p[3]))
+
+	print ('{}//{} = '.format(p[3], p[1]))
+	G.prGreen('	' + str(p[3] // p[1]))
+
+	print ('{}//{} = '.format(p[3], p[3]))
+	G.prGreen('	' + str(p[3] // p[3]))
+
+
 
 	print("Modulo")
-	print ('%	', '{}%{} = '.format(p[1], p[1]), p[1] % p[1])
-	print ('%	', '{}%{} = '.format(p[1], p[3]), p[1] % p[3])
-	print ('%	', '{}%{} = '.format(p[3], p[1]), p[3] % p[1])
-	print ('%	', '{}%{} = '.format(p[3], p[3]), p[3] % p[3])
-	print ('%	', '{}%{} = '.format(p[1], 10), p[1] % 10)
-	print ('%	', '{}%{} = '.format(10, p[1]), 10 % p[1])
-	print ('%	', '{}%{} = '.format(p[3], 10), p[3] % 10)
-	print ('%	', '{}%{} = '.format(10, p[3]), 10 % p[3])
+	print ('{}%{} = '.format(p[1], p[1]))
+	G.prGreen('	' + str(p[1] % p[1]))
+
+	print ('{}%{} = '.format(p[1], p[3]))
+	G.prGreen('	' + str(p[1] % p[3]))
+
+	print ('{}%{} = '.format(p[3], p[1]))
+	G.prGreen('	' + str(p[3] % p[1]))
+
+	print ('{}%{} = '.format(p[3], p[3]))
+	G.prGreen('	' + str(p[3] % p[3]))
+
+
 
 	print("Power")
-	print ('**	', '{}**{} = '.format(p[1], p[1]), (p[1] ** p[1]))
-	print ('**	', '{}**{} = '.format(p[1], p[3]), (p[1] ** p[3]))
-	print ('**	', '{}**{} = '.format(p[3], p[1]), (p[3] ** p[1]))
-	# print ('**	', '{}**{} = '.format(p[3], p[3]), (p[3] ** p[3]))
-	print ('**	', '{}**{} = '.format(p[1], 10), (p[1] ** 10))
-	print ('**	', '{}**{} = '.format(10, p[1]), (10 ** p[1]))
-	print ('**	', '{}**{} = '.format(p[3], 10), (p[3] ** 10))
-	print ('**	', '{}**{} = '.format(10, p[3]), (10 ** p[3]))
+	print ('{}**{} = '.format(p[1], p[1]))
+	G.prGreen('	' + str(p[1] ** p[1]))
 
-	print("Greater than")
-	print ('>	', '{}>{} = '.format(p[1], p[1]), p[1] > p[1])
-	print ('>	', '{}>{} = '.format(p[1], p[3]), p[1] > p[3])
-	print ('>	', '{}>{} = '.format(p[3], p[1]), p[3] > p[1])
-	print ('>	', '{}>{} = '.format(p[3], p[3]), p[3] > p[3])
-	print ('>	', '{}>{} = '.format(p[3], 10), p[3] > 10)
-	print ('>	', '{}>{} = '.format(10, p[3]), 10 > p[3])
+	print ('{}**{} = '.format(p[1], p[3]))
+	G.prGreen('	' + str(p[1] ** p[3]))
+
+	print ('{}**{} = '.format(p[3], p[1]))
+	G.prGreen('	' + str(p[3] ** p[1]))
+
+	print ('{}**{} = '.format(p[3], p[3]))
+	G.prGreen('	' + str(p[3] ** p[3]))
+
+
+
+	# print("Greater than")
+	# print ('{}>{} = '.format(p[1], p[1]))
+	# G.prGreen('	' + str(p[1] > p[1]))
+
+	# print ('{}>{} = '.format(p[1], p[3]))
+	# G.prGreen('	' + str(p[1] > p[3]))
+
+	# print ('{}>{} = '.format(p[3], p[1]))
+	# G.prGreen('	' + str(p[3] > p[1]))
+
+	# print ('{}>{} = '.format(p[3], p[3]))
+	# G.prGreen('	' + str(p[3] > p[3]))
+
+
+	# print("Lower than")
+	# print ('{}<{} = '.format(p[1], p[1]))
+	# G.prGreen('	' + str(p[1] < p[1]))
+
+	# print ('{}<{} = '.format(p[1], p[3]))
+	# G.prGreen('	' + str(p[1] < p[3]))
+
+	# print ('{}<{} = '.format(p[3], p[1]))
+	# G.prGreen('	' + str(p[3] < p[1]))
+
+	# print ('{}<{} = '.format(p[3], p[3]))
+	# G.prGreen('	' + str(p[3] < p[3]))
+
+
 
 
 
@@ -221,35 +276,29 @@ def p_execute_command(t):
 		print("    - !c = activate/deactivate online solver [https://www.wolframalpha.com/]")
 	elif letter == 'p':
 		if variables:
-			prGreen("Variables:")
+			G.prGreen("Variables:")
 			for key,value in variables.items():
 				print("     {} = {}".format(key, value))
 		else:
-			prRed("Variables:")
+			G.prRed("Variables:")
 			print("     There are no variables")
 	elif letter == 'q':
-		prGreen("Bye bye!")
+		G.prGreen("Bye bye!")
 		exit()
 	elif letter == 's':
-		g.wolframalpha = not g.wolframalpha
-		if g.wolframalpha is True:
-			prGreen("Solver activated!")
+		G.wolframalpha = not G.wolframalpha
+		if G.wolframalpha is True:
+			G.prGreen("Solver activated!")
 		else:
-			prRed("Solver deactivated!")
-	elif letter == 'f':
-		g.fraction_form = not g.fraction_form
-		if g.fraction_form is True:
-			prGreen("Fraction activated!")
-		else:
-			prRed("Fraction deactivated!")
+			G.prRed("Solver deactivated!")
 	else:
 		print("Type '!h' for help.")
 
 def p_error(t):
 	if t:
-		g.prRed("Syntax error at '%s'" % t.value)  
+		G.prRed("Syntax error at '%s'" % t.value)  
 	else:
-		g.prRed("Syntax error!")
+		G.prRed("Syntax error!")
 
 
 parser = yacc.yacc()

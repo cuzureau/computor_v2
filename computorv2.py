@@ -1,11 +1,10 @@
-from global_variables import tokens
+from Global import tokens
 from lexer import lexer
 from parser import parser
-import global_variables as g
+import Global as G
 import wolframalpha
 import readline
 import Error
-import signal
 
 app_id = "9T72LH-QWT7RJHW4W"
 client = wolframalpha.Client(app_id)
@@ -23,10 +22,10 @@ while True:
 		if answer is not None:
 			print(answer)
 	except Error.Error as e:
-		g.prRed(e.message)
+		G.prRed(e.message)
 
 
-	if g.wolframalpha is True and question[0] != '!':
+	if G.wolframalpha is True and question[0] != '!':
 		new = question.replace("%", " mod ")
 		new = new.replace(";", ",")
 		new = new.replace("[", "{")
@@ -35,24 +34,24 @@ while True:
 		res = client.query(new)
 		try:
 			online_answer = res.details
-			if 'Rational form' in online_answer and g.fraction_form == True:
-				g.prGreen(res.details['Rational form'])
-			elif 'Rational approximation' in online_answer and g.fraction_form == True:
-				g.prGreen(res.details['Rational approximation'])
+			if 'Rational form' in online_answer and G.fraction_form == True:
+				G.prGreen(res.details['Rational form'])
+			elif 'Rational approximation' in online_answer and G.fraction_form == True:
+				G.prGreen(res.details['Rational approximation'])
 			elif 'Decimal form' in online_answer:
-				g.prGreen(res.details['Decimal form'])
+				G.prGreen(res.details['Decimal form'])
 			elif 'Decimal approximation' in online_answer:
-				g.prGreen(res.details['Decimal approximation'])
+				G.prGreen(res.details['Decimal approximation'])
 			elif 'Result' in online_answer:
-				g.prGreen(res.details['Result'])
+				G.prGreen(res.details['Result'])
 			elif 'Scientific notation' in online_answer:
-				g.prGreen(res.details['Scientific notation'])
+				G.prGreen(res.details['Scientific notation'])
 			elif 'Exact result' in online_answer:
-				g.prGreen(res.details['Exact result'])
+				G.prGreen(res.details['Exact result'])
 			elif 'Input' in online_answer:
-				g.prGreen(res.details['Input'])
+				G.prGreen(res.details['Input'])
 		except:
-			g.prRed("No result")
+			G.prRed("No result")
 
 
 # from test import basic_tests
@@ -72,25 +71,25 @@ while True:
 # 					res = client.query(t)
 # 					try:
 # 						online_answer = res.details
-						# if 'Rational form' in online_answer and g.fraction_form == True:
-						# 	g.prGreen(res.details['Rational form'])
-						# elif 'Rational approximation' in online_answer and g.fraction_form == True:
-						# 	g.prGreen(res.details['Rational approximation'])
+						# if 'Rational form' in online_answer and G.fraction_form == True:
+						# 	G.prGreen(res.details['Rational form'])
+						# elif 'Rational approximation' in online_answer and G.fraction_form == True:
+						# 	G.prGreen(res.details['Rational approximation'])
 						# elif 'Result' in online_answer:
-						# 	g.prGreen(res.details['Result'])
+						# 	G.prGreen(res.details['Result'])
 						# elif 'Exact result' in online_answer:
-						# 	g.prGreen(res.details['Exact result'])
+						# 	G.prGreen(res.details['Exact result'])
 						# elif 'Input' in online_answer:
-						# 	g.prGreen(res.details['Input'])
+						# 	G.prGreen(res.details['Input'])
 # 					except:
 # 						online_answer = "no result"
 
 # 					my_answer = parser.parse(t)
 
 # 					if str(my_answer).replace(' ', '') != str(online_answer).replace(' ', ''):
-# 						g.prRed(">>> " + t)
+# 						G.prRed(">>> " + t)
 # 						print(my_answer)
-# 						g.prGreen(online_answer)
+# 						G.prGreen(online_answer)
 # 					tests_count += 1
 # print(tests_count)
 

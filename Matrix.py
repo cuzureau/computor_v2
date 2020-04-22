@@ -2,7 +2,6 @@ from decimal import Decimal
 import Number
 import Complex
 import Error
-import global_variables as g
 
 class Matrix:
 	def __init__(self, value, rows=1, columns=1):

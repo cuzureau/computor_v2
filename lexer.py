@@ -1,10 +1,8 @@
-from global_variables import tokens
-import global_variables as g
+from Global import tokens
+import Global as G
 import ply.lex as lex
-import Complex
-import Number
-import Matrix
-
+import Complex as C
+import Number as N
 
 t_FLOORDIV  = r'\/\/'
 t_NAME      = r'[a-zA-Z]{2,}|[a-hj-zA-HJ-Z]'    # all words (only letters) except the word 'i' alone
@@ -16,16 +14,16 @@ t_ignore = " \t"
 
 def t_NUMBER(t):
 	r'(?:\d+(?:\.\d*)?)'
-	t.value = Number.Number(t.value)
+	t.value = N.Number(t.value)
 	return t
 
 def t_IMAGINE(t):
 	r'i'
-	t.value = Complex.Complex(0, 1)
+	t.value = C.Complex(0, 1)
 	return t
 
 def t_error(t):
-	g.prRed('Illegal character \'{}\''.format(t.value[0]))
+	G.prRed('Illegal character \'{}\''.format(t.value[0]))
 	t.lexer.skip(1)
 	
 lexer = lex.lex() 

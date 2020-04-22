@@ -1,111 +1,109 @@
-from decimal import Decimal
-import Number
-import Matrix
-import Error
-import global_variables as g
+# from decimal import Decimal
+import Number as N
+import Matrix as M
+import Error as E
 
 class Complex:
 	def __init__(self, real, imag=0):
-		self.real = Number.Number(real)
-		self.imag = Number.Number(imag)
+		self.real = N.Number(real)
+		self.imag = N.Number(imag)
 
 	def __str__(self):
-		string = ''
-		if self.real:
-			# print(type(self.real), self.real)
-			if self.real % 1 == 0 : self.real = int(self.real)
-			string += str(self.real)
-		if self.imag:
-			if self.imag % 1 == 0 : self.imag = int(self.imag)
+		real = str(self.real or '')
+		imag = str(abs(self.imag) or '')
+		if self.imag < N.Number(0):
 			if self.real:
-				string += ' + ' if self.imag > 0 else ' - '
+				sign = ' - '
 			else:
-				string += '' if self.imag > 0 else '-'
-			if abs(self.imag) != 1:
-				string += str(abs(self.imag)) + 'i'
-			else:
-				string += 'i'
+				sign = '-'
+		elif self.imag > N.Number(0) and self.real:
+			sign = ' + '
+		else:
+			sign = ''
+		if self.imag:
+			imag += 'i'
+		string = real + sign + imag
 		return string or '0'
 
 	def __repr__(self):
 		return str(self)
 
-	def __abs__(self):
-		return Complex(self.real ** 2 + self.imag ** 2) ** 0.5
+	# def __abs__(self):
+	# 	return Complex(self.real ** N.Number(2) + self.imag ** N.Number(2)) ** N.Number(0.5)
 
-	def __gt__(self, other):
-		raise Error.Error("TypeError: '>' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
+	# def __gt__(self, other):
+	# 	raise E.Error("TypeError: '>' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
 
-	def __ge__(self, other):
-		raise Error.Error("TypeError: '>=' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
+	# def __ge__(self, other):
+	# 	raise E.Error("TypeError: '>=' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
 
-	def __lt__(self, other):
-		raise Error.Error("TypeError: '<' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
+	# def __lt__(self, other):
+	# 	raise E.Error("TypeError: '<' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
 
-	def __le__(self, other):
-		raise Error.Error("TypeError: '<=' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
+	# def __le__(self, other):
+	# 	raise E.Error("TypeError: '<=' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
 
 ######################### COMMUTATIVE OPERATIONS #########################
 
 	def __add__(self, other):
-		if isinstance(other, (int,float,Decimal,Number.Number)):
+		if isinstance(other, N.Number):
 			other = Complex(other)
 		if isinstance(other, Complex):
 			return Complex(self.real + other.real, self.imag + other.imag)
-		elif isinstance(other, Matrix.Matrix):
-			return Matrix.Matrix(self, other.rows, other.columns) + other
+		elif isinstance(other, M.Matrix):
+			return M.Matrix(self, other.rows, other.columns) + other
 		else:
-			return None
+			raise E.Error(self, '+', other)
 
-	def __radd__(self, other):
-		return self + other 
+	# def __radd__(self, other):
+	# 	return self + other 
 
 	def __mul__(self, other):
-		if isinstance(other, (int,float,Decimal,Number.Number)):
+		if isinstance(other, N.Number):
 			other = Complex(other)
 		if isinstance(other, Complex):
 			return Complex(self.real * other.real - self.imag * other.imag,
 						   self.imag * other.real + self.real * other.imag)
-		elif isinstance(other, Matrix.Matrix):
-			return Matrix.Matrix(self, other.rows, other.columns) * other
+		elif isinstance(other, M.Matrix):
+			return M.Matrix(self, other.rows, other.columns) * other
 		else:
-			return None
+			raise E.Error(self, '*', other)
 
-	def __rmul__(self, other):
-		return self * other
+	# def __rmul__(self, other):
+	# 	return self * other
 
 ####################### NON COMMUTATIVE OPERATIONS #######################
 
 	def __sub__(self, other):
-		if isinstance(other, (int,float,Decimal,Number.Number)):
+		if isinstance(other, N.Number):
 			other = Complex(other)
 		if isinstance(other, Complex):
 			return Complex(self.real - other.real, self.imag - other.imag)
-		elif isinstance(other, Matrix.Matrix):
-			return Matrix.Matrix(self, other.rows, other.columns) - other
+		elif isinstance(other, M.Matrix):
+			return M.Matrix(self, other.rows, other.columns) - other
 		else:
-			return None
+			raise E.Error(self, '-', other)
 
-	def __rsub__(self, other):
-		return Complex(other) - self
+	# def __rsub__(self, other):
+	# 	return Complex(other) - self
 
 	def __truediv__(self, other):
-		if isinstance(other, (int,float,Decimal,Number.Number)):
+		if isinstance(other, N.Number):
 			other = Complex(other)
 		if isinstance(other, Complex):
 			s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
-			r = o1 ** 2 + o2 ** 2
+			r = o1 ** N.Number(2) + o2 ** N.Number(2)
 			if r:
 				return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
 			else:
-				raise Error.Error("Division by zero")
-		elif isinstance(other, Matrix.Matrix):
-			return Matrix.Matrix(self, other.rows, other.columns) / other
+				raise E.Error(self, '/', other)
+		elif isinstance(other, M.Matrix):
+			return M.Matrix(self, other.rows, other.columns) / other
 		else:
-			return None
+			raise E.Error(self, '/', other)
 
-	def __rtruediv__(self, other):
-		return Complex(other) / self
+	# def __rtruediv__(self, other):
+	# 	return Complex(other) / self
 
 	def __floordiv__(self, other):
 		# Python does NOT accept floor division of complex numbers.
@@ -113,26 +111,26 @@ class Complex:
 		# So I have implemented the Wolframalpha convention : rounding
 		# the result of a division (both real and imaginary parts)
 		# to the closest integer.
-		if isinstance(other, (int,float,Decimal,Number.Number)):
+		if isinstance(other, N.Number):
 			other = Complex(other)
 		if isinstance(other, Complex):
 			div = self / other
-			if isinstance(div.real, Number.Number):
-				div.real = round(div.real.value)
+			if isinstance(div.real, N.Number):
+				div.real = N.Number(round(div.real.value))
 			else:
-				div.real = round(div.real)
-			if isinstance(div.imag, Number.Number):
-				div.imag = round(div.imag.value)
+				div.real = N.Number(round(div.real))
+			if isinstance(div.imag, N.Number):
+				div.imag = N.Number(round(div.imag.value))
 			else:
-				div.imag = round(div.imag)
+				div.imag = N.Number(round(div.imag))
 			return div
-		elif isinstance(other, Matrix.Matrix):
-			return Matrix.Matrix(self, other.rows, other.columns) // other
+		elif isinstance(other, M.Matrix):
+			return M.Matrix(self, other.rows, other.columns) // other
 		else:
-			return None
+			raise E.Error(self, '//', other)
 
-	def __rfloordiv__(self, other):
-		return Complex(other) // self
+	# def __rfloordiv__(self, other):
+	# 	return Complex(other) // self
 
 	def __mod__(self, other):
 		# Python does NOT accept modulo of complex numbers.
@@ -140,32 +138,32 @@ class Complex:
 		# So I have implemented the Wolframalpha convention : rounding
 		# the result of a division (both real and imaginary parts)
 		# to 2 decimal places.
-		if isinstance(other, (int,float,Decimal,Number.Number)):
+		if isinstance(other, N.Number):
 			other = Complex(other)
 		if isinstance(other, Complex):
 			floor = self // other
 			ret = self - floor * other
-			if isinstance(ret.real, Number.Number):
-				ret.real = round(ret.real.value, 1)
+			if isinstance(ret.real, N.Number):
+				ret.real = N.Number(round(ret.real.value, 1))
 			else:
-				ret.real = round(ret.real, 1)
-			if isinstance(ret.imag, Number.Number):
-				ret.imag = round(ret.imag.value, 1)
+				ret.real = N.Number(round(ret.real, 1))
+			if isinstance(ret.imag, N.Number):
+				ret.imag = N.Number(round(ret.imag.value, 1))
 			else:
-				ret.imag = round(ret.imag, 1)
+				ret.imag = N.Number(round(ret.imag, 1))
 			return ret
-		elif isinstance(other, Matrix.Matrix):
-			return Matrix.Matrix(self, other.rows, other.columns) % other
+		elif isinstance(other, M.Matrix):
+			return M.Matrix(self, other.rows, other.columns) % other
 		else:
-			return None
+			raise E.Error(self, '%', other)
 
-	def __rmod__(self, other):
-		return Complex(other) % self
+	# def __rmod__(self, other):
+	# 	return Complex(other) % self
 
 	def __pow__(self, other):
-		if isinstance(other, (int,float,Decimal)):
-			other = Number.Number(other)
-		if isinstance(other, Number.Number):
+		# if isinstance(other, (int,float,Decimal)):
+		# 	other = N.Number(other)
+		if isinstance(other, N.Number):
 			answer = 1
 			for i in range(1, int(abs(other)) + 1): 
 				answer = self * answer
@@ -174,7 +172,7 @@ class Complex:
 			else:
 				return 1 / answer
 		else:
-			raise Error.Error('Illegal operation between Complex and {}'.format(type(other).__name__))
+			raise E.Error(self, '^', other)
 
-	def __rpow__(self, other):
-		return Number.Number(other) ** self
+	# def __rpow__(self, other):
+	# 	return N.Number(other) ** self
