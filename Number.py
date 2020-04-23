@@ -1,7 +1,7 @@
-from decimal import *
 import Complex as C
-import Matrix as M
+from decimal import *
 import Error as E
+import Matrix as M
 
 class Number:
 	def __init__(self, number):
@@ -14,6 +14,8 @@ class Number:
 
 	def __str__(self):
 		# return str(self.value.normalize())
+
+		# return str(int(self.value))
 		return str(self.value)
 
 	def __repr__(self):
@@ -63,13 +65,11 @@ class Number:
 	# 	else:
 	# 		return None
 
-	# def __eq__(self, other):
-	# 	# if isinstance(other, (int,float,Decimal)):
-	# 	# 	return self.value == other
-	# 	if isinstance(other, Number):
-	# 		return (self.value == other.value)
-	# 	else:
-	# 		return None
+	def __eq__(self, other):
+		if isinstance(other, Number):
+			return (self.value == other.value)
+		else:
+			raise E.Error(self, '==', other)
 
 ######################### COMMUTATIVE OPERATIONS #########################
 
@@ -81,7 +81,7 @@ class Number:
 		elif isinstance(other, C.Complex):
 			return C.Complex(self) + other
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) + other
+			return M.Matrix(self, other.size) + other
 		else:
 			raise E.Error(self, '+', other)
 
@@ -96,7 +96,7 @@ class Number:
 		elif isinstance(other, C.Complex):
 			return C.Complex(self) * other
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) * other
+			return M.Matrix(self, other.size) * other
 		else:
 			raise E.Error(self, '*', other)
 
@@ -113,7 +113,7 @@ class Number:
 		elif isinstance(other, C.Complex):
 			return C.Complex(self) - other
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) - other
+			return M.Matrix(self, other.size) - other
 		else:
 			raise E.Error(self, '-', other)
 
@@ -123,12 +123,12 @@ class Number:
 	def __truediv__(self, other):
 		# if isinstance(other, (int,float,Decimal)):
 		# 	other = Number(other)
-		if isinstance(other, Number) and other.value:
+		if isinstance(other, Number) and other:
 			return Number(self.value / other.value)
 		elif isinstance(other, C.Complex):
 			return C.Complex(self) / other
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) / other
+			return M.Matrix(self, other.size) / other
 		else:
 			raise E.Error(self, '/', other)
 
@@ -138,12 +138,12 @@ class Number:
 	def __floordiv__(self, other):
 		# if isinstance(other, (int,float,Decimal)):
 		# 	other = Number(other)
-		if isinstance(other, Number) and other.value:
+		if isinstance(other, Number) and other:
 			return Number(self.value // other.value)
 		elif isinstance(other, C.Complex):
 			return C.Complex(self) // other
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) // other
+			return M.Matrix(self, other.size) // other
 		else:
 			raise E.Error(self, '//', other)
 
@@ -153,12 +153,12 @@ class Number:
 	def __mod__(self, other):
 		# if isinstance(other, (int,float,Decimal)):
 		# 	other = Number(other)
-		if isinstance(other, Number) and other.value:
+		if isinstance(other, Number) and other:
 			return Number(self.value % other.value)
 		elif isinstance(other, C.Complex):
 			return C.Complex(self) % other
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) % other
+			return M.Matrix(self, other.size) % other
 		else:
 			raise E.Error(self, '%', other)
 		

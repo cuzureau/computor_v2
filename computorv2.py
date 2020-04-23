@@ -1,10 +1,10 @@
+import Error
+import Global as G
 from Global import tokens
 from lexer import lexer
 from parser import parser
-import Global as G
-import wolframalpha
 import readline
-import Error
+import wolframalpha
 
 app_id = "9T72LH-QWT7RJHW4W"
 client = wolframalpha.Client(app_id)

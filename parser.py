@@ -1,11 +1,10 @@
-from Global import tokens
-from Global import variables
-import ply.yacc as yacc
-import Complex
-import Number
-import Matrix
-import Error
 import Global as G
+from Global import tokens
+import ply.yacc as yacc
+import Complex as C
+import Number as N
+import Matrix as M
+import Error as E
 
 def p_operations(p): 
 	""" expression : sixth
@@ -54,10 +53,10 @@ def p_floor_divide(p):
 
 def p_unary_minus(p):
 	""" third : '-' third """
-	if type(p[2]) == Number.Number:
-		p[0] = Number.Number(-p[2].value)
-	elif type(p[2]) == Complex.Complex:
-		p[0] = Complex.Complex(-p[2].real, -p[2].imag)
+	if type(p[2]) == N.Number:
+		p[0] = N.Number(-p[2].value)
+	elif type(p[2]) == C.Complex:
+		p[0] = C.Complex(-p[2].real, -p[2].imag)
 	else:
 		p[0] = -p[2]
 
@@ -85,7 +84,7 @@ def p_list_extend(p):
 
 def p_matrix(p):
     """matrix : '[' vector_list ']' """
-    p[0] = Matrix.Matrix(p[2])
+    p[0] = M.Matrix(p[2])
 
 
 
@@ -95,108 +94,121 @@ def p_matrix(p):
 def p_test(p):
 	""" expression : expression '@' expression """
 	
-	print("Addition")
-	print ('{}+{} = '.format(p[1], p[1]))
-	G.prGreen('	' + str(p[1] + p[1]))
 
-	print ('{}+{} = '.format(p[1], p[3]))
-	G.prGreen('	' + str(p[1] + p[3]))
+	print("Test Matrixes")
+	print(M.Matrix(N.Number(0)))
+	print(M.Matrix(N.Number(2)))
+	print(M.Matrix(C.Complex(1)))
+	print(M.Matrix(C.Complex(-12.3)))
 
-	print ('{}+{} = '.format(p[3], p[1]))
-	G.prGreen('	' + str(p[3] + p[1]))
-
-	print ('{}+{} = '.format(p[3], p[3]))
-	G.prGreen('	' + str(p[3] + p[3]))
-
+	print(M.Matrix(N.Number(0), (2, 2)))
+	print(M.Matrix(N.Number(2), (4, 4)))
+	print(M.Matrix(C.Complex(1), (6, 2)))
+	print(M.Matrix(C.Complex(-12), (2, 8)))
 
 
-	print("Multiplication")
-	print ('{}*{} = '.format(p[1], p[1]))
-	G.prGreen('	' + str(p[1] * p[1]))
+	# print("Addition")
+	# print ('{}+{} = '.format(p[1], p[1]))
+	# G.prGreen('	' + str(p[1] + p[1]))
 
-	print ('{}*{} = '.format(p[1], p[3]))
-	G.prGreen('	' + str(p[1] * p[3]))
+	# print ('{}+{} = '.format(p[1], p[3]))
+	# G.prGreen('	' + str(p[1] + p[3]))
 
-	print ('{}*{} = '.format(p[3], p[1]))
-	G.prGreen('	' + str(p[3] * p[1]))
+	# print ('{}+{} = '.format(p[3], p[1]))
+	# G.prGreen('	' + str(p[3] + p[1]))
 
-	print ('{}*{} = '.format(p[3], p[3]))
-	G.prGreen('	' + str(p[3] * p[3]))
+	# print ('{}+{} = '.format(p[3], p[3]))
+	# G.prGreen('	' + str(p[3] + p[3]))
 
 
 
-	print("Substraction")
-	print ('{}-{} = '.format(p[1], p[1]))
-	G.prGreen('	' + str(p[1] - p[1]))
+	# print("Multiplication")
+	# print ('{}*{} = '.format(p[1], p[1]))
+	# G.prGreen('	' + str(p[1] * p[1]))
 
-	print ('{}-{} = '.format(p[1], p[3]))
-	G.prGreen('	' + str(p[1] - p[3]))
+	# print ('{}*{} = '.format(p[1], p[3]))
+	# G.prGreen('	' + str(p[1] * p[3]))
 
-	print ('{}-{} = '.format(p[3], p[1]))
-	G.prGreen('	' + str(p[3] - p[1]))
+	# print ('{}*{} = '.format(p[3], p[1]))
+	# G.prGreen('	' + str(p[3] * p[1]))
 
-	print ('{}-{} = '.format(p[3], p[3]))
-	G.prGreen('	' + str(p[3] - p[3]))
-
-
-
-	print("Division")
-	print ('{}/{} = '.format(p[1], p[1]))
-	G.prGreen('	' + str(p[1] / p[1]))
-
-	print ('{}/{} = '.format(p[1], p[3]))
-	G.prGreen('	' + str(p[1] / p[3]))
-
-	print ('{}/{} = '.format(p[3], p[1]))
-	G.prGreen('	' + str(p[3] / p[1]))
-
-	print ('{}/{} = '.format(p[3], p[3]))
-	G.prGreen('	' + str(p[3] / p[3]))
+	# print ('{}*{} = '.format(p[3], p[3]))
+	# G.prGreen('	' + str(p[3] * p[3]))
 
 
 
-	print("Floor Division")
-	print ('{}//{} = '.format(p[1], p[1]))
-	G.prGreen('	' + str(p[1] // p[1]))
+	# print("Substraction")
+	# print ('{}-{} = '.format(p[1], p[1]))
+	# G.prGreen('	' + str(p[1] - p[1]))
 
-	print ('{}//{} = '.format(p[1], p[3]))
-	G.prGreen('	' + str(p[1] // p[3]))
+	# print ('{}-{} = '.format(p[1], p[3]))
+	# G.prGreen('	' + str(p[1] - p[3]))
 
-	print ('{}//{} = '.format(p[3], p[1]))
-	G.prGreen('	' + str(p[3] // p[1]))
+	# print ('{}-{} = '.format(p[3], p[1]))
+	# G.prGreen('	' + str(p[3] - p[1]))
 
-	print ('{}//{} = '.format(p[3], p[3]))
-	G.prGreen('	' + str(p[3] // p[3]))
-
-
-
-	print("Modulo")
-	print ('{}%{} = '.format(p[1], p[1]))
-	G.prGreen('	' + str(p[1] % p[1]))
-
-	print ('{}%{} = '.format(p[1], p[3]))
-	G.prGreen('	' + str(p[1] % p[3]))
-
-	print ('{}%{} = '.format(p[3], p[1]))
-	G.prGreen('	' + str(p[3] % p[1]))
-
-	print ('{}%{} = '.format(p[3], p[3]))
-	G.prGreen('	' + str(p[3] % p[3]))
+	# print ('{}-{} = '.format(p[3], p[3]))
+	# G.prGreen('	' + str(p[3] - p[3]))
 
 
 
-	print("Power")
-	print ('{}**{} = '.format(p[1], p[1]))
-	G.prGreen('	' + str(p[1] ** p[1]))
+	# print("Division")
+	# print ('{}/{} = '.format(p[1], p[1]))
+	# G.prGreen('	' + str(p[1] / p[1]))
 
-	print ('{}**{} = '.format(p[1], p[3]))
-	G.prGreen('	' + str(p[1] ** p[3]))
+	# print ('{}/{} = '.format(p[1], p[3]))
+	# G.prGreen('	' + str(p[1] / p[3]))
 
-	print ('{}**{} = '.format(p[3], p[1]))
-	G.prGreen('	' + str(p[3] ** p[1]))
+	# print ('{}/{} = '.format(p[3], p[1]))
+	# G.prGreen('	' + str(p[3] / p[1]))
 
-	print ('{}**{} = '.format(p[3], p[3]))
-	G.prGreen('	' + str(p[3] ** p[3]))
+	# print ('{}/{} = '.format(p[3], p[3]))
+	# G.prGreen('	' + str(p[3] / p[3]))
+
+
+
+	# print("Floor Division")
+	# print ('{}//{} = '.format(p[1], p[1]))
+	# G.prGreen('	' + str(p[1] // p[1]))
+
+	# print ('{}//{} = '.format(p[1], p[3]))
+	# G.prGreen('	' + str(p[1] // p[3]))
+
+	# print ('{}//{} = '.format(p[3], p[1]))
+	# G.prGreen('	' + str(p[3] // p[1]))
+
+	# print ('{}//{} = '.format(p[3], p[3]))
+	# G.prGreen('	' + str(p[3] // p[3]))
+
+
+
+	# print("Modulo")
+	# print ('{}%{} = '.format(p[1], p[1]))
+	# G.prGreen('	' + str(p[1] % p[1]))
+
+	# print ('{}%{} = '.format(p[1], p[3]))
+	# G.prGreen('	' + str(p[1] % p[3]))
+
+	# print ('{}%{} = '.format(p[3], p[1]))
+	# G.prGreen('	' + str(p[3] % p[1]))
+
+	# print ('{}%{} = '.format(p[3], p[3]))
+	# G.prGreen('	' + str(p[3] % p[3]))
+
+
+
+	# print("Power")
+	# print ('{}**{} = '.format(p[1], p[1]))
+	# G.prGreen('	' + str(p[1] ** p[1]))
+
+	# print ('{}**{} = '.format(p[1], p[3]))
+	# G.prGreen('	' + str(p[1] ** p[3]))
+
+	# print ('{}**{} = '.format(p[3], p[1]))
+	# G.prGreen('	' + str(p[3] ** p[1]))
+
+	# print ('{}**{} = '.format(p[3], p[3]))
+	# G.prGreen('	' + str(p[3] ** p[3]))
 
 
 
@@ -248,7 +260,7 @@ def p_test(p):
 
 def p_statement_assign(t):
 	'''expression : NAME '=' expression'''
-	variables[t[1].lower()] = t[3]
+	G.variables[t[1].lower()] = t[3]
 	
 
 # def p_statement_expr(t):
@@ -261,7 +273,7 @@ def p_statement_assign(t):
 # 	'''expression : NAME
 # 				  | NAME EQUALS QUESTION'''
 # 	try:
-# 		t[0] = variables[t[1].lower()]
+# 		t[0] = G.variables[t[1].lower()]
 # 	except LookupError:
 # 		prRed("Undefined name '%s'" % t[1])
 # 		t[0] = 0

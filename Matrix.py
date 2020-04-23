@@ -1,24 +1,19 @@
-from decimal import Decimal
-import Number
-import Complex
-import Error
+# from decimal import Decimal
+import Number as N
+import Complex as C
+import Error as E
 
 class Matrix:
-	def __init__(self, value, rows=1, columns=1):
+	def __init__(self, value, size=(1,1)):
 		if isinstance(value, list):
-			self.columns = len(value[0])
+			self.size = (len(value), len(value[0]))
 			for v in value:
-				if len(v) != self.columns:
-					raise Error.Error('Error: invalid matrix dimensions')
-			self.rows = len(value)
+				if len(v) != self.size[1]:
+					raise E.Error('Error: invalid matrix')
 			self.value = value
 		else:
-			self.columns = columns
-			self.rows = rows
-			self.value = []
-			for i in range(0, rows):
-				self.value.append([value for j in range(0, columns)])
-		self.dimensions = (self.rows, self.columns)
+			self.size = size
+			self.value = [[value for i in range(size[1])] for j in range(size[0])]
 
 	def __str__(self):
 		string = ''
@@ -29,79 +24,59 @@ class Matrix:
 # ######################### COMMUTATIVE OPERATIONS #########################
 
 	def __add__(self, other):
-		new = []
-		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
-			for row in self.value:
-				new.append([elem + other for elem in row])
-			return Matrix(new)
-		elif isinstance(other, Matrix):
-			if self.dimensions != other.dimensions:
-				raise Error.Error('Error: Incompatible matrixes dimensions')
-			for sv,ov in zip(self.value, other.value):
-				new.append([s + o for s,o in zip(sv, ov)])
-			return Matrix(new)
+		if isinstance(other, (N.Number,C.Complex)):
+			other = Matrix(other, self.size)
+		if isinstance(other, Matrix) and self.size == other.size:
+			return Matrix([[s + o for s,o in zip(sv, ov)] for sv,ov in zip(self.value, other.value)])
 		else:
-			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
+			raise E.Error(self, '+', other)
 
-	def __radd__(self, other):
-		return self + other 
+	# def __radd__(self, other):
+	# 	return self + other 
 
 	def __mul__(self, other):
-		new = []
-		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
-			for row in self.value:
-				new.append([elem * other for elem in row])
-			return Matrix(new)
-		elif isinstance(other, Matrix):
-			if self.dimensions != other.dimensions:
-				raise Error.Error('Error: Incompatible matrixes dimensions')
-			for sv,ov in zip(self.value, other.value):
-				new.append([s * o for s,o in zip(sv, ov)])
-			return Matrix(new)
+		if isinstance(other, (N.Number,C.Complex)):
+			other = Matrix(other, self.size)
+		if isinstance(other, Matrix) and self.size == other.size:
+			return Matrix([[s * o for s,o in zip(sv, ov)] for sv,ov in zip(self.value, other.value)])
 		else:
-			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
-		
-	def __rmul__(self, other):
-		return self * other
+			raise E.Error(self, '*', other)
+
+	# def __rmul__(self, other):
+	# 	return self * other
 
 # ####################### NON COMMUTATIVE OPERATIONS #######################
 
 	def dot_product(self, other):
-		if isinstance(other, Matrix):
-			if self.dimensions == other.dimensions:
-				new = []
-				for sv in self.value:
-					sub = []
-					for i in range(other.columns):
-						sub.append(sum([v * ov[i] for v,ov in zip(sv, other.value)]))
-					new.append(sub)
-				return Matrix(new)
-			else:
-				raise Error.Error('Error: Incompatible matrixes dimensions')
+		if isinstance(other, Matrix) and self.size == other.size[::-1]:
+			new = []
+			for sv in self.value:
+				sub = []
+				for i in range(other.size[1]):
+					res = [v * ov[i] for v,ov in zip(sv, other.value)]
+					total = N.Number(0)
+					for r in res:
+						total += r
+					sub.append(total)
+				new.append(sub)
+			return Matrix(new)
 		else:
-			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
+			raise E.Error(self, '**', other)
 
 	def __sub__(self, other):
-		new = []
-		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
-			for row in self.value:
-				new.append([elem - other for elem in row])
-			return Matrix(new)
-		elif isinstance(other, Matrix):
-			if self.dimensions != other.dimensions:
-				raise Error.Error('Error: Incompatible matrixes dimensions')
-			for sv,ov in zip(self.value, other.value):
-				new.append([s - o for s,o in zip(sv, ov)])
-			return Matrix(new)
+		if isinstance(other, (N.Number,C.Complex)):
+			other = Matrix(other, self.size)
+		if isinstance(other, Matrix) and self.size == other.size:
+			return Matrix([[s - o for s,o in zip(sv, ov)] for sv,ov in zip(self.value, other.value)])
 		else:
-			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
+			raise E.Error(self, '-', other)
 
-	def __rsub__(self, other):
-		return Matrix(other, self.rows, self.columns) - self
+	# def __rsub__(self, other):
+	# 	return Matrix(other, self.rows, self.columns) - self
 
 	def check_squareness(self):
-		if self.rows != self.columns:
-			raise Error.Error('Error: Matrix must be square to inverse')
+		if self.size[0] != self.size[1]:
+			raise E.Error(self, 'Error: Matrix must be square to inverse')
 
 	def determinant(self, value, total=0):
 		V = value
@@ -123,15 +98,13 @@ class Matrix:
 
 	def check_non_singular(self):
 		det = self.determinant(self.value)
-		if det != 0:
-			return det
-		else:
-			raise Error.Error('Error: Singular Matrix')
+		if det == N.Number(0):
+			raise E.Error(self, 'Error: Singular Matrix')
 
 	def identity_matrix(self, n):
-		new = Matrix(0, n, n)
+		new = Matrix(N.Number(0), (n, n))
 		for i in range(n):
-			new.value[i][i] = 1
+			new.value[i][i] = N.Number(1)
 		return new.value
 
 	def invert(self):
@@ -142,7 +115,7 @@ class Matrix:
 		IM = self.identity_matrix(n)
 		indices = list(range(n))
 		for fd in range(n):
-			fdScaler = 1 / AM[fd][fd]
+			fdScaler = N.Number(1) / AM[fd][fd]
 			for j in range(n):
 				AM[fd][j] *= fdScaler
 				IM[fd][j] *= fdScaler
@@ -155,27 +128,30 @@ class Matrix:
 
 	def __truediv__(self, other):
 		new = []
-		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
+		if isinstance(other, (N.Number,C.Complex)):
 			for row in self.value:
 				new.append([elem / other for elem in row])
 			return Matrix(new)
 		elif isinstance(other, Matrix):
-			new = other.invert()
+			try:
+				new = other.invert()
+			except:
+				raise E.Error(self, '**', other)
 			return self.dot_product(new)
 		else:
-			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
+			raise E.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
 
-	def __rtruediv__(self, other):
-		return Matrix(other, self.rows, self.columns) / self
+	# def __rtruediv__(self, other):
+	# 	return Matrix(other, self.rows, self.columns) / self
 
 	def __floordiv__(self, other):
 		new = []
-		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
+		if isinstance(other, (N.Number,C.Complex)):
 			for row in self.value:
 				new.append([elem // other for elem in row])
 			return Matrix(new)
 		else:
-			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
+			raise E.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
 
 	def __rfloordiv__(self, other):
 		return Matrix(other, self.rows, self.columns) // self
@@ -183,29 +159,29 @@ class Matrix:
 
 	def __mod__(self, other):
 		new = []
-		if isinstance(other, (int,float,Decimal,Number.Number,Complex.Complex)):
+		if isinstance(other, (N.Number,C.Complex)):
 			for row in self.value:
 				new.append([elem % other for elem in row])
 			return Matrix(new)
 		else:
-			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
+			raise E.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
 
 	def __rmod__(self, other):
 		return Matrix(other, self.rows, self.columns) // self
 
 	def __pow__(self, other):
 		if isinstance(other, (int,float,Decimal)):
-			other = Number.Number(other)
-		if isinstance(other, Number.Number):
+			other = N.Number(other)
+		if isinstance(other, N.Number):
 			if other > 0:
 				answer = self
 				for i in range(1, int(abs(other))):
 					answer = self.dot_product(answer)
 				return answer
 			else:
-				raise Error.Error('Error: Exponent is not a positive integer Number')
+				raise E.Error('Error: Exponent is not a positive integer Number')
 		else:
-			raise Error.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
+			raise E.Error('Error: Illegal operation between Matrix and {}'.format(type(other).__name__))
 			
 	def __rpow__(self, other):
 		return Matrix(other, self.rows, self.columns) ** self

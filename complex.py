@@ -1,7 +1,6 @@
-# from decimal import Decimal
-import Number as N
-import Matrix as M
 import Error as E
+import Matrix as M
+import Number as N
 
 class Complex:
 	def __init__(self, real, imag=0):
@@ -21,12 +20,23 @@ class Complex:
 		else:
 			sign = ''
 		if self.imag:
-			imag += 'i'
+			if self.imag == N.Number(1):
+				imag = 'i'
+			else:
+				imag += 'i'
 		string = real + sign + imag
 		return string or '0'
 
 	def __repr__(self):
 		return str(self)
+
+	def __bool__(self):
+		if self.real:
+			return True
+		elif self.imag:
+			return True
+		else:
+			return False
 
 	# def __abs__(self):
 	# 	return Complex(self.real ** N.Number(2) + self.imag ** N.Number(2)) ** N.Number(0.5)
@@ -51,7 +61,7 @@ class Complex:
 		if isinstance(other, Complex):
 			return Complex(self.real + other.real, self.imag + other.imag)
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) + other
+			return M.Matrix(self, other.size) + other
 		else:
 			raise E.Error(self, '+', other)
 
@@ -65,7 +75,7 @@ class Complex:
 			return Complex(self.real * other.real - self.imag * other.imag,
 						   self.imag * other.real + self.real * other.imag)
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) * other
+			return M.Matrix(self, other.size) * other
 		else:
 			raise E.Error(self, '*', other)
 
@@ -80,7 +90,7 @@ class Complex:
 		if isinstance(other, Complex):
 			return Complex(self.real - other.real, self.imag - other.imag)
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) - other
+			return M.Matrix(self, other.size) - other
 		else:
 			raise E.Error(self, '-', other)
 
@@ -90,15 +100,12 @@ class Complex:
 	def __truediv__(self, other):
 		if isinstance(other, N.Number):
 			other = Complex(other)
-		if isinstance(other, Complex):
+		if isinstance(other, Complex) and other:
 			s1, s2, o1, o2 = self.real, self.imag, other.real, other.imag
 			r = o1 ** N.Number(2) + o2 ** N.Number(2)
-			if r:
-				return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
-			else:
-				raise E.Error(self, '/', other)
+			return Complex((s1 * o1 + s2 * o2) / r, ( s2 * o1 - s1 * o2) / r)
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) / other
+			return M.Matrix(self, other.size) / other
 		else:
 			raise E.Error(self, '/', other)
 
@@ -107,25 +114,24 @@ class Complex:
 
 	def __floordiv__(self, other):
 		# Python does NOT accept floor division of complex numbers.
-		# 	->	TypeError: can't take floor of complex number.
 		# So I have implemented the Wolframalpha convention : rounding
 		# the result of a division (both real and imaginary parts)
 		# to the closest integer.
 		if isinstance(other, N.Number):
 			other = Complex(other)
-		if isinstance(other, Complex):
+		if isinstance(other, Complex) and other:
 			div = self / other
-			if isinstance(div.real, N.Number):
-				div.real = N.Number(round(div.real.value))
-			else:
-				div.real = N.Number(round(div.real))
-			if isinstance(div.imag, N.Number):
-				div.imag = N.Number(round(div.imag.value))
-			else:
-				div.imag = N.Number(round(div.imag))
+			# if isinstance(div.real, N.Number):
+			div.real = N.Number(round(div.real.value))
+			# else:
+				# div.real = N.Number(round(div.real))
+			# if isinstance(div.imag, N.Number):
+			div.imag = N.Number(round(div.imag.value))
+			# else:
+				# div.imag = N.Number(round(div.imag))
 			return div
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) // other
+			return M.Matrix(self, other.size) // other
 		else:
 			raise E.Error(self, '//', other)
 
@@ -134,26 +140,25 @@ class Complex:
 
 	def __mod__(self, other):
 		# Python does NOT accept modulo of complex numbers.
-		# 	->	TypeError: can't mod complex numbers.
 		# So I have implemented the Wolframalpha convention : rounding
 		# the result of a division (both real and imaginary parts)
 		# to 2 decimal places.
 		if isinstance(other, N.Number):
 			other = Complex(other)
-		if isinstance(other, Complex):
+		if isinstance(other, Complex) and other:
 			floor = self // other
 			ret = self - floor * other
-			if isinstance(ret.real, N.Number):
-				ret.real = N.Number(round(ret.real.value, 1))
-			else:
-				ret.real = N.Number(round(ret.real, 1))
-			if isinstance(ret.imag, N.Number):
-				ret.imag = N.Number(round(ret.imag.value, 1))
-			else:
-				ret.imag = N.Number(round(ret.imag, 1))
+			# if isinstance(ret.real, N.Number):
+			ret.real = N.Number(round(ret.real.value, 1))
+			# else:
+				# ret.real = N.Number(round(ret.real, 1))
+			# if isinstance(ret.imag, N.Number):
+			ret.imag = N.Number(round(ret.imag.value, 1))
+			# else:
+				# ret.imag = N.Number(round(ret.imag, 1))
 			return ret
 		elif isinstance(other, M.Matrix):
-			return M.Matrix(self, other.rows, other.columns) % other
+			return M.Matrix(self, other.size) % other
 		else:
 			raise E.Error(self, '%', other)
 
