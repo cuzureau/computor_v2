@@ -2,6 +2,7 @@ tokens = (
     'NAME',
     'NUMBER',
     'FLOORDIV',
+    'DOT_PRODUCT',
     'IMAGINE',
     'COMMAND',
 )

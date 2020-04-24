@@ -7,7 +7,7 @@ class Complex:
 		self.real = N.Number(real)
 		self.imag = N.Number(imag)
 
-	def __str__(self):
+	def __repr__(self):
 		real = str(self.real or '')
 		imag = str(abs(self.imag) or '')
 		if self.imag < N.Number(0):
@@ -20,15 +20,12 @@ class Complex:
 		else:
 			sign = ''
 		if self.imag:
-			if self.imag == N.Number(1):
+			if self.imag == N.Number(1) or self.imag == N.Number(-1):
 				imag = 'i'
 			else:
 				imag += 'i'
 		string = real + sign + imag
 		return string or '0'
-
-	def __repr__(self):
-		return str(self)
 
 	def __bool__(self):
 		if self.real:
@@ -38,20 +35,10 @@ class Complex:
 		else:
 			return False
 
-	# def __abs__(self):
-	# 	return Complex(self.real ** N.Number(2) + self.imag ** N.Number(2)) ** N.Number(0.5)
-
-	# def __gt__(self, other):
-	# 	raise E.Error("TypeError: '>' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
-
-	# def __ge__(self, other):
-	# 	raise E.Error("TypeError: '>=' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
-
-	# def __lt__(self, other):
-	# 	raise E.Error("TypeError: '<' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
-
-	# def __le__(self, other):
-	# 	raise E.Error("TypeError: '<=' not supported between instances of 'Complex' and '{}'".format(type(other).__name__))
+	def __neg__(self):
+		self.real = -self.real
+		self.imag = -self.imag
+		return self
 
 ######################### COMMUTATIVE OPERATIONS #########################
 
@@ -65,9 +52,6 @@ class Complex:
 		else:
 			raise E.Error(self, '+', other)
 
-	# def __radd__(self, other):
-	# 	return self + other 
-
 	def __mul__(self, other):
 		if isinstance(other, N.Number):
 			other = Complex(other)
@@ -78,9 +62,6 @@ class Complex:
 			return M.Matrix(self, other.size) * other
 		else:
 			raise E.Error(self, '*', other)
-
-	# def __rmul__(self, other):
-	# 	return self * other
 
 ####################### NON COMMUTATIVE OPERATIONS #######################
 
@@ -94,9 +75,6 @@ class Complex:
 		else:
 			raise E.Error(self, '-', other)
 
-	# def __rsub__(self, other):
-	# 	return Complex(other) - self
-
 	def __truediv__(self, other):
 		if isinstance(other, N.Number):
 			other = Complex(other)
@@ -109,9 +87,6 @@ class Complex:
 		else:
 			raise E.Error(self, '/', other)
 
-	# def __rtruediv__(self, other):
-	# 	return Complex(other) / self
-
 	def __floordiv__(self, other):
 		# Python does NOT accept floor division of complex numbers.
 		# So I have implemented the Wolframalpha convention : rounding
@@ -121,22 +96,13 @@ class Complex:
 			other = Complex(other)
 		if isinstance(other, Complex) and other:
 			div = self / other
-			# if isinstance(div.real, N.Number):
 			div.real = N.Number(round(div.real.value))
-			# else:
-				# div.real = N.Number(round(div.real))
-			# if isinstance(div.imag, N.Number):
 			div.imag = N.Number(round(div.imag.value))
-			# else:
-				# div.imag = N.Number(round(div.imag))
 			return div
 		elif isinstance(other, M.Matrix):
 			return M.Matrix(self, other.size) // other
 		else:
 			raise E.Error(self, '//', other)
-
-	# def __rfloordiv__(self, other):
-	# 	return Complex(other) // self
 
 	def __mod__(self, other):
 		# Python does NOT accept modulo of complex numbers.
@@ -148,36 +114,22 @@ class Complex:
 		if isinstance(other, Complex) and other:
 			floor = self // other
 			ret = self - floor * other
-			# if isinstance(ret.real, N.Number):
 			ret.real = N.Number(round(ret.real.value, 1))
-			# else:
-				# ret.real = N.Number(round(ret.real, 1))
-			# if isinstance(ret.imag, N.Number):
 			ret.imag = N.Number(round(ret.imag.value, 1))
-			# else:
-				# ret.imag = N.Number(round(ret.imag, 1))
 			return ret
 		elif isinstance(other, M.Matrix):
 			return M.Matrix(self, other.size) % other
 		else:
 			raise E.Error(self, '%', other)
 
-	# def __rmod__(self, other):
-	# 	return Complex(other) % self
-
 	def __pow__(self, other):
-		# if isinstance(other, (int,float,Decimal)):
-		# 	other = N.Number(other)
-		if isinstance(other, N.Number):
-			answer = 1
-			for i in range(1, int(abs(other)) + 1): 
+		if isinstance(other, N.Number) and other % N.Number(1) == N.Number(0):
+			answer = N.Number(1)
+			for i in range(int(abs(other))):
 				answer = self * answer
-			if other >= 0:
-				return answer
+			if other < N.Number(0):
+				return N.Number(1) / answer
 			else:
-				return 1 / answer
+				return answer
 		else:
 			raise E.Error(self, '^', other)
-
-	# def __rpow__(self, other):
-	# 	return N.Number(other) ** self

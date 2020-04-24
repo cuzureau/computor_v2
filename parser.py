@@ -36,8 +36,8 @@ def p_times(p):
 	p[0] = p[1] * p[3]
 
 def p_dot_product(p):
-	""" fourth : fourth '*' '*' matrix """
-	p[0] = p[1].dot_product(p[4])
+	""" fourth : matrix DOT_PRODUCT third """
+	p[0] = p[1].dot_product(p[3])
 
 def p_divide(p):
 	""" fourth : fourth '/' third """
@@ -53,12 +53,7 @@ def p_floor_divide(p):
 
 def p_unary_minus(p):
 	""" third : '-' third """
-	if type(p[2]) == N.Number:
-		p[0] = N.Number(-p[2].value)
-	elif type(p[2]) == C.Complex:
-		p[0] = C.Complex(-p[2].real, -p[2].imag)
-	else:
-		p[0] = -p[2]
+	p[0] = -p[2]
 
 def p_power(p):
 	""" second : first '^' third """
@@ -91,153 +86,153 @@ def p_matrix(p):
 
 
 
-def p_test(p):
-	""" expression : expression '@' expression """
+# def p_test(p):
+# 	""" expression : expression '@' expression """
 	
 
-	print("Test Matrixes")
-	print(M.Matrix(N.Number(0)))
-	print(M.Matrix(N.Number(2)))
-	print(M.Matrix(C.Complex(1)))
-	print(M.Matrix(C.Complex(-12.3)))
+# 	print("Test Matrixes")
+# 	print(M.Matrix(N.Number(0)))
+# 	print(M.Matrix(N.Number(2)))
+# 	print(M.Matrix(C.Complex(1)))
+# 	print(M.Matrix(C.Complex(-12.3)))
 
-	print(M.Matrix(N.Number(0), (2, 2)))
-	print(M.Matrix(N.Number(2), (4, 4)))
-	print(M.Matrix(C.Complex(1), (6, 2)))
-	print(M.Matrix(C.Complex(-12), (2, 8)))
-
-
-	# print("Addition")
-	# print ('{}+{} = '.format(p[1], p[1]))
-	# G.prGreen('	' + str(p[1] + p[1]))
-
-	# print ('{}+{} = '.format(p[1], p[3]))
-	# G.prGreen('	' + str(p[1] + p[3]))
-
-	# print ('{}+{} = '.format(p[3], p[1]))
-	# G.prGreen('	' + str(p[3] + p[1]))
-
-	# print ('{}+{} = '.format(p[3], p[3]))
-	# G.prGreen('	' + str(p[3] + p[3]))
+# 	print(M.Matrix(N.Number(0), (2, 2)))
+# 	print(M.Matrix(N.Number(2), (4, 4)))
+# 	print(M.Matrix(C.Complex(1), (6, 2)))
+# 	print(M.Matrix(C.Complex(-12), (2, 8)))
 
 
+# 	# print("Addition")
+# 	# print ('{}+{} = '.format(p[1], p[1]))
+# 	# G.prGreen('	' + str(p[1] + p[1]))
 
-	# print("Multiplication")
-	# print ('{}*{} = '.format(p[1], p[1]))
-	# G.prGreen('	' + str(p[1] * p[1]))
+# 	# print ('{}+{} = '.format(p[1], p[3]))
+# 	# G.prGreen('	' + str(p[1] + p[3]))
 
-	# print ('{}*{} = '.format(p[1], p[3]))
-	# G.prGreen('	' + str(p[1] * p[3]))
+# 	# print ('{}+{} = '.format(p[3], p[1]))
+# 	# G.prGreen('	' + str(p[3] + p[1]))
 
-	# print ('{}*{} = '.format(p[3], p[1]))
-	# G.prGreen('	' + str(p[3] * p[1]))
-
-	# print ('{}*{} = '.format(p[3], p[3]))
-	# G.prGreen('	' + str(p[3] * p[3]))
+# 	# print ('{}+{} = '.format(p[3], p[3]))
+# 	# G.prGreen('	' + str(p[3] + p[3]))
 
 
 
-	# print("Substraction")
-	# print ('{}-{} = '.format(p[1], p[1]))
-	# G.prGreen('	' + str(p[1] - p[1]))
+# 	# print("Multiplication")
+# 	# print ('{}*{} = '.format(p[1], p[1]))
+# 	# G.prGreen('	' + str(p[1] * p[1]))
 
-	# print ('{}-{} = '.format(p[1], p[3]))
-	# G.prGreen('	' + str(p[1] - p[3]))
+# 	# print ('{}*{} = '.format(p[1], p[3]))
+# 	# G.prGreen('	' + str(p[1] * p[3]))
 
-	# print ('{}-{} = '.format(p[3], p[1]))
-	# G.prGreen('	' + str(p[3] - p[1]))
+# 	# print ('{}*{} = '.format(p[3], p[1]))
+# 	# G.prGreen('	' + str(p[3] * p[1]))
 
-	# print ('{}-{} = '.format(p[3], p[3]))
-	# G.prGreen('	' + str(p[3] - p[3]))
-
-
-
-	# print("Division")
-	# print ('{}/{} = '.format(p[1], p[1]))
-	# G.prGreen('	' + str(p[1] / p[1]))
-
-	# print ('{}/{} = '.format(p[1], p[3]))
-	# G.prGreen('	' + str(p[1] / p[3]))
-
-	# print ('{}/{} = '.format(p[3], p[1]))
-	# G.prGreen('	' + str(p[3] / p[1]))
-
-	# print ('{}/{} = '.format(p[3], p[3]))
-	# G.prGreen('	' + str(p[3] / p[3]))
+# 	# print ('{}*{} = '.format(p[3], p[3]))
+# 	# G.prGreen('	' + str(p[3] * p[3]))
 
 
 
-	# print("Floor Division")
-	# print ('{}//{} = '.format(p[1], p[1]))
-	# G.prGreen('	' + str(p[1] // p[1]))
+# 	# print("Substraction")
+# 	# print ('{}-{} = '.format(p[1], p[1]))
+# 	# G.prGreen('	' + str(p[1] - p[1]))
 
-	# print ('{}//{} = '.format(p[1], p[3]))
-	# G.prGreen('	' + str(p[1] // p[3]))
+# 	# print ('{}-{} = '.format(p[1], p[3]))
+# 	# G.prGreen('	' + str(p[1] - p[3]))
 
-	# print ('{}//{} = '.format(p[3], p[1]))
-	# G.prGreen('	' + str(p[3] // p[1]))
+# 	# print ('{}-{} = '.format(p[3], p[1]))
+# 	# G.prGreen('	' + str(p[3] - p[1]))
 
-	# print ('{}//{} = '.format(p[3], p[3]))
-	# G.prGreen('	' + str(p[3] // p[3]))
-
-
-
-	# print("Modulo")
-	# print ('{}%{} = '.format(p[1], p[1]))
-	# G.prGreen('	' + str(p[1] % p[1]))
-
-	# print ('{}%{} = '.format(p[1], p[3]))
-	# G.prGreen('	' + str(p[1] % p[3]))
-
-	# print ('{}%{} = '.format(p[3], p[1]))
-	# G.prGreen('	' + str(p[3] % p[1]))
-
-	# print ('{}%{} = '.format(p[3], p[3]))
-	# G.prGreen('	' + str(p[3] % p[3]))
+# 	# print ('{}-{} = '.format(p[3], p[3]))
+# 	# G.prGreen('	' + str(p[3] - p[3]))
 
 
 
-	# print("Power")
-	# print ('{}**{} = '.format(p[1], p[1]))
-	# G.prGreen('	' + str(p[1] ** p[1]))
+# 	# print("Division")
+# 	# print ('{}/{} = '.format(p[1], p[1]))
+# 	# G.prGreen('	' + str(p[1] / p[1]))
 
-	# print ('{}**{} = '.format(p[1], p[3]))
-	# G.prGreen('	' + str(p[1] ** p[3]))
+# 	# print ('{}/{} = '.format(p[1], p[3]))
+# 	# G.prGreen('	' + str(p[1] / p[3]))
 
-	# print ('{}**{} = '.format(p[3], p[1]))
-	# G.prGreen('	' + str(p[3] ** p[1]))
+# 	# print ('{}/{} = '.format(p[3], p[1]))
+# 	# G.prGreen('	' + str(p[3] / p[1]))
 
-	# print ('{}**{} = '.format(p[3], p[3]))
-	# G.prGreen('	' + str(p[3] ** p[3]))
-
-
-
-	# print("Greater than")
-	# print ('{}>{} = '.format(p[1], p[1]))
-	# G.prGreen('	' + str(p[1] > p[1]))
-
-	# print ('{}>{} = '.format(p[1], p[3]))
-	# G.prGreen('	' + str(p[1] > p[3]))
-
-	# print ('{}>{} = '.format(p[3], p[1]))
-	# G.prGreen('	' + str(p[3] > p[1]))
-
-	# print ('{}>{} = '.format(p[3], p[3]))
-	# G.prGreen('	' + str(p[3] > p[3]))
+# 	# print ('{}/{} = '.format(p[3], p[3]))
+# 	# G.prGreen('	' + str(p[3] / p[3]))
 
 
-	# print("Lower than")
-	# print ('{}<{} = '.format(p[1], p[1]))
-	# G.prGreen('	' + str(p[1] < p[1]))
 
-	# print ('{}<{} = '.format(p[1], p[3]))
-	# G.prGreen('	' + str(p[1] < p[3]))
+# 	# print("Floor Division")
+# 	# print ('{}//{} = '.format(p[1], p[1]))
+# 	# G.prGreen('	' + str(p[1] // p[1]))
 
-	# print ('{}<{} = '.format(p[3], p[1]))
-	# G.prGreen('	' + str(p[3] < p[1]))
+# 	# print ('{}//{} = '.format(p[1], p[3]))
+# 	# G.prGreen('	' + str(p[1] // p[3]))
 
-	# print ('{}<{} = '.format(p[3], p[3]))
-	# G.prGreen('	' + str(p[3] < p[3]))
+# 	# print ('{}//{} = '.format(p[3], p[1]))
+# 	# G.prGreen('	' + str(p[3] // p[1]))
+
+# 	# print ('{}//{} = '.format(p[3], p[3]))
+# 	# G.prGreen('	' + str(p[3] // p[3]))
+
+
+
+# 	# print("Modulo")
+# 	# print ('{}%{} = '.format(p[1], p[1]))
+# 	# G.prGreen('	' + str(p[1] % p[1]))
+
+# 	# print ('{}%{} = '.format(p[1], p[3]))
+# 	# G.prGreen('	' + str(p[1] % p[3]))
+
+# 	# print ('{}%{} = '.format(p[3], p[1]))
+# 	# G.prGreen('	' + str(p[3] % p[1]))
+
+# 	# print ('{}%{} = '.format(p[3], p[3]))
+# 	# G.prGreen('	' + str(p[3] % p[3]))
+
+
+
+# 	# print("Power")
+# 	# print ('{}**{} = '.format(p[1], p[1]))
+# 	# G.prGreen('	' + str(p[1] ** p[1]))
+
+# 	# print ('{}**{} = '.format(p[1], p[3]))
+# 	# G.prGreen('	' + str(p[1] ** p[3]))
+
+# 	# print ('{}**{} = '.format(p[3], p[1]))
+# 	# G.prGreen('	' + str(p[3] ** p[1]))
+
+# 	# print ('{}**{} = '.format(p[3], p[3]))
+# 	# G.prGreen('	' + str(p[3] ** p[3]))
+
+
+
+# 	# print("Greater than")
+# 	# print ('{}>{} = '.format(p[1], p[1]))
+# 	# G.prGreen('	' + str(p[1] > p[1]))
+
+# 	# print ('{}>{} = '.format(p[1], p[3]))
+# 	# G.prGreen('	' + str(p[1] > p[3]))
+
+# 	# print ('{}>{} = '.format(p[3], p[1]))
+# 	# G.prGreen('	' + str(p[3] > p[1]))
+
+# 	# print ('{}>{} = '.format(p[3], p[3]))
+# 	# G.prGreen('	' + str(p[3] > p[3]))
+
+
+# 	# print("Lower than")
+# 	# print ('{}<{} = '.format(p[1], p[1]))
+# 	# G.prGreen('	' + str(p[1] < p[1]))
+
+# 	# print ('{}<{} = '.format(p[1], p[3]))
+# 	# G.prGreen('	' + str(p[1] < p[3]))
+
+# 	# print ('{}<{} = '.format(p[3], p[1]))
+# 	# G.prGreen('	' + str(p[3] < p[1]))
+
+# 	# print ('{}<{} = '.format(p[3], p[3]))
+# 	# G.prGreen('	' + str(p[3] < p[3]))
 
 
 
