@@ -240,14 +240,19 @@ def p_matrix(p):
 
 
 
+# def p_function_assign(p):
+# 	'''expression : FUNCTION '=' expression'''
 
 
-
+# def p_function_expr(p):
+# 	'''function : FUNCTION
+# 		   		| FUNCTION '=' '?' '''
+	
 
 
 
 def p_variable_assign(p):
-	'''expression : VARIABLE '=' expression'''
+	'''expression : NAME '=' expression'''
 	for key in G.variables.copy().keys():
 		if p[1].casefold() == key.casefold():
 			del G.variables[key]
@@ -255,14 +260,15 @@ def p_variable_assign(p):
 	p[0] = p[3]
 	
 def p_variable_expr(p):
-	'''variable : VARIABLE
-		   		| VARIABLE '=' '?' '''
+	'''variable : NAME
+		   		| NAME '=' '?' '''
 	for key in G.variables.keys():
 		if p[1].casefold() == key.casefold():
 			p[0] = G.variables[key]
 			break
 	else:
-		raise E.Message("Variable '{}' not found".format(p[1]))
+		# raise E.Message("Variable '{}' not found".format(p[1]))
+		p[0] = U.Unknown(1)
 
 
 
@@ -285,6 +291,13 @@ def p_execute_command(t):
 		else:
 			G.prRed("Variables:")
 			print("     There are no variables")
+		if G.functions:
+			G.prGreen("Functions:")
+			for key,value in G.functions.items():
+				print("     {} = {}".format(key, value))
+		else:
+			G.prRed("Functions:")
+			print("     There are no functions")
 	elif letter == 'q':
 		G.prGreen("Bye bye!")
 		exit()

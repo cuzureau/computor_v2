@@ -1,5 +1,5 @@
 tokens = (
-    'VARIABLE',
+    'NAME',
     'NUMBER',
     'FLOORDIV',
     'DOT_PRODUCT',
@@ -8,6 +8,7 @@ tokens = (
 )
 
 variables = {}
+functions = {}
 wolframalpha = False
 
 def prRed(string): print("\033[91m{}\033[00m" .format(string)) 
