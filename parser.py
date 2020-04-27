@@ -1,9 +1,6 @@
 import Global as G
 from Global import tokens
 import ply.yacc as yacc
-import Complex as C
-import Number as N
-import Matrix as M
 import Error as E
 
 def p_operations(p): 
@@ -16,6 +13,7 @@ def p_operations(p):
 	first : NUMBER
 	first : IMAGINE
 	first : matrix
+	first : variable
 	"""
 	p[0] = p[1]
 
@@ -65,21 +63,24 @@ def p_block(p):
 	p[0] = p[2]
 
 def p_list(p):
-    """value_list : expression
-       vector_list : vector
-    """
-    p[0] = [p[1]]
+	"""value_list : expression
+	   vector_list : vector
+	"""
+	p[0] = [p[1]]
 
 def p_list_extend(p):
-    """value_list : value_list ','  expression
-       vector_list : vector_list ';' vector
-    """
-    p[0] = p[1]
-    p[0].append(p[3])
+	"""value_list : value_list ','  expression
+	   vector_list : vector_list ';' vector
+	"""
+	p[0] = p[1]
+	p[0].append(p[3])
 
 def p_matrix(p):
-    """matrix : '[' vector_list ']' """
-    p[0] = M.Matrix(p[2])
+	"""matrix : '[' vector_list ']' """
+	p[0] = M.Matrix(p[2])
+
+
+
 
 
 
@@ -245,33 +246,28 @@ def p_matrix(p):
 
 
 
-
-
-
-
-
-
-
-
-def p_statement_assign(t):
-	'''expression : NAME '=' expression'''
-	G.variables[t[1].lower()] = t[3]
+def p_variable_assign(p):
+	'''expression : VARIABLE '=' expression'''
+	for key in G.variables.copy().keys():
+		if p[1].casefold() == key.casefold():
+			del G.variables[key]
+	G.variables[p[1]] = p[3]
+	p[0] = p[3]
 	
+def p_variable_expr(p):
+	'''variable : VARIABLE
+		   		| VARIABLE '=' '?' '''
+	for key in G.variables.keys():
+		if p[1].casefold() == key.casefold():
+			p[0] = G.variables[key]
+			break
+	else:
+		raise E.Message("Variable '{}' not found".format(p[1]))
 
-# def p_statement_expr(t):
-# 	'''statement : expression
-# 				 | expression EQUALS QUESTION'''
-# 	t[1] = str(t[1]).replace('j', 'i').replace('(', '[').replace(')', ']')
-# 	print(t[1])
 
-# def p_expression_name(t):
-# 	'''expression : NAME
-# 				  | NAME EQUALS QUESTION'''
-# 	try:
-# 		t[0] = G.variables[t[1].lower()]
-# 	except LookupError:
-# 		prRed("Undefined name '%s'" % t[1])
-# 		t[0] = 0
+
+
+
 
 def p_execute_command(t):
 	''' expression : COMMAND '''
@@ -280,11 +276,11 @@ def p_execute_command(t):
 		prGreen("Help:")
 		print("    - !p = print all variables")
 		print("    - !q = quit the computor")
-		print("    - !c = activate/deactivate online solver [https://www.wolframalpha.com/]")
+		print("    - !s = activate/deactivate online solver [https://www.wolframalpha.com/]")
 	elif letter == 'p':
-		if variables:
+		if G.variables:
 			G.prGreen("Variables:")
-			for key,value in variables.items():
+			for key,value in G.variables.items():
 				print("     {} = {}".format(key, value))
 		else:
 			G.prRed("Variables:")

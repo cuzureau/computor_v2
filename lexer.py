@@ -4,13 +4,13 @@ import ply.lex as lex
 import Complex as C
 import Number as N
 
-t_FLOORDIV  = r'\/\/'
-t_DOT_PRODUCT  = r'\*\*'
-t_NAME      = r'[a-zA-Z]{2,}|[a-hj-zA-HJ-Z]'    # all words (only letters) except the word 'i' alone
-t_COMMAND   = r'![\x00-\x7F]*'                  # all unicode characters after '!'
+t_FLOORDIV  	= r'\/\/'
+t_DOT_PRODUCT	= r'\*\*'
+t_VARIABLE     	= r'[a-zA-Z]{2,}|[a-hj-zA-HJ-Z]'    # all words (only letters) except the word 'i' alone
+t_COMMAND   	= r'![\x00-\x7F]*'                  # all unicode characters after '!'
 
-literals = '+-*/^()[]%=;,?@'
-t_ignore = " \t"
+literals 	= '+-*/^()[]%=;,?@'
+t_ignore 	= " \t"
 
 
 def t_NUMBER(t):

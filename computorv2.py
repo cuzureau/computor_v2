@@ -23,7 +23,8 @@ while True:
 			print(answer)
 	except Error.Error as e:
 		G.prRed(e.message)
-
+	except Error.Message as m:
+		G.prRed(m.message)
 
 	if G.wolframalpha is True and question[0] != '!':
 		new = question.replace("%", " mod ")

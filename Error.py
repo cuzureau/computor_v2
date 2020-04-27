@@ -11,3 +11,7 @@ class Error(Exception):
 				right = '\n' + str(right)
 			operation = str(left) + operator + str(right)
 			self.message = "Illegal operation: " + operation
+
+class Message(Exception):
+	def __init__(self, message):
+		self.message = message
