@@ -2,8 +2,10 @@ import Global as G
 from Global import tokens
 import ply.yacc as yacc
 import Error as E
+import Matrix as M
+import Unknown as U
 
-def p_operations(p): 
+def p_operations(p):
 	""" expression : sixth
 	sixth : fifth
 	fifth : fourth
@@ -14,6 +16,7 @@ def p_operations(p):
 	first : IMAGINE
 	first : matrix
 	first : variable
+	first : function
 	"""
 	p[0] = p[1]
 
@@ -78,7 +81,6 @@ def p_list_extend(p):
 def p_matrix(p):
 	"""matrix : '[' vector_list ']' """
 	p[0] = M.Matrix(p[2])
-
 
 
 
@@ -240,13 +242,46 @@ def p_matrix(p):
 
 
 
-# def p_function_assign(p):
-# 	'''expression : FUNCTION '=' expression'''
 
 
-# def p_function_expr(p):
-# 	'''function : FUNCTION
-# 		   		| FUNCTION '=' '?' '''
+
+# def p_equa(p):
+# 	'''equation : NAME '+' expression '''
+# 	print("yo")
+# 	p[0] = 66
+
+
+
+
+
+
+
+
+
+
+def p_function_assign(p):
+	'''expression : FUNCTION '=' expression'''
+	# import parser as p
+	# formula = str(p[3])
+	# code = p.expr(formula).compile()
+	# print(code)
+
+	eq = "3*x/2"
+	ast = compile(eq)
+	print(ast)
+	# HERE : CHECK COMPILE FUNCTION WITH AST (DATA STRUCT FOR STORING AN EQUATION)
+
+
+
+def p_function_expr(p):
+	'''function : FUNCTION
+		   		| FUNCTION '=' '?' '''
+	for key in G.functions.keys():
+		if p[1].casefold() == key.casefold():
+			p[0] = G.functions[key]
+			break
+	else:
+		raise E.Message("Variable '{}' not found".format(p[1]))
 	
 
 
@@ -258,6 +293,7 @@ def p_variable_assign(p):
 			del G.variables[key]
 	G.variables[p[1]] = p[3]
 	p[0] = p[3]
+
 	
 def p_variable_expr(p):
 	'''variable : NAME
@@ -267,9 +303,9 @@ def p_variable_expr(p):
 			p[0] = G.variables[key]
 			break
 	else:
+		p[0] = U.Unknown(1, 0)
 		# raise E.Message("Variable '{}' not found".format(p[1]))
-		p[0] = U.Unknown(1)
-
+		# uniquement pour :  NAME '=' '?'
 
 
 

@@ -1,5 +1,6 @@
 tokens = (
     'NAME',
+    'FUNCTION',
     'NUMBER',
     'FLOORDIV',
     'DOT_PRODUCT',

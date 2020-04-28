@@ -22,9 +22,9 @@ class Unknown:
 			sign = ''
 		if self.unknown:
 			if self.unknown == N.Number(1) or self.unknown == N.Number(-1):
-				unknown = 'i'
+				unknown = 'x'
 			else:
-				unknown += 'i'
+				unknown += 'x'
 		string = known + sign + unknown
 		return string or '0'
 
