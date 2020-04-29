@@ -5,6 +5,7 @@ import Error as E
 import Matrix as M
 import Unknown as U
 
+
 def p_operations(p):
 	""" expression : sixth
 	sixth : fifth
@@ -15,18 +16,22 @@ def p_operations(p):
 	first : NUMBER
 	first : IMAGINE
 	first : matrix
-	first : variable
-	first : function
 	"""
 	p[0] = p[1]
 
 def p_plus(p):
 	""" fifth : fifth '+' fourth """
-	p[0] = p[1] + p[3]
+	if isinstance(p[1], str) or isinstance(p[3], str):
+		p[0] = str(p[1]) + p[2] + str(p[3])
+	else:
+		p[0] = p[1] + p[3]
 
 def p_minus(p):
 	""" fifth : fifth '-' fourth """
-	p[0] = p[1] - p[3]
+	if isinstance(p[1], str) or isinstance(p[3], str):
+		p[0] = str(p[1]) + p[2] + str(p[3])
+	else:
+		p[0] = p[1] - p[3]
 
 def p_implicit_times(p):
 	""" fourth : fourth second """
@@ -34,7 +39,10 @@ def p_implicit_times(p):
 
 def p_times(p):
 	""" fourth : fourth '*' third """
-	p[0] = p[1] * p[3]
+	if isinstance(p[1], str) or isinstance(p[3], str):
+		p[0] = str(p[1]) + p[2] + str(p[3])
+	else:
+		p[0] = p[1] * p[3]
 
 def p_dot_product(p):
 	""" fourth : matrix DOT_PRODUCT third """
@@ -245,10 +253,20 @@ def p_matrix(p):
 
 
 
-# def p_equa(p):
-# 	'''equation : NAME '+' expression '''
-# 	print("yo")
-# 	p[0] = 66
+
+
+
+# def p_function_expr(p):
+# 	'''expression : NAME '(' NAME ')' '=' ALL '''
+# 	equation = p[1].split('=')
+# 	name = equation[0]
+# 	formula = equation[1]
+
+# 	for key in G.functions.copy().keys():
+# 		if name.casefold() == key.casefold():
+# 			del G.functions[key]
+# 	G.functions[name] = formula
+# 	p[0] = formula
 
 
 
@@ -257,32 +275,23 @@ def p_matrix(p):
 
 
 
+# def p_function_assign(p):
+# 	'''expression : FUNCTION '=' expression'''
+# 	f = sympy.sympify("2 * b + b")
+# 	print (f, type(f))
 
 
-def p_function_assign(p):
-	'''expression : FUNCTION '=' expression'''
-	# import parser as p
-	# formula = str(p[3])
-	# code = p.expr(formula).compile()
-	# print(code)
-
-	eq = "3*x/2"
-	ast = compile(eq)
-	print(ast)
-	# HERE : CHECK COMPILE FUNCTION WITH AST (DATA STRUCT FOR STORING AN EQUATION)
-
-
-
-def p_function_expr(p):
-	'''function : FUNCTION
-		   		| FUNCTION '=' '?' '''
-	for key in G.functions.keys():
-		if p[1].casefold() == key.casefold():
-			p[0] = G.functions[key]
-			break
-	else:
-		raise E.Message("Variable '{}' not found".format(p[1]))
+# def p_function_expr(p):
+# 	'''function : FUNCTION
+# 		   		| FUNCTION '=' '?' '''
+# 	for key in G.functions.keys():
+# 		if p[1].casefold() == key.casefold():
+# 			p[0] = G.functions[key]
+# 			break
+# 	else:
+# 		raise E.Message("Variable '{}' not found".format(p[1]))
 	
+
 
 
 
@@ -296,16 +305,41 @@ def p_variable_assign(p):
 
 	
 def p_variable_expr(p):
-	'''variable : NAME
-		   		| NAME '=' '?' '''
+	'''first : NAME '''
+	for key,value in G.variables.items():
+		if p[1].casefold() == key.casefold():
+			p[0] = G.variables[key]
+
+			# for key in G.variables.keys():
+			# 	if str(value).casefold() == key.casefold():
+			# 		p[0] = G.variables[key]
+			
+			break
+	else:
+		p[0] = p[1]
+
+
+def p_variable_expr2(p):
+	'''expression : NAME '=' '?' '''
 	for key in G.variables.keys():
 		if p[1].casefold() == key.casefold():
 			p[0] = G.variables[key]
 			break
 	else:
-		p[0] = U.Unknown(1, 0)
-		# raise E.Message("Variable '{}' not found".format(p[1]))
-		# uniquement pour :  NAME '=' '?'
+		raise E.Message("Variable '{}' not found".format(p[1]))
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
