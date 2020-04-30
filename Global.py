@@ -1,5 +1,5 @@
 tokens = (
-    'NAME',
+    'VARIABLE',
     'FUNCTION',
     'NUMBER',
     'FLOORDIV',

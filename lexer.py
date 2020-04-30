@@ -6,8 +6,9 @@ import Number as N
 
 t_FLOORDIV  	= r'\/\/'
 t_DOT_PRODUCT	= r'\*\*'
-t_NAME	    	= r'[a-zA-Z]{2,}|[a-hj-zA-HJ-Z]'
-t_FUNCTION		= r'[a-zA-Z]{1,}\(([a-zA-Z]{2,}|[a-hj-zA-HJ-Z])\)\ *\=[\x00-\x7F]*'
+t_VARIABLE	    = r'[a-zA-Z]{2,}|[a-hj-zA-HJ-Z]'
+# t_FUNCTION	    = r'[a-zA-Z]{1,}'
+t_FUNCTION		= r'[a-zA-Z]{1,}\(([a-zA-Z]{2,}|[a-hj-zA-HJ-Z])\)'
 t_COMMAND   	= r'![\x00-\x7F]*'
 
 literals 	= '+-*/^()[]%=;,?@'

@@ -53,6 +53,8 @@ class Number:
 ######################### COMMUTATIVE OPERATIONS #########################
 
 	def __add__(self, other):
+		# if isinstance(other, str):
+		# 	return (str(self) + '+' + other)
 		if isinstance(other, Number):
 			return Number(self.value + other.value)
 		elif isinstance(other, C.Complex):
@@ -61,6 +63,10 @@ class Number:
 			return M.Matrix(self, other.size) + other
 		else:
 			raise E.Error(self, '+', other)
+
+	# def __radd__(self, other):
+	# 	if isinstance(other, str):
+	# 		return (other + '+' + str(self))
 
 	def __mul__(self, other):
 		if isinstance(other, Number):
