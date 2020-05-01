@@ -11,7 +11,7 @@ t_VARIABLE	    = r'[a-zA-Z]{2,}|[a-hj-zA-HJ-Z]'
 t_FUNCTION		= r'[a-zA-Z]{1,}\(([a-zA-Z]{2,}|[a-hj-zA-HJ-Z])\)'
 t_COMMAND   	= r'![\x00-\x7F]*'
 
-literals 	= '+-*/^()[]%=;,?@'
+literals 	= '+-*/^()[]%=;,?@|'
 t_ignore 	= " \t"
 
 

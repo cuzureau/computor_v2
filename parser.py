@@ -7,8 +7,10 @@ import Number as N
 import Unknown as U
 
 
+
 def p_operations(p):
-	""" expression : fifth
+	""" statement : expression
+	expression : fifth
 	fifth : fourth
 	fourth : third
 	third : second
@@ -16,8 +18,6 @@ def p_operations(p):
 	first : NUMBER
 	first : IMAGINE
 	first : matrix
-	first : function
-	first : variable
 	"""
 	p[0] = p[1]
 
@@ -73,6 +73,7 @@ def p_power(p):
 def p_block(p):
 	""" first : '(' expression ')'
 		vector : '[' value_list ']' """
+	print("-->p_block")
 	p[0] = p[2]
 
 def p_list(p):
@@ -258,17 +259,69 @@ def p_matrix(p):
 
 
 
+
+
+
+# def p_function_assign(p):
+# 	'''statement : '(' statement ')' '''
+# 	p[0] = p[2]
+
+
+# def p_function_assign(p):
+# 	'''expression : FUNCTION '=' expression'''
+
+
+
 # def p_function_expr(p):
-# 	'''expression : NAME '(' NAME ')' '=' ALL '''
-# 	equation = p[1].split('=')
-# 	name = equation[0]
-# 	formula = equation[1]
+# 	'''function : variable '(' statement ')' '''
+# 	print("--> p_function_expr=", p[1])
+# 	p[0] = p[1]
+
+
+
+
+
+
+
+
+
+
+# def p_function_assign(p):
+# 	'''expression : FUNCTION '=' expression'''
+# 	title = p[1].split('(')[0]
+# 	variable = p[1].split('(')[1][:-1]
 
 # 	for key in G.functions.copy().keys():
-# 		if name.casefold() == key.casefold():
+# 		if title.casefold() == key[0].casefold():
 # 			del G.functions[key]
-# 	G.functions[name] = formula
-# 	p[0] = formula
+# 	G.functions[(title, variable)] = p[3]
+# 	p[0] = p[3]
+
+
+# def p_function_expr(p):
+# 	'''function : FUNCTION '''
+# 	title = p[1].split('(')[0].casefold()
+# 	variable = p[1].split('(')[1][:-1].casefold()
+
+# 	try : 
+# 		funcbody = G.functions.get((title, variable), None)
+# 		text = G.functions[(title, variable)].replace('x', '9')
+# 		p[0] = yacc.yacc().parse(text, lexer=p.lexer.clone())
+# 	except:
+# 		print("Variable '{}' not found".format(p[1]))
+
+	# voir dernière image = fun(2) est reconnu comme une variable à cause du chiffre entre parenthèses. 
+
+
+
+# def p_variable_assign(p):
+# 	'''expression : VARIABLE '=' expression'''
+# 	print("--> p_variable_assign")
+# 	for key in G.variables.copy().keys():
+# 		if p[1].casefold() == key.casefold():
+# 			del G.variables[key]
+# 	G.variables[p[1]] = p[3]
+# 	p[0] = p[3]
 
 
 
@@ -276,67 +329,36 @@ def p_matrix(p):
 
 
 
+
+
+def p_statement_assign(p):
+	''' statement : VARIABLE '=' expression '''
+	print("-->p_variable_assign")
+	G.variables[p[1]] = p[3]
 
 def p_function_assign(p):
-	'''expression : FUNCTION '=' expression'''
-	title = p[1].split('(')[0]
-	variable = p[1].split('(')[1][:-1]
+	''' statement : VARIABLE '|' expression '|' '=' expression '''
+	print("-->p_funct_assign")
+	G.functions[p[1]] = (p[3], p[6])
 
-	for key in G.functions.copy().keys():
-		if title.casefold() == key[0].casefold():
-			del G.functions[key]
-	G.functions[(title, variable)] = p[3]
-	p[0] = p[3]
+# def p_statement_assign2(p):
+# 	''' statement : VARIABLE expression '''
+# 	print("-->p_variable_assign2")
 
-
-def p_function_expr(p):
-	'''function : FUNCTION '''
-	title = p[1].split('(')[0]
-	variable = p[1].split('(')[1][:-1]
-
-	for key in G.functions.keys():
-		if title == key[0].casefold():
-			text = G.functions[key].replace(key[1], variable)
-			print("text=", text)
-			p[0] = yacc.yacc().parse(text, lexer=p.lexer.clone())
-			break
-	else:
-		raise E.Message("Variable '{}' not found".format(p[1]))
-
-		# voir dernière image = fun(2) est reconnu comme une variable à cause du chiffre entre parenthèses. 
-	
-
-
-
-
-def p_variable_assign(p):
-	'''expression : VARIABLE '=' expression'''
-	print("--> p_variable_assign")
-	for key in G.variables.copy().keys():
-		if p[1].casefold() == key.casefold():
-			del G.variables[key]
-	G.variables[p[1]] = p[3]
-	p[0] = p[3]
 
 def p_variable_expr(p):
-	'''variable : VARIABLE '''
-	print("--> p_variable_expr")
-	for key,value in G.variables.items():
-		if p[1].casefold() == key.casefold():
-			p[0] = G.variables[key]
-
-			# for key in G.variables.keys():
-			# 	if str(value).casefold() == key.casefold():
-			# 		p[0] = G.variables[key]
-			
-			break
-	else:
+	''' first : VARIABLE '''
+	print("-->p_variable_expr")
+	try : 
+		p[0] = G.variables[p[1]]
+	except:
 		p[0] = p[1]
 
+# def p_variable_expr2(p):
+# 	''' function : VARIABLE expression  '''
+# 	print("-->p_yoooo")
 
-
-
-
+	
 
 
 
