@@ -1,6 +1,5 @@
 tokens = (
-    'VARIABLE',
-    'FUNCTION',
+    'NAME',
     'NUMBER',
     'FLOORDIV',
     'DOT_PRODUCT',

@@ -35,9 +35,10 @@ def p_minus(p):
 	else:
 		p[0] = p[1] - p[3]
 
-def p_implicit_times(p):
-	""" fourth : fourth second """
-	p[0] = p[1] * p[2]
+# def p_implicit_times(p):
+# 	""" fourth : fourth second """
+# 	print("-->p_implicit_times")
+# 	p[0] = p[1] * p[2]
 
 def p_times(p):
 	""" fourth : fourth '*' third """
@@ -73,7 +74,6 @@ def p_power(p):
 def p_block(p):
 	""" first : '(' expression ')'
 		vector : '[' value_list ']' """
-	print("-->p_block")
 	p[0] = p[2]
 
 def p_list(p):
@@ -315,7 +315,7 @@ def p_matrix(p):
 
 
 # def p_variable_assign(p):
-# 	'''expression : VARIABLE '=' expression'''
+# 	'''expression : NAME '=' expression'''
 # 	print("--> p_variable_assign")
 # 	for key in G.variables.copy().keys():
 # 		if p[1].casefold() == key.casefold():
@@ -332,33 +332,70 @@ def p_matrix(p):
 
 
 def p_statement_assign(p):
-	''' statement : VARIABLE '=' expression '''
-	print("-->p_variable_assign")
+	''' statement : NAME '=' expression '''
 	G.variables[p[1]] = p[3]
 
 def p_function_assign(p):
-	''' statement : VARIABLE '|' expression '|' '=' expression '''
-	print("-->p_funct_assign")
+	''' statement : NAME '(' NAME ')' '=' expression '''
 	G.functions[p[1]] = (p[3], p[6])
 
-# def p_statement_assign2(p):
-# 	''' statement : VARIABLE expression '''
-# 	print("-->p_variable_assign2")
+
+
+
+
+
+
+
+def p_function_resolve(p):
+	''' function : NAME '(' NUMBER ')' 
+				 | NAME '(' IMAGINE ')'
+				 | NAME '(' matrix ')' '''
+	try : 
+		funcbody = G.functions.get(p[1])
+	except:
+		print("Function '{}' not found".format(p[1]))
+	if type(p[4]) == M.Matrix: 
+		text = funcbody[1].replace(funcbody[0], p[3].__easy__())
+	else:
+		text = funcbody[1].replace(funcbody[0], str(p[3]))
+	p[0] = yacc.yacc().parse(text, lexer=p.lexer.clone())
+
+def p_function_resolve_negative(p):
+	''' function : NAME '(' '-' NUMBER ')' 
+				 | NAME '(' '-' IMAGINE ')'
+				 | NAME '(' '-' matrix ')' '''
+	try : 
+		funcbody = G.functions.get(p[1])
+	except:
+		print("Function '{}' not found".format(p[1]))
+	if type(p[4]) == M.Matrix: 
+		text = funcbody[1].replace(funcbody[0], p[4].__neg__().__easy__())
+	else:
+		text = funcbody[1].replace(funcbody[0], '-' + str(p[4]))
+	p[0] = yacc.yacc().parse(text, lexer=p.lexer.clone())
+
+
+
 
 
 def p_variable_expr(p):
-	''' first : VARIABLE '''
-	print("-->p_variable_expr")
+	''' first : NAME '''
 	try : 
 		p[0] = G.variables[p[1]]
 	except:
 		p[0] = p[1]
 
-# def p_variable_expr2(p):
-# 	''' function : VARIABLE expression  '''
-# 	print("-->p_yoooo")
+def p_function_expr(p):
+	''' first : function '''
+	try : 
+		p[0] = G.functions[p[1]]
+	except:
+		p[0] = p[1]
+		
 
-	
+
+
+
 
 
 
@@ -392,7 +429,7 @@ def p_execute_command(t):
 		if G.functions:
 			G.prGreen("Functions:")
 			for key,value in G.functions.items():
-				print("     {} = {}".format(key, value))
+				print("     {}({}) = {}".format(key, value[0], value[1]))
 		else:
 			G.prRed("Functions:")
 			print("     There are no functions")

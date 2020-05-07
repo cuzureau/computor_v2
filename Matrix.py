@@ -13,11 +13,16 @@ class Matrix:
 		else:
 			self.size = size
 			self.value = [[value for i in range(size[1])] for j in range(size[0])]
+		self.simple = str(value)
 
 	def __repr__(self):
 		string = ''
 		for row in self.value:
 			string += str(row).replace('[', '[ ').replace(']', ' ]') + '\n'
+		return string
+
+	def __easy__(self):
+		string = self.simple.replace('],', '];')
 		return string
 
 	def __neg__(self):
