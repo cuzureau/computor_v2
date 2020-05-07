@@ -27,6 +27,9 @@ class Complex:
 		string = real + sign + imag
 		return string or '0'
 
+	def __raw__(self):
+		return self.__repr__()
+
 	def __bool__(self):
 		if self.real:
 			return True

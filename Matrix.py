@@ -21,7 +21,7 @@ class Matrix:
 			string += str(row).replace('[', '[ ').replace(']', ' ]') + '\n'
 		return string
 
-	def __easy__(self):
+	def __raw__(self):
 		string = self.simple.replace('],', '];')
 		return string
 

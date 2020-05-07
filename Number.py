@@ -16,6 +16,9 @@ class Number:
 		# return str(self.value.normalize())
 		return str(self.value)
 
+	def __raw__(self):
+		return self.__repr__()
+
 	def __abs__(self):
 		return Number(abs(self.value))
 

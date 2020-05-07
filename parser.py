@@ -255,82 +255,6 @@ def p_matrix(p):
 
 
 
-
-
-
-
-
-
-
-# def p_function_assign(p):
-# 	'''statement : '(' statement ')' '''
-# 	p[0] = p[2]
-
-
-# def p_function_assign(p):
-# 	'''expression : FUNCTION '=' expression'''
-
-
-
-# def p_function_expr(p):
-# 	'''function : variable '(' statement ')' '''
-# 	print("--> p_function_expr=", p[1])
-# 	p[0] = p[1]
-
-
-
-
-
-
-
-
-
-
-# def p_function_assign(p):
-# 	'''expression : FUNCTION '=' expression'''
-# 	title = p[1].split('(')[0]
-# 	variable = p[1].split('(')[1][:-1]
-
-# 	for key in G.functions.copy().keys():
-# 		if title.casefold() == key[0].casefold():
-# 			del G.functions[key]
-# 	G.functions[(title, variable)] = p[3]
-# 	p[0] = p[3]
-
-
-# def p_function_expr(p):
-# 	'''function : FUNCTION '''
-# 	title = p[1].split('(')[0].casefold()
-# 	variable = p[1].split('(')[1][:-1].casefold()
-
-# 	try : 
-# 		funcbody = G.functions.get((title, variable), None)
-# 		text = G.functions[(title, variable)].replace('x', '9')
-# 		p[0] = yacc.yacc().parse(text, lexer=p.lexer.clone())
-# 	except:
-# 		print("Variable '{}' not found".format(p[1]))
-
-	# voir dernière image = fun(2) est reconnu comme une variable à cause du chiffre entre parenthèses. 
-
-
-
-# def p_variable_assign(p):
-# 	'''expression : NAME '=' expression'''
-# 	print("--> p_variable_assign")
-# 	for key in G.variables.copy().keys():
-# 		if p[1].casefold() == key.casefold():
-# 			del G.variables[key]
-# 	G.variables[p[1]] = p[3]
-# 	p[0] = p[3]
-
-
-
-
-
-
-
-
-
 def p_statement_assign(p):
 	''' statement : NAME '=' expression '''
 	G.variables[p[1]] = p[3]
@@ -342,40 +266,29 @@ def p_function_assign(p):
 
 
 
-
-
-
-
 def p_function_resolve(p):
 	''' function : NAME '(' NUMBER ')' 
 				 | NAME '(' IMAGINE ')'
 				 | NAME '(' matrix ')' '''
 	try : 
-		funcbody = G.functions.get(p[1])
+		function = G.functions.get(p[1])
+		text = function[1].replace(function[0], p[3].__raw__())
+		p[0] = yacc.yacc().parse(text, lexer=p.lexer.clone())
 	except:
-		print("Function '{}' not found".format(p[1]))
-	if type(p[4]) == M.Matrix: 
-		text = funcbody[1].replace(funcbody[0], p[3].__easy__())
-	else:
-		text = funcbody[1].replace(funcbody[0], str(p[3]))
-	p[0] = yacc.yacc().parse(text, lexer=p.lexer.clone())
+		raise E.Message("Function '{}' not found".format(p[1]))
+	
 
 def p_function_resolve_negative(p):
 	''' function : NAME '(' '-' NUMBER ')' 
 				 | NAME '(' '-' IMAGINE ')'
 				 | NAME '(' '-' matrix ')' '''
 	try : 
-		funcbody = G.functions.get(p[1])
+		function = G.functions.get(p[1])
+		text = function[1].replace(function[0], p[4].__neg__().__raw__())
+		p[0] = yacc.yacc().parse(text, lexer=p.lexer.clone())
 	except:
-		print("Function '{}' not found".format(p[1]))
-	if type(p[4]) == M.Matrix: 
-		text = funcbody[1].replace(funcbody[0], p[4].__neg__().__easy__())
-	else:
-		text = funcbody[1].replace(funcbody[0], '-' + str(p[4]))
-	p[0] = yacc.yacc().parse(text, lexer=p.lexer.clone())
-
-
-
+		raise E.Message("Function '{}' not found".format(p[1]))
+	
 
 
 def p_variable_expr(p):
